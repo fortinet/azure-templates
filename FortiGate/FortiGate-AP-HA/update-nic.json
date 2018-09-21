@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "nicName": {
+      "type": "string"
+    },
+    "SubnetRef": {
+      "type": "string"
+    },
+    "privateIp": {
+      "type": "string"
+    },
+    "publicIp": {
+      "type": "string"
+    },
+    "FortinetTags": {
+      "type": "object"
+    },
+    "NSGName": {
+        "type": "string"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-09-01",
+      "dependsOn": [
+      ],
+      "tags": {
+        "provider": "[toUpper(parameters('FortinetTags').provider)]"
+      },
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[parameters('nicName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Static",
+                "privateIPAddress": "[parameters('privateIp')]",
+                "publicIPAddress": {
+                  "id": "[parameters('publicIp')]"
+                },
+                "subnet": {
+                  "id": "[parameters('SubnetRef')]"
+                }
+              }
+            }
+          ],
+          "enableIPForwarding": true,
+          "networkSecurityGroup": {
+            "id": "[resourceID('Microsoft.Network/networkSecurityGroups/',parameters('NSGName'))]"
+          }
+      }
+    }
+  ],
+  "outputs": {}
+}
