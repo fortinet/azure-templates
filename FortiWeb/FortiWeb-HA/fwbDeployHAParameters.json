@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmNamePrefix": {
+      "value": "fwb"
+    },
+    "vmSku": {
+      "value": "Standard_F2s_v2"
+    },
+    "adminUserName": {
+      "value": "azureadmin"
+    },
+    "authenticationType": {
+      "value": "password"
+    },
+    "adminPassword": {
+      "value": "Azureadmin123#"
+    },
+    "sshPublicKey": {
+      "value": ""
+    },
+    "LoadBalancerPubIPName": {
+      "value": "LoadBalancerPubIP"
+    },
+    "LBPubIPType": {
+      "value": "Static"
+    },
+    "assignPubIPForVM": {
+      "value": "Yes"
+    },
+    "VM1PubIPName": {
+      "value": "VM1PubIP"
+    },
+    "VM1PubIPType": {
+      "value": "Static"
+    },
+    "VM2PubIPName": {
+      "value": "VM2PubIP"
+    },
+    "VM2PubIPType": {
+      "value": "Static"
+    },
+    "vnetNewOrExisting": {
+      "value": "new"
+    },
+    "virtualNetResourceGroup": {
+      "value": "virtualNetResourceGroup"
+    },
+    "virtualNetName": {
+      "value": "FortiWebVNet"
+    },
+    "vnetAddressPrefix": {
+      "value": "10.10.0.0/16"
+    },
+    "Subnet1Name": {
+      "value": "OutsideSubnet"
+    },
+    "Subnet1Prefix": {
+      "value": "10.10.80.0/24"
+    },
+    "Subnet2Name": {
+      "value": "InsideSubnet"
+    },
+    "Subnet2Prefix": {
+      "value": "10.10.81.0/24"
+    },
+    "imageVersion": {
+      "value": "BYOL602"
+    }
+  }
+}
