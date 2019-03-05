@@ -1,16 +1,32 @@
-## FortiWeb's High Availability (HA) solution on Azure uses Azure load balancer to achieve Active-Active HA and ActivePassive HA.
+## High Availability for FortiWeb on Azure
+
+FortiWeb's High Availability (HA) solution on Azure uses Azure Load Balancer to achieve Active-Active HA and Active-Passive HA.
 
 ![Example Diagram](./images/fortiweb-ha.png)
 
-## The following resources will be created in the deployment process:
-	- A load balancer with public IP address.
-	- Two FortiWeb-VM instances. By default, these two VMs are added in the load balancer's backend pool.
-	- A public facing subnet connecting the FortiWeb outgoing interface (port1) to the load balancer.
-	- A private subnet where one or more web application VMs that FortiWeb protects are located.
+The following resources will be created during the deployment process:
 
-	All the web traffic passes through the load balancer first, then it is directed to a collection of VMs called a backend pool.
-	In this case, the pool consists of FortiWeb-VM1 and FortiWeb-VM2.
-	In the Active-Active HA scenario, the web traffic is distributed between ForiWeb-VM1 and FortiWeb-VM2.
-	In the Active-Passive HA scenario, the web traffic is directed only to the master node (the above graph assumes FortiWeb-VM1 is the master node). When FortiWeb-VM1 fails to operate, the load balancer will distribute the traffic to the new master node FortiWeb-VM2.
+- An Azure Load Balancer with a public IP address.
+- Two FortiWeb-VM instances. By default, these two VMs are added to the Azure Load Balancer's backend pool.
+- A public-facing subnet connecting the FortiWeb outgoing interface (port1) to the Azure Load Balancer.
+- A private subnet where one or more web application VMs that FortiWeb protects are located.
 
-## For detail, please refer to the document: http://docs2.fortinet.com/vm/azure/fortiweb/6.0/use-case-high-availability-for-fortiweb-on-azure/6.0.2/82738/overview
+### How it works
+
+All web traffic passes through the Azure Load Balancer first and is then directed to a collection of VMs called a backend pool. In the diagram above, the pool consists of FortiWeb-VM1 and FortiWeb-VM2.
+
+In the Active-Active HA scenario, web traffic is distributed between FortiWeb-VM1 and FortiWeb-VM2.
+
+In the Active-Passive HA scenario, web traffic is directed only to the master node (FortiWeb-VM1 in the diagram above). When FortiWeb-VM1 fails to operate, the Azure Load Balancer will distribute web traffic to FortiWeb-VM2, which is now the master node.
+
+This use case overview is also available in the Fortinet Document Library:
+
+  * [ FortiWeb / Overview of High Availability for FortiWeb on Azure](http://docs2.fortinet.com/vm/azure/fortiweb/6.0/use-case-high-availability-for-fortiweb-on-azure/6.0.2/82738/overview)
+
+# Support
+Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.
+For direct issues, please refer to the [Issues](https://github.com/fortinet/azure-templates/issues) tab of this GitHub project.
+For other questions related to this project, contact [github@fortinet.com](mailto:github@fortinet.com).
+
+## License
+[License](./LICENSE) © Fortinet Technologies. All rights reserved.

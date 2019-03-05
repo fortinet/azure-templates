@@ -4,21 +4,20 @@
     "parameters": {
         "vmNamePrefix": {
             "defaultValue": null,
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Name prefix for FortiWeb set VM instances."
             }
         },
         "vmSku": {
             "defaultValue": "Standard_F2s_v2",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Size of VM in the FortiWeb set VM instances."
             }
         },
         "adminUserName": {
-            "defaultValue": "azureadmin",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Admin username for the FortiWeb instance."
             }
@@ -50,7 +49,7 @@
         },
         "LoadBalancerPubIPName": {
             "defaultValue": "LoadBalancerPubIP",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Name of the public IP address object"
             }
@@ -79,7 +78,7 @@
         },
         "VM1PubIPName": {
             "defaultValue": "VM1PubIP",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Public IP address name for the VM1"
             }
@@ -97,7 +96,7 @@
         },
         "VM2PubIPName": {
             "defaultValue": "VM2PubIP",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Public IP address name for the VM2"
             }
@@ -119,63 +118,63 @@
                 "new",
                 "existing"
             ],
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Identify whether to use a new or existing vnet."
             }
         },
         "virtualNetResourceGroup": {
             "defaultValue": "virtualNetResourceGroup",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Resource group name of the existing virtual network, only valid when the 'vnet New Or Existing' value is 'existing'."
             }
         },
         "virtualNetName": {
             "defaultValue": "FortiWebVNet",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Name of the Azure virtual network."
             }
         },
         "vnetAddressPrefix": {
             "defaultValue": "10.10.0.0/16",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Virtual Network Address prefix"
             }
         },
         "Subnet1Name": {
             "defaultValue": "OutsideSubnet",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Subnet Name"
             }
         },
         "Subnet1Prefix": {
             "defaultValue": "10.10.0.0/24",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Outside Subnet Prefix"
             }
         },
         "Subnet2Name": {
             "defaultValue": "InsideSubnet",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Subnet Name"
             }
         },
         "Subnet2Prefix": {
             "defaultValue": "10.10.1.0/24",
-            "type": "String",
+            "type": "string",
             "metadata": {
                 "description": "Inside Subnet Prefix"
             }
         },
         "imageVersion": {
             "defaultValue": "BYOL602",
-            "type": "String",
+            "type": "string",
             "allowedValues": [
                 "BYOL602",
                 "PAGY602"
