@@ -1,8 +1,14 @@
-## This template set is designed for A/P HA in Azure.  The following are created:
-    - vnet with five subnets
-                or uses an existing vnet of your selection.  If using an existing vnet, it must already have 5 subnets.
-    - three public IPs.  The first public IP is for cluster access to/through the active FortiGate.  The other two PIPs are for Management access
-    - Two FortiGate virtual appliances
+## This template set is designed for A/P HA in Azure.
+
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffortinet%2Fazure-templates%2Fmaster%2FFortiGate%2FFortiGate-AP-HA%2FmainTemplate.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/></a>
+
+The following are created:
+- VNet with five subnets.
+   - selection of an existing VNet is also allowed. If using an existing VNet, it must already have 5 subnets.
+- Three public IP addresses.
+  - The first public IP address is for cluster access to/through the active FortiGate. The other two IP addresses are for management access.
+- Two FortiGate virtual appliances.
 
 A typical use case will be for Site-to-Site VPN termination as in the following diagram:
 ---
@@ -21,11 +27,11 @@ This second diagram shows what will happen in the event FortiGate A is shut down
 ### In order to configure FortiGates:
 
 FortiGate-A:
-    Connect via ssh to the cluster IP of port1 or private IP if already connected to the vnet via ExpressRoute or Azure VPN (both of these IPs can be obtained from the portal)
-    Configure FortiGate A so that all four interfaces have static IPs (which match those assigned in the Azure portal).  Be sure to setup a manual gateway first.  This should point to the first IP address of subnet 1.
-    Next configure the HA settings.
+- Connect via SSH to the cluster IP address of port1 or private IP address if already connected to the VNET via ExpressRoute or Azure VPN (both of these IPs can be obtained from the portal).
+- Configure FortiGate A so that all four interfaces have static IP addresses (which match those assigned in the Azure portal). Be sure to set up a manual gateway first. This should point to the first IP address of subnet 1.
+- Next configure the HA settings.
 
-The following is a sample config, based on the defaults in this template set.  If copying and pasting, be sure that there are no tabs or other characters that will confuse the FGT CLI.
+The following is a sample config, based on the defaults in this template set. If copying and pasting, be sure that there are no tabs or other characters that will confuse the FortiGate CLI.
 
     config router static
       edit 1
@@ -83,11 +89,11 @@ The following is a sample config, based on the defaults in this template set.  I
       set unicast-hb-peerip 10.0.3.5
     end
 
-Once complete with this config on FGT A, you may need to restablish the SSH session.  You can do so to the cluster IP again, or connect the the public IP for management set to port4.  From that SSH session connect to FortiGate B port1 via ssh:
+Once complete with this config on FortiGate A, you may need to reestablish the SSH session. You can do so to the cluster IP address again, or connect the the public IP address for management set to port4. From that SSH session, connect to FortiGate B port1 via SSH:
 
-execute ssh 10.0.1.5
+     execute ssh 10.0.1.5
 
-Complete a similar configuration on FortiGate B with different IPs and priority:
+Complete a similar configuration on FortiGate B with different IP addresses and priority:
 
     config router static
       edit 1
@@ -146,11 +152,11 @@ Complete a similar configuration on FortiGate B with different IPs and priority:
       set unicast-hb-peerip 10.0.3.4
     end
 
-Now you will need to apply the license unless you are using PAYG licensing.  To apply BYOL licenses, first register the licenses with http://support.fortinet.com and download the .lic files.  Note, these files may not work until 30 minutes after they're initially created.
+Unless you are using PAYG licensing, you will now you will need to apply the license. To apply BYOL licenses, first register the licenses at [http://support.fortinet.com](http://support.fortinet.com) and download the `.lic` files.  Note, these files may not work until 30 minutes after they're initially created.
 
 Next, connect via HTTPS to both FortiGates via their management addresses and upload a unique license file to each.
 
-Once, licensed and rebooted, you can proceed to configure the Azure settings to enable the cluster IP and route table failover:
+Once licensed and rebooted, you can proceed to configure the Azure settings to enable the cluster IP address and route table failover:
 
 For FortiGate A (Most of this config will be specific to your environment and so must be modified):
 
