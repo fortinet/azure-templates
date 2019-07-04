@@ -1,0 +1,33 @@
+resources:
+- repo: self
+
+pool:
+  vmImage: 'vs2017-win2016'
+  demands: azureps
+
+steps:
+- task: AzurePowerShell@2
+  displayName: 'Azure PowerShell script: FilePath'
+  inputs:
+    azureSubscription: 'AzureSubscription'
+    ScriptPath: 'FortiGate/VNET-Peering/test/invokePester.ps1'
+    ScriptArguments: '-templatename FortiGate/VNET-Peering'
+    azurePowerShellVersion: LatestVersion
+
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results **\TEST-*.xml'
+  inputs:
+    testRunner: NUnit
+    testResultsFiles: '**\TEST-*.xml'
+    testRunTitle: 'FortiGate ARM Template test Active/Passive VNET Peering'
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - FortiGate/VNET-Peering/*.md
+    include:
+    - FortiGate/VNET-Peering/*
