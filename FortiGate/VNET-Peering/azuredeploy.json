@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
+  "contentVersion": "1.0.0.1",
   "parameters": {
     "adminUsername": {
       "type": "string",
@@ -25,7 +25,7 @@
       "defaultValue": "fortinet_fg-vm",
       "allowedValues": [
         "fortinet_fg-vm",
-        "fortinet_fg-vm_payg"
+        "fortinet_fg-vm_payg_20190624"
       ],
       "metadata": {
         "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)"
@@ -33,13 +33,12 @@
     },
     "FortiGateImageVersion": {
       "type": "string",
-      "defaultValue": "6.0.5",
+      "defaultValue": "latest",
       "allowedValues": [
-        "6.0.2",
-        "6.0.3",
-        "6.0.4",
         "6.0.5",
+        "6.0.6",
         "6.2.0",
+        "6.2.1",
         "latest"
       ],
       "metadata": {
@@ -49,7 +48,7 @@
     "instanceType": {
       "type": "string",
       "defaultValue": "Standard_F4s",
-      "allowedValues": [ "Standard_F4", "Standard_F4s", "Standard_F8", "Standard_F8s", "Standard_F8s_v2", "Standard_F16", "Standard_F16s", "Standard_F16s_v2" ],
+      "allowedValues": [ "Standard_F4s", "Standard_F8s", "Standard_F4", "Standard_F8", "Standard_F4s_v2", "Standard_F8s_v2", "Standard_DS3_v2", "Standard_DS4_v2", "Standard_DS8_v3" ],
       "metadata": {
         "description": "Virtual Machine size selection - must be F4 or other instance that supports 4 NICs"
       }
