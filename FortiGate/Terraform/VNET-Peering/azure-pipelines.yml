@@ -1,0 +1,44 @@
+resources: 
+- repo: self
+
+pool:
+  name: Hosted Ubuntu 1604
+  
+steps:
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+  displayName: 'Verify Terraform installation'
+  inputs:
+    terraformVersion: 0.11.13
+
+- task: Bash@3
+  displayName: 'Terraform deployment - deploy.sh'
+  inputs:
+    targetType: filePath
+    filePath: './FortiGate/Terraform/VNET-Peering/deploy.sh'
+    workingDirectory: 'FortiGate/Terraform/VNET-Peering'
+  env:
+    DEPLOY_PASSWORD: $(DEPLOY_PASSWORD)
+    ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+    DEPLOY_PREFIX: $(DEPLOY_PREFIX)-$(Build.BuildNumber)
+
+- task: Bash@3
+  displayName: 'Terraform deployment - destroy.sh'
+  inputs:
+    targetType: filePath
+    filePath: './FortiGate/Terraform/VNET-Peering/deploy.sh'
+    workingDirectory: 'FortiGate/Terraform/VNET-Peering'
+  condition: always()
+  env:
+    DEPLOY_PASSWORD: $(DEPLOY_PASSWORD)
+    ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+    DEPLOY_PREFIX: $(DEPLOY_PREFIX)-$(Build.BuildNumber)
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - FortiGate/Terraform/VNET-Peering/*.md 
+    include:
+    - FortiGate/Terrafrom/VNET-Peering/*
