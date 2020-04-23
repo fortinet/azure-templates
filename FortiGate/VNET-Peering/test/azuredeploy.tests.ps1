@@ -71,10 +71,6 @@ Describe 'ARM Templates Test : Validation & Test Deployment' {
                                  'Microsoft.Network/virtualNetworks',
                                  'Microsoft.Network/virtualNetworks',
                                  'Microsoft.Network/virtualNetworks',
-                                 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings',
-                                 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings',
-                                 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings',
-                                 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings',
                                  'Microsoft.Network/loadBalancers',
                                  'Microsoft.Network/networkSecurityGroups',
                                  'Microsoft.Network/publicIPAddresses',
@@ -96,7 +92,8 @@ Describe 'ARM Templates Test : Validation & Test Deployment' {
         }
 
         It 'Contains the expected parameters' {
-            $expectedTemplateParameters = 'adminPassword',
+            $expectedTemplateParameters = 'acceleratedNetworking',
+                                          'adminPassword',
                                           'adminUsername',
                                           'FortiGateImageSKU',
                                           'FortiGateImageVersion',

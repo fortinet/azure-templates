@@ -1,6 +1,15 @@
+##############################################################################################################
+#
+# FortiGate Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
+# Terraform deployment template for Microsoft Azure
+#
+# Configuration management example usig the FortiGate Terraform provider
+#
+##############################################################################################################
+
 provider "fortios" {
-    hostname = "52.137.47.196:8443"
-    token = "Hpd5yy171z44zdtH5dmktcyqbpmkns"
+    hostname = "ipaddress:port"
+    token = "password"
 }
 
 resource "fortios_firewall_object_address" "s1" {

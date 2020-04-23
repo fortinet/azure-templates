@@ -1,5 +1,5 @@
-# Fortinet FortiGate Terraform deployment template
-# Cloud security services hub deployment - VNET peering
+# Cloud Security Services Hub using VNET peering and FortiGate Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
+*Fortinet FortiGate Terraform deployment template*
 
 ## Introduction
 
@@ -22,7 +22,7 @@ This Azure ARM template will automatically deploy a full working environment con
 
 ![VNET peering design](images/fgt-ha-vnet-peering.png)
 
-This Azure ARM template can also be extended or customized based on your requirements. Additional subnets besides the ones mentioned above are not automatically generated. By extending the Azure ARM templates additional subnets can be added. Additional subnets will require their own routing tables and VNET peering configuration.
+This Terraform template can also be extended or customized based on your requirements. Additional subnets besides the ones mentioned above are not automatically generated. By extending the Terraform templates additional subnets can be added. Additional subnets will require their own routing tables and VNET peering configuration.
 
 # Deployment
 
@@ -47,11 +47,15 @@ After deployment you will be shown the IP address of all deployed components, th
 
 The Terrafom template deploys different resources and is required to have the access rights and quota in your Microsoft Azure subscription to deploy the resources.
 
-- The template will deploy Standard F4s VMs to deploy the required active/passive setup
+### Licenses
+
+- The template will deploy Standard F4s VMs for this architecture. Other VM instances are supported as well with a minimum of 2 NICs. A list can be found [here](https://docs.fortinet.com/document/fortigate/6.2.0/azure-cookbook/562841/instance-type-support)
 - Licenses for Fortigate
   - BYOL: A demo license can be made available via your Fortinet partner or on our website. These can be injected during deployment or added after deployment.
   - PAYG or OnDemand: These licenses are automatically generated during the deployment of the FortiGate systems.
-- With the current Terraform AzureRM provider (1.27.0) it is required to have the configuration for both spokes in the same terraform template file. We have observed that sometimes the VNET peering timing is gives issues with the provider not retrying. You can relaunch the script or Terraform apply command to complete the deployment. This is issues is known with Terraform and will be solved in future version of the provider. This issue is tracked [here](https://github.com/terraform-providers/terraform-provider-azurerm/issues/260).
+
+### Fabric Connector
+The FortiGate-VM uses [Managed Identities](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/) for the SDN Fabric Connector. A SDN Fabric Connector is created automatically during deployment. After deployment, it is required apply the 'Reader' role to Azure Subscription you want the FortiGate-VM(s) to resolve Azure Resources from. More information can be found on the [Fortinet Documentation Libary](https://docs.fortinet.com/vm/azure/fortigate/6.2/azure-cookbook/6.2.0/236610/creating-a-fabric-connector-using-a-managed-identity).
 
 ## Support
 Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.

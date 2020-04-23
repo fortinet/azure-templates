@@ -1,4 +1,11 @@
-# Fortigate VNET Peering in [${location}]
+##############################################################################################################
+#
+# FortiGate Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
+# Terraform deployment template for Microsoft Azure
+#
+# Deployment location: ${location}
+#
+##############################################################################################################
 
 elb_ipaddress = ${elb_ipaddress}
 fgt_a_private_ip_address_ext = ${fgt_a_private_ip_address_ext}

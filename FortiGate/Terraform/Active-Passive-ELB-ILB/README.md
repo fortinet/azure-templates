@@ -1,4 +1,5 @@
-# Fortinet FortiGate Terraform deployment template (Active Passive High Availability with Azure Standard Load Balancer - External and Internal)
+# FortiGate Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
+*Terraform deployment template for Microsoft Azure*
 
 ## Introduction
 
@@ -37,7 +38,7 @@ For Microsoft Azure there is a fast track option by using the Azure Cloud Shell.
 
 ![Azure Cloud Shell](images/azure-cloud-shell.png)
 
-After deployment you will be shown the IP address of all deployed components, this information is also stored in the output directory in the `summary.out` file. You can access both management GUI's using the public management IP addresses using HTTPS on port 443.
+After deployment you will be shown the IP address of all deployed components, this information is also stored in the output directory in the `summary.out` file. # The FortiGate VMs are reachable via the public IP address of the load balancer. Management GUI HTTPS on port 40030, 40031 and for SSH on port 50030 and 50031.
 
 !!! Beware that the output directory, Terraform Plan file and Terraform State files contain deployment information such as password, usernames, IP addresses and others.
 
@@ -45,10 +46,15 @@ After deployment you will be shown the IP address of all deployed components, th
 
 The Terraform template deployment deploys different resources and is required to have the access rights and quota in your Microsoft Azure subscription to deploy the resources.
 
-- The template will deploy Standard F4s VMs to deploy the required active/passive setup
+### Licenses
+
+- The template will deploy Standard F4s VMs for this architecture. Other VM instances are supported as well with a minimum of 2 NICs. A list can be found [here](https://docs.fortinet.com/document/fortigate/6.2.0/azure-cookbook/562841/instance-type-support)
 - Licenses for Fortigate
-  - BYOL: Demo license can be made available via your Fortinet partner or on our website. These can be injected during deployment or added after deployment.
+  - BYOL: A demo license can be made available via your Fortinet partner or on our website. These can be injected during deployment or added after deployment.
   - PAYG or OnDemand: These licenses are automatically generated during the deployment of the FortiGate systems.
+
+### Fabric Connector
+The FortiGate-VM uses [Managed Identities](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/) for the SDN Fabric Connector. A SDN Fabric Connector is created automatically during deployment. After deployment, it is required apply the 'Reader' role to Azure Subscription you want the FortiGate-VM(s) to resolve Azure Resources from. More information can be found on the [Fortinet Documentation Libary](https://docs.fortinet.com/vm/azure/fortigate/6.2/azure-cookbook/6.2.0/236610/creating-a-fabric-connector-using-a-managed-identity).
 
 ## Support
 Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.
