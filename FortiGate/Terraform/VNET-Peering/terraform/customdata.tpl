@@ -7,10 +7,13 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="config"
 
+config system sdn-connector
+	edit AzureSDN
+		set type azure
+	end
+end
 config sys global
-    set admintimeout 120
     set hostname "${fgt_vm_name}"
-    set timezone 26
     set admin-sport 443
     set gui-theme mariner
 end
@@ -88,7 +91,7 @@ config system ha
         next
     end
     set override disable
-    set priority 1
+    set priority ${fgt_ha_priority}
     set unicast-hb enable
     set unicast-hb-peerip ${fgt_ha_peerip}
 end

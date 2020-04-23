@@ -1,0 +1,101 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "adminPassword": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "FortiGateNamePrefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "FortiGateImageSKU": {
+            "value": "fortinet_fg-vm"
+        },
+        "FortiGateImageVersion": {
+            "value": "latest"
+        },
+        "instanceType": {
+            "value": "Standard_F4s"
+        },
+        "publicIPNewOrExisting": {
+            "value": "new"
+        },
+        "publicIP2NewOrExisting": {
+            "value": "new"
+        },
+        "publicIP3NewOrExisting": {
+            "value": "new"
+        },
+        "publicIPName": {
+            "value": "FGTAPClusterPublicIP"
+        },
+        "publicIPResourceGroup": {
+            "value": ""
+        },
+        "publicIP2Name": {
+            "value": "FGTAMgmtPublicIP"
+        },
+        "publicIP2ResourceGroup": {
+            "value": ""
+        },
+        "publicIP3Name": {
+            "value": "FGTBMgmtPublicIP"
+        },
+        "publicIP3ResourceGroup": {
+            "value": ""
+        },
+        "publicIPAddressType": {
+            "value": "Static"
+        },
+        "vnetNewOrExisting": {
+            "value": "new"
+        },
+        "vnetName": {
+            "value": ""
+        },
+        "vnetResourceGroup": {
+            "value": ""
+        },
+        "vnetAddressPrefix": {
+            "value": "10.0.0.0/16"
+        },
+        "subnet1Name": {
+            "value": "EntrySubnet"
+        },
+        "subnet1Prefix": {
+            "value": "10.0.1.0/24"
+        },
+        "subnet2Name": {
+            "value": "TransitSubnet"
+        },
+        "subnet2Prefix": {
+            "value": "10.0.2.0/24"
+        },
+        "subnet3Name": {
+            "value": "HASyncSubnet"
+        },
+        "subnet3Prefix": {
+            "value": "10.0.3.0/28"
+        },
+        "subnet4Name": {
+            "value": "ManagementSubnet"
+        },
+        "subnet4Prefix": {
+            "value": "10.0.4.0/28"
+        },
+        "subnet5Name": {
+            "value": "ProtectedSubnet"
+        },
+        "subnet5Prefix": {
+            "value": "10.0.5.0/24"
+        },
+        "FortinetTags": {
+            "value": {
+                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E129258317D"
+            }
+        }
+    }
+}

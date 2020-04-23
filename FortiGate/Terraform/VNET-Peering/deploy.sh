@@ -2,8 +2,9 @@
 echo "
 ##############################################################################################################
 #
-# FortiGate Cloud Security Services Hub deployment
-# using Terraform and Azure VNET Peering
+# Cloud Security Services Hub
+# using VNET peering and FortiGate Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
+# Fortinet FortiGate Terraform deployment template
 #
 ##############################################################################################################
 
@@ -97,27 +98,21 @@ PASSWORD="$passwd"
 
 if [ -z "$DEPLOY_USERNAME" ]
 then
-    USERNAME="azureuser"
+    # Input username
+    echo -n "Enter username: "
+    stty_orig=`stty -g` # save original terminal setting.
+    read username         # read the prefix
+    stty $stty_orig     # restore terminal setting.
+    if [ -z "$username" ]
+    then
+        username="azureuser"
+    fi
 else
-    USERNAME="$DEPLOY_USERNAME"
+    username="$DEPLOY_USERNAME"
 fi
 echo ""
-echo "--> Using username '$USERNAME' ..."
+echo "--> Using username '$username' ..."
 echo ""
-
-# Generate SSH key
-echo ""
-echo "==> Generate and verify SSH key location and permissions"
-echo ""
-SSH_PRIVATE_KEY_FILE="output/ssh_key"
-if [ ! -f output/ssh_key ]; then
-    ssh-keygen -q -t rsa -b 2048 -f "$SSH_PRIVATE_KEY_FILE" -C "" -N ""
-fi
-SSH_PUBLIC_KEY_FILE="output/ssh_key.pub"
-chmod 700 `dirname $SSH_PUBLIC_KEY_FILE`
-chmod 600 $SSH_PUBLIC_KEY_FILE
-FGT_SSH_PUBLIC_KEY_FILE="../$SSH_PUBLIC_KEY_FILE"
-FGT_SSH_PRIVATE_KEY_FILE="../$SSH_PRIVATE_KEY_FILE"
 
 SUMMARY="summary.out"
 
@@ -158,9 +153,10 @@ echo "
 ##############################################################################################################
 #
 # Fortinet FortiGate Terraform deployment template
-# Cloud security services hub deployment - VNET peering
+# FortiGate Cloud Security Services Hub deployment using Azure VNET Peering
+# Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
 #
-# The FortiGate systems are reachable on their managment public IP on port HTTPS/8443 and SSH/22.
+# The FortiGate VMs are reachable on their managment public IP on port HTTPS/443 and SSH/22.
 #
 # BEWARE: The state files contain sensitive data like passwords and others. After the demo clean up your
 #         clouddrive directory.

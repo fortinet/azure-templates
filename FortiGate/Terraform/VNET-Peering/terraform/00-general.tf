@@ -1,7 +1,8 @@
 ###############################################################################################################
 #
-# FortiGate Cloud Security Services Hub deployment
-# using Terraform and Azure VNET Peering
+# Cloud Security Services Hub
+# using VNET peering and FortiGate Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
+# Fortinet FortiGate Terraform deployment template
 #
 ##############################################################################################################
 #
@@ -18,9 +19,11 @@ variable "LOCATION" {
   description = "Azure region"
 }
 
-variable "USERNAME" {}
+variable "USERNAME" {
+}
 
-variable "PASSWORD" {}
+variable "PASSWORD" {
+}
 
 ##############################################################################################################
 # FortiGate variables
@@ -28,12 +31,12 @@ variable "PASSWORD" {}
 
 variable "FGT_IMAGE_SKU" {
   description = "Azure Marketplace default image sku hourly (PAYG 'fortinet_fg-vm_payg_20190624') or byol (Bring your own license 'fortinet_fg-vm')"
-  default = "fortinet_fg-vm_payg_20190624"
+  default     = "fortinet_fg-vm_payg_20190624"
 }
 
 variable "FGT_VERSION" {
   description = "FortiGate version by default the 'latest' available version in the Azure Marketplace is selected"
-  default = "latest"
+  default     = "6.2.3"
 }
 
 variable "FGT_BYOL_LICENSE_FILE_A" {
@@ -49,11 +52,21 @@ variable "FGT_SSH_PUBLIC_KEY_FILE" {
 }
 
 ##############################################################################################################
+# Accelerated Networking
+# Only supported on specific VM series and CPU count: D/DSv2, D/DSv3, E/ESv3, F/FS, FSv2, and Ms/Mms
+# https://azure.microsoft.com/en-us/blog/maximize-your-vm-s-performance-with-accelerated-networking-now-generally-available-for-both-windows-and-linux/
+##############################################################################################################
+variable "FGT_ACCELERATED_NETWORKING" {
+  description = "Enables Accelerated Networking for the network interfaces of the FortiGate"
+  default     = "true"
+}
+
+##############################################################################################################
 # Microsoft Azure Storage Account for storage of Terraform state file
 ##############################################################################################################
 
 terraform {
-  required_version = ">= 0.11"
+  required_version = ">= 0.12"
 }
 
 ##############################################################################################################
@@ -61,6 +74,8 @@ terraform {
 ##############################################################################################################
 
 provider "azurerm" {
+  version = ">= 2.0.0"
+  features {}
 }
 
 ##############################################################################################################
@@ -69,70 +84,70 @@ provider "azurerm" {
 
 variable "vnet" {
   description = ""
-  default = "172.16.136.0/22"
+  default     = "172.16.136.0/22"
 }
 
 variable "subnet" {
-  type        = "map"
+  type        = map(string)
   description = ""
 
   default = {
-    "1" = "172.16.136.0/26"        # External
-    "2" = "172.16.136.64/26"       # Internal
-    "3" = "172.16.136.128/26"      # HASYNC
-    "4" = "172.16.136.192/26"      # MGMT
-    "5" = "172.16.137.0/24"        # Protected a
-    "6" = "172.16.138.0/24"        # Protected b
+    "1" = "172.16.136.0/26"   # External
+    "2" = "172.16.136.64/26"  # Internal
+    "3" = "172.16.136.128/26" # HASYNC
+    "4" = "172.16.136.192/26" # MGMT
+    "5" = "172.16.137.0/24"   # Protected a
+    "6" = "172.16.138.0/24"   # Protected b
   }
 }
 
 variable "subnetmask" {
-  type        = "map"
+  type        = map(string)
   description = ""
 
   default = {
-    "1" = "26"        # External
-    "2" = "26"        # Internal
-    "3" = "26"        # HASYNC
-    "4" = "26"        # MGMT
-    "5" = "24"        # Protected a
-    "6" = "24"        # Protected b
+    "1" = "26" # External
+    "2" = "26" # Internal
+    "3" = "26" # HASYNC
+    "4" = "26" # MGMT
+    "5" = "24" # Protected a
+    "6" = "24" # Protected b
   }
 }
 
 variable "fgt_ipaddress_a" {
-  type        = "map"
+  type        = map(string)
   description = ""
 
   default = {
-    "1" = "172.16.136.5"        # External
-    "2" = "172.16.136.69"       # Internal
-    "3" = "172.16.136.133"      # HASYNC
-    "4" = "172.16.136.197"      # MGMT
+    "1" = "172.16.136.5"   # External
+    "2" = "172.16.136.69"  # Internal
+    "3" = "172.16.136.133" # HASYNC
+    "4" = "172.16.136.197" # MGMT
   }
 }
 
 variable "fgt_ipaddress_b" {
-  type        = "map"
+  type        = map(string)
   description = ""
 
   default = {
-    "1" = "172.16.136.6"        # External
-    "2" = "172.16.136.70"       # Internal
-    "3" = "172.16.136.134"      # HASYNC
-    "4" = "172.16.136.198"      # MGMT
+    "1" = "172.16.136.6"   # External
+    "2" = "172.16.136.70"  # Internal
+    "3" = "172.16.136.134" # HASYNC
+    "4" = "172.16.136.198" # MGMT
   }
 }
 
 variable "gateway_ipaddress" {
-  type        = "map"
+  type        = map(string)
   description = ""
 
   default = {
-    "1" = "172.16.136.1"        # External
-    "2" = "172.16.136.65"       # Internal
-    "3" = "172.16.136.133"      # HASYNC
-    "4" = "172.16.136.193"      # MGMT
+    "1" = "172.16.136.1"   # External
+    "2" = "172.16.136.65"  # Internal
+    "3" = "172.16.136.133" # HASYNC
+    "4" = "172.16.136.193" # MGMT
   }
 }
 
@@ -152,15 +167,15 @@ variable "fgt_vmsize" {
 
 variable "vnetspoke1" {
   description = ""
-  default = "172.16.140.0/24"
+  default     = "172.16.140.0/24"
 }
 
 variable "subnetspoke1" {
-  type        = "map"
+  type        = map(string)
   description = ""
 
   default = {
-    "1" = "172.16.140.0/26"        # SUBNET 1 in SPOKE 1
+    "1" = "172.16.140.0/26" # SUBNET 1 in SPOKE 1
   }
 }
 
@@ -170,15 +185,15 @@ variable "subnetspoke1" {
 
 variable "vnetspoke2" {
   description = ""
-  default = "172.16.142.0/24"
+  default     = "172.16.142.0/24"
 }
 
 variable "subnetspoke2" {
-  type        = "map"
+  type        = map(string)
   description = ""
 
   default = {
-    "1" = "172.16.142.0/26"        # SUBNET 1 in SPOKE 2
+    "1" = "172.16.142.0/26" # SUBNET 1 in SPOKE 2
   }
 }
 
@@ -188,30 +203,7 @@ variable "subnetspoke2" {
 
 resource "azurerm_resource_group" "resourcegroup" {
   name     = "${var.PREFIX}-RG"
-  location = "${var.LOCATION}"
+  location = var.LOCATION
 }
 
-##############################################################################################################
-
-##############################################################################################################
-# Retrieve client public IP for Rest API ACL
-##############################################################################################################
-
-data "external" "client_public_ip" {
-  program = ["sh", "${path.module}/get-public-ip.sh"]
-}
-
-output "ip" {
-    value = "${data.external.client_public_ip.result["ip"]}"
-}
-##############################################################################################################
-
-##############################################################################################################
-# Generate random key for api usage
-##############################################################################################################
-
-resource "random_string" "fgt_api_key" {
-  length = 16
-  special = true
-}
 ##############################################################################################################
