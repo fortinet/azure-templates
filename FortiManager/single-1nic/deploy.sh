@@ -2,12 +2,13 @@
 echo "
 ##############################################################################################################
 #
-# Deployment of a Fortigate VNET peering setup
+# Deployment of a FortiManager VM
 #
 ##############################################################################################################
 
-
 "
+#echo "--> Auto accepting terms for Azure Marketplace deployments ..."
+#az vm image terms accept --publisher fortinet --offer fortinet-fortimanager --plan fortinet-fortimanager
 
 # Stop on error
 set +e
@@ -28,10 +29,10 @@ else
 fi
 echo ""
 echo "--> Deployment in '$location' location ..."
-echo ""
 
 if [ -z "$DEPLOY_PREFIX" ]
 then
+    echo ""
     # Input prefix
     echo -n "Enter prefix: "
     stty_orig=`stty -g` # save original terminal setting.
@@ -52,16 +53,16 @@ rg="$prefix-RG"
 if [ -z "$DEPLOY_USERNAME" ]
 then
     # Input username
-    echo -n "Enter username: "
+    echo -n "Enter username (default: azureuser): "
     stty_orig=`stty -g` # save original terminal setting.
     read USERNAME         # read the prefix
     stty $stty_orig     # restore terminal setting.
     if [ -z "$USERNAME" ]
     then
-        username="azureuser"
+        USERNAME="azureuser"
     fi
 else
-    username="$DEPLOY_USERNAME"
+    USERNAME="$DEPLOY_USERNAME"
 fi
 echo ""
 echo "--> Using username '$USERNAME' ..."
@@ -91,7 +92,7 @@ az group create --location "$location" --name "$rg"
 echo "--> Validation deployment in $rg resource group ..."
 az deployment group validate --resource-group "$rg" \
                            --template-file azuredeploy.json \
-                           --parameters adminUsername="$USERNAME" adminPassword=$PASSWORD fortiGateNamePrefix=$prefix
+                           --parameters adminUsername="$USERNAME" adminPassword="$PASSWORD" namePrefix="$prefix"
 result=$?
 if [ $result != 0 ];
 then
@@ -101,9 +102,9 @@ fi
 
 # Template deployment
 echo "--> Deployment of $rg resources ..."
-az deployment group create --resource-group "$rg" \
+az deployment group create --confirm-with-what-if --resource-group "$rg" \
                            --template-file azuredeploy.json \
-                           --parameters adminUsername="$USERNAME" adminPassword=$PASSWORD fortiGateNamePrefix=$prefix
+                           --parameters adminUsername="$USERNAME" adminPassword="$PASSWORD" namePrefix="$prefix"
 result=$?
 if [[ $result != 0 ]];
 then
@@ -113,12 +114,7 @@ else
 echo "
 ##############################################################################################################
 #
-# FortiGate Azure deployment using ARM Template
-# Cloud security services hub deployment - VNET peerin
-# Fortigate Active/Passive cluster with External + Internal Load Balancer
-#
-# The FortiGate systems is reachable via the management public IP addresses of the firewall
-# on HTTPS/443 and SSH/22.
+# FortiManager Azure deployment using ARM Template
 #
 ##############################################################################################################
 
@@ -131,7 +127,6 @@ FortiGate IP addesses
 query="[?virtualMachine.name.starts_with(@, '$prefix')].{virtualMachine:virtualMachine.name, publicIP:virtualMachine.network.publicIpAddresses[0].ipAddress,privateIP:virtualMachine.network.privateIpAddresses[0]}"
 az vm list-ip-addresses --query "$query" --output tsv
 echo "
-
 ##############################################################################################################
 "
 fi

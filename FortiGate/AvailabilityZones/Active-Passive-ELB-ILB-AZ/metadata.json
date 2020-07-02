@@ -1,0 +1,9 @@
+{
+    "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+    "type": "QuickStart",
+    "itemDisplayName": "Fortinet FortiGate Active Passive cluster using Azure API integration for failover",
+    "description": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure and routing",
+    "summary": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure and routing",
+    "githubUsername": "jvhoof",
+    "dateUpdated":  "2019-03-18" 
+}
