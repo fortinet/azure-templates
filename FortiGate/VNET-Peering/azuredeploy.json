@@ -380,9 +380,9 @@
     "subnet2Ref": "[concat(variables('vnetID'),'/subnets/', parameters('subnet2Name'))]",
     "subnet3Ref": "[concat(variables('vnetID'),'/subnets/', parameters('subnet3Name'))]",
     "subnet4Ref": "[concat(variables('vnetID'),'/subnets/', parameters('subnet4Name'))]",
-    "vnetNameSpoke1": "[if(equals(parameters('vnetNameSpoke1'),''),concat(parameters('FortiGateNamePrefix'),'-VNET-SPOKE1'),parameters('vnetName'))]",
+    "vnetNameSpoke1": "[if(equals(parameters('vnetNameSpoke1'),''),concat(parameters('FortiGateNamePrefix'),'-VNET-SPOKE1'),parameters('vnetNameSpoke1'))]",
     "vnetIDSpoke1": "[if(equals(parameters('vnetNewOrExistingSpoke1'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('vnetNameSpoke1')),resourceId(parameters('vnetResourceGroupSpoke1'),'Microsoft.Network/virtualNetworks', variables('vnetNameSpoke1')))]",
-    "vnetNameSpoke2": "[if(equals(parameters('vnetNameSpoke2'),''),concat(parameters('FortiGateNamePrefix'),'-VNET-SPOKE2'),parameters('vnetName'))]",
+    "vnetNameSpoke2": "[if(equals(parameters('vnetNameSpoke2'),''),concat(parameters('FortiGateNamePrefix'),'-VNET-SPOKE2'),parameters('vnetNameSpoke2'))]",
     "vnetIDSpoke2": "[if(equals(parameters('vnetNewOrExistingSpoke2'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('vnetNameSpoke2')),resourceId(parameters('vnetResourceGroupSpoke2'),'Microsoft.Network/virtualNetworks', variables('vnetNameSpoke2')))]",
 
     "fg1VmName": "[concat(parameters('FortiGateNamePrefix'),'-FGT-A')]",
