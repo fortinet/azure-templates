@@ -8,46 +8,25 @@
         "adminPassword": {
             "value": "## TO BE DEFINED ##"
         },
-        "fortigateNamePrefix": {
+        "FortiGateNamePrefix": {
             "value": "## TO BE DEFINED ##"
         },
-        "fortigateImageSKU": {
+        "FortiGateImageSKU": {
             "value": "fortinet_fg-vm"
         },
-        "fortigateImageVersion": {
-            "value": "6.2.4"
+        "FortiGateImageVersion": {
+            "value": "6.2.3"
         },
         "instanceType": {
-            "value": "Standard_F4s"
-        },
-        "acceleratedNetworking": {
-            "value": "true"
+            "value": "Standard_F2s"
         },
         "publicIPNewOrExisting": {
             "value": "new"
         },
-        "publicIP2NewOrExisting": {
-            "value": "new"
-        },
-        "publicIP3NewOrExisting": {
-            "value": "new"
-        },
         "publicIPName": {
-            "value": "FGTAPClusterPublicIP"
+            "value": "FGTLBPublicIP"
         },
         "publicIPResourceGroup": {
-            "value": ""
-        },
-        "publicIP2Name": {
-            "value": "FGTAMgmtPublicIP"
-        },
-        "publicIP2ResourceGroup": {
-            "value": ""
-        },
-        "publicIP3Name": {
-            "value": "FGTBMgmtPublicIP"
-        },
-        "publicIP3ResourceGroup": {
             "value": ""
         },
         "publicIPAddressType": {
@@ -66,7 +45,7 @@
             "value": "172.16.136.0/22"
         },
         "subnet1Name": {
-            "value": "ExternalSubnet"
+            "value": "ExteralSubnet"
         },
         "subnet1Prefix": {
             "value": "172.16.136.0/26"
@@ -78,21 +57,9 @@
             "value": "172.16.136.64/26"
         },
         "subnet3Name": {
-            "value": "HASyncSubnet"
-        },
-        "subnet3Prefix": {
-            "value": "172.16.136.128/26"
-        },
-        "subnet4Name": {
-            "value": "ManagementSubnet"
-        },
-        "subnet4Prefix": {
-            "value": "172.16.136.192/26"
-        },
-        "subnet5Name": {
             "value": "ProtectedSubnet"
         },
-        "subnet5Prefix": {
+        "subnet3Prefix": {
             "value": "172.16.137.0/24"
         },
         "location": {
@@ -100,7 +67,8 @@
         },
         "FortinetTags": {
             "value": {
-                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E129258317D"
+                "publisher": "Fortinet",
+                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831AA-AZ"
             }
         }
     }

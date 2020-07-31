@@ -10,8 +10,8 @@ steps:
   displayName: 'Running tests'
   inputs:
     azureSubscription: 'AzureSubscription'
-    ScriptPath: 'FortiGate/Active-Passive-ELB-ILB/test/invokePester.ps1'
-    ScriptArguments: '-templatename FortiGate/Active-Passive-ELB-ILB'
+    ScriptPath: 'FortiGate/AvailabilityZones/Active-Passive-ELB-ILB-AZ/test/invokePester.ps1'
+    ScriptArguments: '-templatename FortiGate/AvailabilityZones/Active-Passive-ELB-ILB-AZ'
     azurePowerShellVersion: LatestVersion
     pwsh: true
 
@@ -24,7 +24,7 @@ steps:
   condition: always()
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results **\TEST-*.xml'
+  displayName: 'Publish custom test results'
   inputs:
     testRunner: NUnit
     testResultsFiles: '**/TEST-*.xml'
@@ -36,6 +36,6 @@ trigger:
     - main
   paths:
     exclude:
-    - FortiGate/Active-Passive-ELB-ILB/*.md
+    - FortiGate/AvailabilityZones/Active-Passive-ELB-ILB-AZ/*.md
     include:
-    - FortiGate/Active-Passive-ELB-ILB/*
+    - FortiGate/AvailabilityZones/Active-Passive-ELB-ILB-AZ/*

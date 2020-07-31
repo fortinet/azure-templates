@@ -36,7 +36,7 @@ steps:
 trigger:
   branches:
     include:
-    - master
+    - main
   paths:
     exclude:
     - FortiGate/Terraform/VNET-Peering/*.md

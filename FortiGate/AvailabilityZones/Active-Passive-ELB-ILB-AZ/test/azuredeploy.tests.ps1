@@ -24,22 +24,24 @@ Function random-password ($length = 15) {
     return $password
 }
 
-$templateName = "VNET-Peering"
-$sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName"
-$scriptPath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName\test"
+# Basic Variables
+$templateName = "Active-Passive-ELB-ILB-AZ"
+$sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\AvailabilityZones\$templateName"
+$scriptPath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\AvailabilityZones\$templateName\test"
 $templateFileName = "azuredeploy.json"
 $templateFileLocation = "$sourcePath\$templateFileName"
+$templateMetadataFileName = "metadata.json"
+$templateMetadataFileLocation = "$sourcePath\$templateMetadataFileName"
 $templateParameterFileName = "azuredeploy.parameters.json"
 $templateParameterFileLocation = "$sourcePath\$templateParameterFileName"
 
-# Basic Variables
 $testsRandom = Get-Random 10001
 $testsPrefix = "FORTIQA"
 $testsResourceGroupName = "FORTIQA-$testsRandom-$templateName"
 $testsAdminUsername = "azureuser"
-$testsResourceGroupLocation = "westeurope"
+$testsResourceGroupLocation = "eastus2"
 
-Describe 'VNET Peering' {
+Describe 'FGT A/P LB' {
     Context 'Validation' {
         It 'Has a JSON template' {
             $templateFileLocation | Should Exist
@@ -47,6 +49,10 @@ Describe 'VNET Peering' {
 
         It 'Has a parameters file' {
             $templateParameterFileLocation | Should Exist
+        }
+
+        It 'Has a metadata file' {
+            $templateMetadataFileLocation | Should Exist
         }
 
         It 'Converts from JSON and has the expected properties' {
@@ -61,13 +67,7 @@ Describe 'VNET Peering' {
 
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
-                                 'Microsoft.Compute/availabilitySets',
                                  'Microsoft.Network/routeTables',
-                                 'Microsoft.Network/routeTables',
-                                 'Microsoft.Network/routeTables',
-                                 'Microsoft.Network/routeTables',
-                                 'Microsoft.Network/virtualNetworks',
-                                 'Microsoft.Network/virtualNetworks',
                                  'Microsoft.Network/virtualNetworks',
                                  'Microsoft.Network/loadBalancers',
                                  'Microsoft.Network/networkSecurityGroups',
@@ -111,10 +111,6 @@ Describe 'VNET Peering' {
                                           'publicIPResourceGroup',
                                           'subnet1Name',
                                           'subnet1Prefix',
-                                          'subnet1Spoke1Name',
-                                          'subnet1Spoke1Prefix',
-                                          'subnet1Spoke2Name',
-                                          'subnet1Spoke2Prefix',
                                           'subnet2Name',
                                           'subnet2Prefix',
                                           'subnet3Name',
@@ -123,21 +119,11 @@ Describe 'VNET Peering' {
                                           'subnet4Prefix',
                                           'subnet5Name',
                                           'subnet5Prefix',
-                                          'subnet6Name',
-                                          'subnet6Prefix',
                                           'vnetAddressPrefix',
-                                          'vnetAddressPrefixSpoke1',
-                                          'vnetAddressPrefixSpoke2',
                                           'vnetName',
-                                          'vnetNameSpoke1',
-                                          'vnetNameSpoke2',
                                           'vnetNewOrExisting',
-                                          'vnetNewOrExistingSpoke1',
-                                          'vnetNewOrExistingSpoke2',
-                                          'vnetResourceGroup',
-                                          'vnetResourceGroupSpoke1',
-                                          'vnetResourceGroupSpoke2'
-            $templateParameters = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Parameters | Get-Member -MemberType NoteProperty | % Name | Sort-Object
+                                          'vnetResourceGroup'
+            $templateParameters = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Parameters | Get-Member -MemberType NoteProperty | % Name | sort
             $templateParameters | Should Be $expectedTemplateParameters
         }
 
@@ -178,6 +164,7 @@ Describe 'VNET Peering' {
             it "FGT A: Port [$_] is listening" {
                 $result = Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName
                 $portListening = (Test-Connection -TargetName $result.IpAddress -TCPPort $_ -TimeoutSeconds 100)
+                Write-Host $portListening
                 $portListening | Should -Be $true
             }
         }
@@ -186,11 +173,12 @@ Describe 'VNET Peering' {
             it "FGT B: Port [$_] is listening" {
                 $result = Get-AzPublicIpAddress -Name $publicIP2Name -ResourceGroupName $testsResourceGroupName
                 $portListening = (Test-Connection -TargetName $result.IpAddress -TCPPort $_ -TimeoutSeconds 100)
+                Write-Host $portListening
                 $portListening | Should -Be $true
             }
         }
 
-        It "Cleanup" {
+        It "Cleanup of deployment" {
             Remove-AzResourceGroup -Name $testsResourceGroupName -Force
         }
     }
