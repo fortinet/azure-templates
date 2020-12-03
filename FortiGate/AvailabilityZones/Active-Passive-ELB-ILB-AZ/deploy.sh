@@ -2,9 +2,11 @@
 echo "
 ##############################################################################################################
 #
-# Deployment of a Fortigate Active/Passive cluster
+# FortiGate Azure deployment using ARM Template
+# Fortigate Active/Passive cluster with External + Internal Load Balancer using Availability Zones
 #
 ##############################################################################################################
+
 "
 
 # Stop on error
@@ -47,30 +49,38 @@ echo "--> Using prefix '$prefix' for all resources ..."
 echo ""
 rg="$prefix-RG"
 
+if [ -z "$DEPLOY_USERNAME" ]
+then
+    # Input username
+    echo -n "Enter username: "
+    stty_orig=`stty -g` # save original terminal setting.
+    read USERNAME         # read the prefix
+    stty $stty_orig     # restore terminal setting.
+    if [ -z "$USERNAME" ]
+    then
+        USERNAME="azureuser"
+    fi
+else
+    USERNAME="$DEPLOY_USERNAME"
+fi
+echo ""
+echo "--> Using username '$USERNAME' ..."
+echo ""
+
 if [ -z "$DEPLOY_PASSWORD" ]
 then
     # Input password
     echo -n "Enter password: "
     stty_orig=`stty -g` # save original terminal setting.
     stty -echo          # turn-off echoing.
-    read passwd         # read the password
+    read PASSWORD         # read the password
     stty $stty_orig     # restore terminal setting.
 else
-    passwd="$DEPLOY_PASSWORD"
+    PASSWORD="$DEPLOY_PASSWORD"
     echo ""
     echo "--> Using password found in env variable DEPLOY_PASSWORD ..."
     echo ""
 fi
-
-if [ -z "$DEPLOY_USERNAME" ]
-then
-    username="azureuser"
-else
-    username="$DEPLOY_USERNAME"
-fi
-echo ""
-echo "--> Using username '$username' ..."
-echo ""
 
 # Create resource group
 echo ""
@@ -81,7 +91,7 @@ az group create --location "$location" --name "$rg"
 echo "--> Validation deployment in $rg resource group ..."
 az deployment group validate --resource-group "$rg" \
                            --template-file azuredeploy.json \
-                           --parameters adminUsername="$username" adminPassword=$passwd FortiGateNamePrefix=$prefix
+                           --parameters adminUsername="$USERNAME" adminPassword=$PASSWORD fortigateNamePrefix=$prefix
 result=$?
 if [ $result != 0 ];
 then
@@ -93,7 +103,7 @@ fi
 echo "--> Deployment of $rg resources ..."
 az deployment group create --resource-group "$rg" \
                            --template-file azuredeploy.json \
-                           --parameters adminUsername="$username" adminPassword=$passwd FortiGateNamePrefix=$prefix
+                           --parameters adminUsername="$USERNAME" adminPassword=$PASSWORD fortigateNamePrefix=$prefix
 result=$?
 if [[ $result != 0 ]];
 then
@@ -102,11 +112,25 @@ then
 else
 echo "
 ##############################################################################################################
- IP Assignment:
+#
+# FortiGate Azure deployment using ARM Template
+# Fortigate Active/Passive cluster with External + Internal Load Balancer
+#
+# The FortiGate systems is reachable via the management public IP addresses of the firewall
+# on HTTPS/443 and SSH/22.
+#
+##############################################################################################################
+
+Deployment information:
+
+Username: $USERNAME
+
+FortiGate IP addesses
 "
 query="[?virtualMachine.name.starts_with(@, '$prefix')].{virtualMachine:virtualMachine.name, publicIP:virtualMachine.network.publicIpAddresses[0].ipAddress,privateIP:virtualMachine.network.privateIpAddresses[0]}"
 az vm list-ip-addresses --query "$query" --output tsv
 echo "
+
 ##############################################################################################################
 "
 fi

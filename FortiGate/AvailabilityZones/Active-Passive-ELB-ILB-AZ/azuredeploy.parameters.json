@@ -15,7 +15,7 @@
             "value": "fortinet_fg-vm"
         },
         "fortigateImageVersion": {
-            "value": "6.2.3"
+            "value": "6.4.3"
         },
         "instanceType": {
             "value": "Standard_F4s"

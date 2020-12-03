@@ -1,0 +1,42 @@
+resources:
+- repo: self
+
+pool:
+  vmImage: 'ubuntu-latest'
+  demands: azureps
+
+steps:
+- task: AzurePowerShell@5
+  displayName: 'Running tests'
+  inputs:
+    azureSubscription: 'AzureSubscription'
+    ScriptPath: 'FortiGate/AvailabilityZones/Active-Passive-SDN-AZ/test/invokePester.ps1'
+    ScriptArguments: '-templatename FortiGate/AvailabilityZones/Active-Passive-SDN-AZ'
+    azurePowerShellVersion: LatestVersion
+    pwsh: true
+
+- task: PublishTestResults@2
+  displayName: 'Publish ARM TTK results'
+  inputs:
+    testRunner: NUnit
+    testResultsFiles: '**/*-armttk.xml'
+    testRunTitle: 'ARM TTK verification'
+  condition: always()
+
+- task: PublishTestResults@2
+  displayName: 'Publish custom test results'
+  inputs:
+    testRunner: NUnit
+    testResultsFiles: '**/TEST-*.xml'
+    testRunTitle: 'ARM template and deployment test'
+
+trigger:
+  branches:
+    include:
+    - main
+    - dev
+  paths:
+    exclude:
+    - FortiGate/AvailabilityZones/Active-Passive-SDN-AZ/*.md
+    include:
+    - FortiGate/AvailabilityZones/Active-Passive-SDN-AZ/*

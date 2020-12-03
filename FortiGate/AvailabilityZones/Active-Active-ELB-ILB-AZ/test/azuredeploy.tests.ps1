@@ -82,10 +82,10 @@ Describe 'FGT A/A' {
         It 'Contains the expected parameters' {
             $expectedTemplateParameters = 'adminPassword',
                                           'adminUsername',
-                                          'FortiGateImageSKU',
-                                          'FortiGateImageVersion',
-                                          'FortiGateNamePrefix',
-                                          'FortinetTags',
+                                          'fortigateImageSKU',
+                                          'fortigateImageVersion',
+                                          'fortigateNamePrefix',
+                                          'fortinetTags',
                                           'instanceType',
                                           'location',
                                           'publicIPAddressType',
@@ -112,43 +112,43 @@ Describe 'FGT A/A' {
 
         # Set working directory & create resource group
         Set-Location $sourcePath
-        New-AzureRmResourceGroup -Name $testsResourceGroupName -Location "$testsResourceGroupLocation"
+        New-AzResourceGroup -Name $testsResourceGroupName -Location "$testsResourceGroupLocation"
 
         # Validate all ARM templates one by one
         $testsErrorFound = $false
 
         $params = @{ 'adminUsername'=$testsAdminUsername
                      'adminPassword'=$testsResourceGroupName
-                     'FortiGateNamePrefix'=$testsPrefix
+                     'fortigateNamePrefix'=$testsPrefix
                     }
         $publicIPName = "FGTLBPublicIP"
         $publicIP2Name = "FGTLBPublicIP2"
 
         It "Test deployment" {
-            (Test-AzureRmResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should not BeGreaterThan 0
+            (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should not BeGreaterThan 0
         }
         It "Deployment" {
-            $resultDeployment = New-AzureRmResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params
+            $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params
             Write-Host ($resultDeployment | Format-Table | Out-String)
             Write-Host ("Deployment state: " + $resultDeployment.ProvisioningState | Out-String)
             $resultDeployment.ProvisioningState | Should Be "Succeeded"
         }
         It "Search deployment" {
-            $result = Get-AzureRmVM | Where-Object { $_.Name -like "$testsPrefix*" }
+            $result = Get-AzVM | Where-Object { $_.Name -like "$testsPrefix*" }
             Write-Host ($result | Format-Table | Out-String)
             $result | Should Not Be $null
         }
 
         40030, 50030, 40031, 50031 | Foreach-Object {
             it "Port [$_] is listening" {
-                $result = Get-AzureRmPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName
+                $result = Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName
                 $portListening = (Test-NetConnection -Port $_ -ComputerName $result.IpAddress).TcpTestSucceeded
                 $portListening | Should -Be $true
             }
         }
 
         It "Cleanup" {
-            Remove-AzureRmResourceGroup -Name $testsResourceGroupName -Force
+            Remove-AzResourceGroup -Name $testsResourceGroupName -Force
         }
     }
 }

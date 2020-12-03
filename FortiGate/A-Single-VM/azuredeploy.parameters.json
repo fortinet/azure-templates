@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "adminPassword": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "fortigateNamePrefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "fortigateImageSKU": {
+            "value": "fortinet_fg-vm"
+        },
+        "fortigateImageVersion": {
+            "value": "6.2.4"
+        },
+        "instanceType": {
+            "value": "Standard_F2s"
+        },
+        "acceleratedNetworking": {
+            "value": "no"
+        },
+        "publicIPNewOrExisting": {
+            "value": "new"
+        },
+        "publicIPName": {
+            "value": "FGTPublicIP"
+        },
+        "publicIPResourceGroup": {
+            "value": ""
+        },
+        "publicIPAddressType": {
+            "value": "Static"
+        },
+        "vnetNewOrExisting": {
+            "value": "new"
+        },
+        "vnetName": {
+            "value": ""
+        },
+        "vnetResourceGroup": {
+            "value": ""
+        },
+        "vnetAddressPrefix": {
+            "value": "172.16.136.0/22"
+        },
+        "subnet1Name": {
+            "value": "ExternalSubnet"
+        },
+        "subnet1Prefix": {
+            "value": "172.16.136.0/26"
+        },
+        "subnet2Name": {
+            "value": "InternalSubnet"
+        },
+        "subnet2Prefix": {
+            "value": "172.16.136.64/26"
+        },
+        "subnet3Name": {
+            "value": "ProtectedASubnet"
+        },
+        "subnet3Prefix": {
+            "value": "172.16.137.0/24"
+        },
+        "subnet4Name": {
+            "value": "ProtectedBSubnet"
+        },
+        "subnet4Prefix": {
+            "value": "172.16.138.0/24"
+        },
+        "location": {
+            "value": "[parameters('location')]"
+        },
+        "fortinetTags": {
+            "value": {
+                "publisher": "Fortinet",
+                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831VM"
+            }
+        }
+    }
+}
