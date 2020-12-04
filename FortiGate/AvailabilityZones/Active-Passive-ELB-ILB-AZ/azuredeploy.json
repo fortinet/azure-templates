@@ -33,16 +33,17 @@
     },
     "fortigateImageVersion": {
       "type": "string",
-      "defaultValue": "6.2.4",
+      "defaultValue": "latest",
       "allowedValues": [
-        "6.0.9",
         "6.2.0",
-        "6.2.1",
         "6.2.2",
         "6.2.3",
         "6.2.4",
+        "6.2.5",
         "6.4.0",
         "6.4.1",
+        "6.4.2",
+        "6.4.3",
         "latest"
       ],
       "metadata": {
@@ -52,7 +53,7 @@
     "instanceType": {
       "type": "string",
       "defaultValue": "Standard_F4s",
-      "allowedValues": [ "Standard_F4s", "Standard_F8s", "Standard_F4", "Standard_F8", "Standard_F8s_v2", "Standard_DS3_v2", "Standard_DS4_v2", "Standard_D8s_v3" ],
+      "allowedValues": [ "Standard_F4s", "Standard_F8s", "Standard_F16s", "Standard_F4", "Standard_F8", "Standard_F16", "Standard_F8s_v2", "Standard_F16s_v2", "Standard_F32s_v2", "Standard_DS3_v2", "Standard_DS4_v2", "Standard_DS5_v2", "Standard_D8s_v3", "Standard_D16s_v3", "Standard_D32s_v3"],
       "metadata": {
         "description": "Virtual Machine size selection - must be F4 or other instance that supports 4 NICs"
       }
@@ -262,8 +263,10 @@
     },
     "fortinetTags": {
     "type": "object",
-    "defaultValue": {
-      "provider": "6EB3B02F-50E5-4A3E-8CB8-2E129258317D"
+      "defaultValue": {
+        "publisher": "Fortinet",
+        "template": "Active-Passive-ELB-ILB-AZ",
+        "provider": "6EB3B02F-50E5-4A3E-8CB8-2E129258APAZ"
       }
     }
   },
@@ -300,11 +303,11 @@
     "fgbNic4Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgbNic4Name'))]",
 
     "publicIPName": "[if(equals(parameters('publicIPName'),''),concat(parameters('fortigateNamePrefix'),'-FGT-PIP'),parameters('publicIPName'))]",
-    "publicIPID": "[if(equals(parameters('publicIPNewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPName')),resourceId(parameters('publicIPResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIPName')))]",
+    "publicIPId": "[if(equals(parameters('publicIPNewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPName')),resourceId(parameters('publicIPResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIPName')))]",
     "publicIP2Name": "[if(equals(parameters('publicIP2Name'),''),concat(parameters('fortigateNamePrefix'),'-FGT-A-MGMT-PIP'),parameters('publicIP2Name'))]",
-    "publicIP2ID": "[if(equals(parameters('publicIP2NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP2Name')),resourceId(parameters('publicIP2ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP2Name')))]",
+    "publicIP2Id": "[if(equals(parameters('publicIP2NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP2Name')),resourceId(parameters('publicIP2ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP2Name')))]",
     "publicIP3Name": "[if(equals(parameters('publicIP3Name'),''),concat(parameters('fortigateNamePrefix'),'-FGT-B-MGMT-PIP'),parameters('publicIP3Name'))]",
-    "publicIP3ID": "[if(equals(parameters('publicIP3NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP3Name')),resourceId(parameters('publicIP3ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP3Name')))]",
+    "publicIP3Id": "[if(equals(parameters('publicIP3NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP3Name')),resourceId(parameters('publicIP3ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP3Name')))]",
 
     "NSGName": "[concat(parameters('fortigateNamePrefix'),'-',uniqueString(resourceGroup().id),'-NSG')]",
 
@@ -415,7 +418,7 @@
       "name": "[variables('vnetName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/routeTables/', variables('routeTableName'))]"
+        "[variables('routeTableId')]"
       ],
       "properties": {
         "addressSpace": {
@@ -631,7 +634,7 @@
         "name": "Standard"
       },
       "dependsOn": [
-        "[variables('publicIPID')]"
+        "[variables('publicIPId')]"
       ],
       "properties": {
         "frontendIPConfigurations": [
@@ -639,7 +642,7 @@
             "name": "[variables('externalLBFEName')]",
             "properties": {
               "publicIPAddress": {
-                "id": "[variables('publicIPID')]"
+                "id": "[variables('publicIPId')]"
               }
             }
           }
@@ -933,7 +936,7 @@
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[variables('sn4IPfga')]",
               "publicIPAddress": {
-                "id": "[variables('publicIP2ID')]"
+                "id": "[variables('publicIP2Id')]"
               },
               "subnet": {
                 "id": "[variables('subnet4Id')]"
@@ -967,7 +970,7 @@
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[variables('sn4IPfgb')]",
               "publicIPAddress": {
-                "id": "[variables('publicIP3ID')]"
+                "id": "[variables('publicIP3Id')]"
               },
               "subnet": {
                 "id": "[variables('subnet4Id')]"
@@ -993,7 +996,7 @@
         "type": "SystemAssigned"
       },
       "zones": [
-        "2"
+        "1"
       ],
       "location": "[parameters('location')]",
       "plan": {

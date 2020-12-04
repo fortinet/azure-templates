@@ -2,11 +2,11 @@
 
 ## Cloud init and custom data
 
-Microsoft Azure offers, like many other cloud providers, the possibility to inject a configuration during deployment. This method is referred to as Cloud-Init. Both using templates (ARM or Terraform) or via CLI (Powershell, AzureCLI), it is possible to provide a file with this configuration. In the case of FortiGate there are 3 formatting options available.
+Microsoft Azure offers the possibility to inject a configuration during deployment. This method is referred to as Cloud-Init. Both using templates (ARM or Terraform) or via CLI (Powershell, AzureCLI), it is possible to provide a file with this configuration. In the case of FortiGate there are 3 options available.
 
 ### Inline configuration file
 
-In this ARM template, a FortiGate configuration is passed via the customdata field used by Azure for the Cloud-Init process. Using variables and parameters you can customize the configuration based on the input provided during deployment. The full configuration injected during deployment with the default parameters can be found at the end of this documentation.
+In this ARM template, a FortiGate configuration is passed via the customdata field used by Azure for the Cloud-Init process. Using variables and parameters you can customize the configuration based on the input provided during deployment. The full configuration injected during deployment with the default parameters can be found [here](config-provisioning.md).
 
 <pre>
 ...
@@ -21,7 +21,7 @@ In this ARM template, a FortiGate configuration is passed via the customdata fie
 
 ### Inline configuration and license file
 
-To provide the configuration and the license during deployment it is required to encode both using MIME. Similar to how email is encoded it is possible to pass in one variable both the FortiGate configuration in part 1 and the license file in part 2. The code snippet below requires the config and license file content in the respective bold text placeholders.
+To provide the configuration and the license during deployment it is required to encode both using MIME. Part 1 will contain the FortiGate configuration and part 2 can contain the FortiGate license file. The code snippet below requires the config and license file content in the respective bold text placeholders.
 
 <pre>
 Content-Type: multipart/mixed; boundary="===============0086047718136476635=="
@@ -57,6 +57,8 @@ In certain environments it is possible to pull a configuration and license from 
   "license-url": "<b>licenseURI</b>"
 }
 </pre>
+
+It is recommended to secure the access to the configuration and license file using an SAS token. More information can be found [here](https://docs.microsoft.com/en-us/azure/storage/common/storage-sas-overview).
 
 ## More information
 

@@ -2,7 +2,17 @@
 
 ## Introduction
 
-This design operates almost exactly the same as the more common variant using Availability Sets that can be found [here](../../Active-Active LoadBalancer HA-Ports/README.md). The main difference between both is that this uses Availability Zones vs the Availability Sets.
+This design operates almost exactly the same as the more common variant using Availability Sets that can be found [here](../../Active-Active-ELB-ILB/README.md). The main difference between both is that these templates use Availability Zones instead the Availability Sets.
+
+Microsoft defines an Availability Zone to have the following properties:
+
+- Unique physical location with an Azure Region
+- Each zone is made up of one or more datacenter(s)
+- Independent power, cooling and networking
+- Inter Availability Zone network latency < 2ms (radius of +/- 100km)
+- Fault-tolerant to protect from datacenter failure
+
+Based on information in the presentation ['Inside Azure datacenter architecture with Mark Russinovich' at Microsoft Ignite 2019](https://www.youtube.com/watch?v=X-0V6bYfTpA)
 
 ## Design
 
@@ -25,10 +35,10 @@ The FortiGate solution can be deployed using the Azure Portal or Azure CLI. Ther
 
 ### Azure Portal
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffortinet%2Fazure-templates%2Fmaster%2FFortiGate%2FAvailabilityZones%2FActive-Active-ELB-ILB-AZ%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffortinet%2Fazure-templates%2Fmain%2FFortiGate%2FAvailabilityZones%2FActive-Active-ELB-ILB-AZ%2Fazuredeploy.json" target="_blank">
   <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true"/>
 </a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffortinet%2Fazure-templates$2Fmaster%2FFortiGate%2FAvailabilityZones%2FActive-Active-ELB-ILB-AZ%2Fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffortinet%2Fazure-templates$2Fmain%2FFortiGate%2FAvailabilityZones%2FActive-Active-ELB-ILB-AZ%2Fazuredeploy.json" target="_blank">
   <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.svg?sanitize=true"/>
 </a>
 
@@ -39,7 +49,7 @@ To deploy via Azure Cloud Shell you can connect via the Azure Portal or directly
 - Login into the Azure Cloud Shell
 - Run the following command in the Azure Cloud:
 
-`cd ~/clouddrive/ && wget -qO- https://github.com/fortinet/azure-templates/archive/master.zip | jar x && cd ~/clouddrive/azure-templates/FortiGate/AvailabilityZones/Active-Active-ELB-ILB-AZ/ && ./deploy.sh`
+`cd ~/clouddrive/ && wget -qO- https://github.com/fortinet/azure-templates/archive/main.zip | jar x && cd ~/clouddrive/azure-templates-main/FortiGate/AvailabilityZones/Active-Active-ELB-ILB-AZ/ && ./deploy.sh`
 
 - The script will ask you a few questions to bootstrap a full deployment.
 

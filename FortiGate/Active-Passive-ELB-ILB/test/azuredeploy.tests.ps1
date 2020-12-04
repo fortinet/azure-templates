@@ -58,6 +58,7 @@ Describe 'FGT A/P LB' {
             $templateProperties = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue) | Get-Member -MemberType NoteProperty | % Name
             $templateProperties | Should Be $expectedProperties
         }
+
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
                                  'Microsoft.Compute/availabilitySets',

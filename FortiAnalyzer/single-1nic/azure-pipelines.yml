@@ -1,0 +1,41 @@
+resources:
+- repo: self
+
+pool:
+  vmImage: 'windows-latest'
+  demands: azureps
+
+steps:
+- task: AzurePowerShell@2
+  displayName: 'Custom tests:'
+  inputs:
+    azureSubscription: 'AzureSubscription'
+    ScriptPath: 'FortiAnalyzer/single-1nic/test/invokePester.ps1'
+    ScriptArguments: '-templatename FortiAnalyzer/single-1nic'
+    azurePowerShellVersion: LatestVersion
+
+- task: PublishTestResults@2
+  displayName: 'Publish ARM TTK results'
+  inputs:
+    testRunner: NUnit
+    testResultsFiles: '**\*-armttk.xml'
+    testRunTitle: 'ARM TTK verification'
+  condition: always()
+
+- task: PublishTestResults@2
+  displayName: 'Publish custom tests results'
+  inputs:
+    testRunner: NUnit
+    testResultsFiles: '**\TEST-*.xml'
+    testRunTitle: 'ARM Template verification'
+
+trigger:
+  branches:
+    include:
+    - main
+    - dev
+  paths:
+    exclude:
+    - FortiAnalyzer/single-1nic/*.md
+    include:
+    - FortiAnalyzer/single-1nic/*

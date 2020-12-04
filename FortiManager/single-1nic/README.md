@@ -55,7 +55,7 @@ The Azure ARM template deployment deploys different resources and is required to
 
 ## Support
 Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.
-For direct issues, please refer to the [Issues](https://github.com/jvhoof/fortinet-azure-solutions/issues) tab of this GitHub project.
+For direct issues, please refer to the [Issues](https://github.com/fortinet/azure-templates/issues) tab of this GitHub project.
 
 ## License
 [License](LICENSE) © Fortinet Technologies. All rights reserved.
