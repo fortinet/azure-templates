@@ -12,7 +12,7 @@
             "value": "## TO BE DEFINED ##"
         },
         "imageSku": {
-            "value": "fortinet-fortimanager"
+            "value": "fortinet-fortianalyzer"
         },
         "imageVersion": {
             "value": "latest"
