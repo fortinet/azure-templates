@@ -24,7 +24,7 @@
             "value": "new"
         },
         "publicIPName": {
-            "value": "FMGPublicIP"
+            "value": "FAZPublicIP"
         },
         "publicIPResourceGroup": {
             "value": ""

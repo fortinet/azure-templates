@@ -26,8 +26,8 @@ Function random-password ($length = 15) {
 
 # Basic Variables
 $templateName = "single-1nic"
-$sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiManager\$templateName"
-$scriptPath = "$env:BUILD_SOURCESDIRECTORY\FortiManager\$templateName\test"
+$sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiAnalyzer\$templateName"
+$scriptPath = "$env:BUILD_SOURCESDIRECTORY\FortiAnalyzer\$templateName\test"
 $templateFileName = "azuredeploy.json"
 $templateFileLocation = "$sourcePath\$templateFileName"
 $templateMetadataFileName = "metadata.json"
@@ -41,7 +41,7 @@ $testsResourceGroupName = "FORTIQA-$testsRandom-$templateName"
 $testsAdminUsername = "azureuser"
 $testsResourceGroupLocation = "westeurope"
 
-Describe 'FMG' {
+Describe 'FAZ' {
     Context 'Validation' {
         It 'Has a JSON template' {
             $templateFileLocation | Should Exist
@@ -107,7 +107,7 @@ Describe 'FMG' {
                      'adminPassword'=$testsResourceGroupName
                      'namePrefix'=$testsPrefix
                     }
-        $publicIPName = "FMGPublicIP"
+        $publicIPName = "FAZPublicIP"
 
         It "Test deployment" {
             (Test-AzureRmResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should not BeGreaterThan 0

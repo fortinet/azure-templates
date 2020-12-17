@@ -33,7 +33,7 @@
             "value": "172.16.136.0/22"
         },
         "subnet1Name": {
-            "value": "FortiManagerSubnet"
+            "value": "FortiAnalyzerSubnet"
         },
         "subnet1Prefix": {
             "value": "172.16.137.0/24"

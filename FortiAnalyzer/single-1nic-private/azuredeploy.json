@@ -45,7 +45,7 @@
         "latest"
       ],
       "metadata": {
-        "description": "FortiManager version"
+        "description": "FortiAnalyzer version"
       }
     },
     "instanceType": {
@@ -115,16 +115,16 @@
     },
     "subnet1Name": {
       "type": "string",
-      "defaultValue": "FortiManagerSubnet",
+      "defaultValue": "FortiAnalyzerSubnet",
       "metadata": {
-        "description": "FortiManager Subnet"
+        "description": "FortiAnalyzer Subnet"
       }
     },
     "subnet1Prefix": {
       "type": "string",
       "defaultValue": "172.16.137.0/24",
       "metadata": {
-        "description": "FortiManager Subnet Prefix"
+        "description": "FortiAnalyzer Subnet Prefix"
       }
     },
     "dataDiskSize": {
@@ -154,7 +154,7 @@
     "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('namePrefix'),'-VNET'),parameters('vnetName'))]",
     "subnet1Ref": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), parameters('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
 
-    "vmName": "[concat(parameters('namePrefix'),'-FMG-A')]",
+    "vmName": "[concat(parameters('namePrefix'),'-FAZ-A')]",
 
     "network_NIC_fg11_Name": "[concat(variables('vmName'),'-Nic1')]",
     "network_NIC_fg11_Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('network_NIC_fg11_Name'))]",
@@ -167,7 +167,7 @@
     "sn1IPArray2": "[string(int(variables('sn1IPArray')[2]))]",
     "sn1IPArray1": "[string(int(variables('sn1IPArray')[1]))]",
     "sn1IPArray0": "[string(int(variables('sn1IPArray')[0]))]",
-    "sn1IPfg1": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',add(int(variables('sn1IPArray2nd')[0]),5))]",
+    "sn1IPfg1": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',add(int(variables('sn1IPArray2nd')[0]),6))]",
 
     "customData": "[base64(concat('config system global\n set adom-status enable\n set clone-name-option keep\n set create-revision enable\n set device-view-mode tree\n set disable-module fortiview-noc\n set import-ignore-addr-cmt enable\n set partial-install enable\n set partial-install-force enable\n set partial-install-rev enable\n set perform-improve-by-ha enable\n set policy-hit-count enable\n set policy-object-icon enable\n set search-all-adoms enable\n end\n config system admin setting\n set gui-theme spring\n set idle_timeout 480\n set sdwan-monitor-history enable\n set show-add-multiple enable\n set show-checkbox-in-table enable\n set show-device-import-export enable\n set show-hostname enable\n set show_automatic_script enable\n set show_schedule_script enable\n set show_tcl_script enable\n end\n config system admin user\n edit devops\n set password', parameters('adminPassword'), '\n set profileid Super_User\n set adom all_adoms\n set policy-package all_policy_packages\n set rpc-permit read-write\n next\n end'))]"
   },

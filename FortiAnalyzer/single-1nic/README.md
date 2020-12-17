@@ -14,11 +14,13 @@ In Microsoft Azure, this single FortiAnalyzer-VM setup a basic setup to start ex
 
 This Azure ARM template will automatically deploy a full working environment containing the following components.
 
-- 1 FortiAnalyzer VM with a 1Tb data disk for log storage
+- 1 FortiAnalyzer VM with a 1Tb data disk for log storage.
 - 1 VNETs containing a subnet for the FortiAnalyzer
 - 1 Basic public IP
 
 ![FortiAnalyzer-VM azure design](images/faz-single-1nic.png)
+
+The VM will have the sixth IP in the network range as his static IP. You can adapt the 'sn1IPfg1' variable in the ARM template to change this.
 
 This Azure ARM template can also be extended or customized based on your requirements. Additional subnets besides the ones mentioned above are not automatically generated.
 
