@@ -91,7 +91,7 @@ variable "faz_ipaddress_a" {
   description = ""
 
   default = {
-    "1" = "172.16.137.5"  # FAZ network
+    "1" = "172.16.137.6"  # FAZ network
   }
 }
 
