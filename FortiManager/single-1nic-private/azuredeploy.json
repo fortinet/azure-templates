@@ -34,7 +34,6 @@
       "type": "string",
       "defaultValue": "latest",
       "allowedValues": [
-        "6.0.8",
         "6.2.0",
         "6.2.1",
         "6.2.2",
@@ -42,6 +41,7 @@
         "6.2.5",
         "6.4.0",
         "6.4.1",
+        "6.4.2",
         "latest"
       ],
       "metadata": {
@@ -152,12 +152,13 @@
   },
   "variables": {
     "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('namePrefix'),'-VNET'),parameters('vnetName'))]",
-    "subnet1Ref": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), parameters('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
+    "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), parameters('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
 
-    "vmName": "[concat(parameters('namePrefix'),'-FMG-A')]",
+    "fmgVmName": "[concat(parameters('namePrefix'),'-FMG-A')]",
+    "fmgCustomData": "[base64(concat('config system global\n set hostname ', variables('fmgVmName'), '\n set adom-status enable\n set clone-name-option keep\n set create-revision enable\n set device-view-mode tree\n set disable-module fortiview-noc\n set import-ignore-addr-cmt enable\n set partial-install enable\n set partial-install-force enable\n set partial-install-rev enable\n set perform-improve-by-ha enable\n set policy-hit-count enable\n set policy-object-icon enable\n set search-all-adoms enable\n end\n config system admin setting\n set sdwan-monitor-history enable\n set show-add-multiple enable\n set show-checkbox-in-table enable\n set show-device-import-export enable\n set show-hostname enable\n set show_automatic_script enable\n set show_schedule_script enable\n set show_tcl_script enable\n end'))]",
 
-    "network_NIC_fg11_Name": "[concat(variables('vmName'),'-Nic1')]",
-    "network_NIC_fg11_Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('network_NIC_fg11_Name'))]",
+    "fmgNic1Name": "[concat(variables('fmgVmName'),'-Nic1')]",
+    "fmgNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fmgNic1Name'))]",
 
     "NSGName": "[concat(parameters('namePrefix'),'-',uniqueString(resourceGroup().id),'-NSG')]",
 
@@ -167,9 +168,7 @@
     "sn1IPArray2": "[string(int(variables('sn1IPArray')[2]))]",
     "sn1IPArray1": "[string(int(variables('sn1IPArray')[1]))]",
     "sn1IPArray0": "[string(int(variables('sn1IPArray')[0]))]",
-    "sn1IPfg1": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',add(int(variables('sn1IPArray2nd')[0]),5))]",
-
-    "customData": "[base64(concat('config system global\n set adom-status enable\n set clone-name-option keep\n set create-revision enable\n set device-view-mode tree\n set disable-module fortiview-noc\n set import-ignore-addr-cmt enable\n set partial-install enable\n set partial-install-force enable\n set partial-install-rev enable\n set perform-improve-by-ha enable\n set policy-hit-count enable\n set policy-object-icon enable\n set search-all-adoms enable\n end\n config system admin setting\n set gui-theme spring\n set idle_timeout 480\n set sdwan-monitor-history enable\n set show-add-multiple enable\n set show-checkbox-in-table enable\n set show-device-import-export enable\n set show-hostname enable\n set show_automatic_script enable\n set show_schedule_script enable\n set show_tcl_script enable\n end\n config system admin user\n edit devops\n set password', parameters('adminPassword'), '\n set profileid Super_User\n set adom all_adoms\n set policy-package all_policy_packages\n set rpc-permit read-write\n next\n end'))]"
+    "sn1IPfg1": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',add(int(variables('sn1IPArray2nd')[0]),5))]"
   },
   "resources": [
     {
@@ -296,7 +295,7 @@
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('network_NIC_fg11_Name')]",
+      "name": "[variables('fmgNic1Name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[variables('vnetName')]",
@@ -310,7 +309,7 @@
               "privateIPAddress": "[variables('sn1IPfg1')]",
               "privateIPAllocationMethod": "Static",
               "subnet": {
-                "id": "[variables('subnet1Ref')]"
+                "id": "[variables('subnet1Id')]"
               }
             }
           }
@@ -322,7 +321,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName')]",
+      "name": "[variables('fmgVmName')]",
       "apiVersion": "2019-12-01",
       "tags": {
        "provider": "[toUpper(parameters('fortinetTags').provider)]"
@@ -337,17 +336,17 @@
         "product": "fortinet-fortimanager"
       },
       "dependsOn": [
-        "[variables('network_NIC_fg11_Name')]"
+        "[variables('fmgNic1Name')]"
       ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[parameters('instanceType')]"
         },
         "osProfile": {
-          "computerName": "[variables('vmName')]",
+          "computerName": "[variables('fmgVmName')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
-          "customData": "[variables('customData')]"
+          "customData": "[variables('fmgCustomData')]"
         },
         "storageProfile": {
           "imageReference": {
@@ -373,7 +372,7 @@
               "properties": {
                 "primary": true
               },
-              "id": "[variables('network_NIC_fg11_Id')]"
+              "id": "[variables('fmgNic1Id')]"
             }
           ]
         }
