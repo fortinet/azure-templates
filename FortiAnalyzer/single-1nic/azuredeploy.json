@@ -34,7 +34,6 @@
       "type": "string",
       "defaultValue": "latest",
       "allowedValues": [
-        "6.0.8",
         "6.2.0",
         "6.2.1",
         "6.2.2",
@@ -42,6 +41,7 @@
         "6.2.5",
         "6.4.0",
         "6.4.1",
+        "6.4.2",
         "latest"
       ],
       "metadata": {
@@ -191,7 +191,7 @@
     "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), parameters('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
 
     "fazVmName": "[concat(parameters('namePrefix'),'-FAZ-A')]",
-    "fazCustomData": "[base64(concat(''))]",
+    "fazCustomData": "[base64(concat('config system global\n set hostname ',  variables('fazVmName'), '\n end'))]",
 
     "fazNic1Name": "[concat(variables('fazVmName'),'-Nic1')]",
     "fazNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fazNic1Name'))]",
@@ -204,10 +204,13 @@
     "sn1IPArray": "[split(parameters('subnet1Prefix'),'.')]",
     "sn1IPArray2ndString": "[string(variables('sn1IPArray')[3])]",
     "sn1IPArray2nd": "[split(variables('sn1IPArray2ndString'),'/')]",
+    "sn1CIDRmask": "[string(int(variables('sn1IPArray2nd')[1]))]",
+    "sn1IPArray3": "[string(add(int(variables('sn1IPArray2nd')[0]),1))]",
     "sn1IPArray2": "[string(int(variables('sn1IPArray')[2]))]",
     "sn1IPArray1": "[string(int(variables('sn1IPArray')[1]))]",
     "sn1IPArray0": "[string(int(variables('sn1IPArray')[0]))]",
-    "sn1IPfg1": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',add(int(variables('sn1IPArray2nd')[0]),6))]"
+    "sn1GatewayIP": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',variables('sn1IPArray3'))]",
+    "sn1IPfaz": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',add(int(variables('sn1IPArray2nd')[0]),6))]"
 
   },
   "resources": [
@@ -363,7 +366,7 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAddress": "[variables('sn1IPfg1')]",
+              "privateIPAddress": "[variables('sn1IPfaz')]",
               "privateIPAllocationMethod": "Static",
               "publicIPAddress": {
                 "id": "[variables('publicIPId')]"
