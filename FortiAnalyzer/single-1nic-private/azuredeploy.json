@@ -22,7 +22,7 @@
     },
     "imageSku": {
       "type": "string",
-      "defaultValue": "fortinet-analyzer",
+      "defaultValue": "fortinet-fortianalyzer",
       "allowedValues": [
         "fortinet-fortianalyzer"
       ],
