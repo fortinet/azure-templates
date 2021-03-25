@@ -14,7 +14,7 @@ In Microsoft Azure, this single FortiAnalyzer-VM setup a basic setup to start ex
 
 This Azure ARM template will automatically deploy a full working environment containing the following components.
 
-- 1 FortiAnalyzer VM with a 1Tb data disk for log storage.
+- 1 FortiAnalyzer VM with a 1Tb data disk for log storage
 - 1 VNETs containing a subnet for the FortiAnalyzer
 - 1 Basic public IP
 

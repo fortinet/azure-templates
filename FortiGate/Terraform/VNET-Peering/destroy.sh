@@ -35,6 +35,6 @@ then
     echo "--> ERROR: Destroy failed ..."
     rg=`grep -m 1 -o '"resource_group_name": "[^"]*' terraform.tfstate | grep -o '[^"]*$'`
     echo "--> Trying to delete the resource group $rg..."
-    az group delete --resource_group "$rg"
+    az group delete --name "$rg"
     exit $rc;
 fi

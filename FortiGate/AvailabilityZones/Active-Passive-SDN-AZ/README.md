@@ -61,10 +61,5 @@ After deployment you will be shown the IP address of all deployed components. Yo
 
 More documentation can be found on [the Availability Set version of this template](../../Active-Passive-SDN/README.md).
 
-## Support
-Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.
-For direct issues, please refer to the [Issues](https://github.com/fortinet/azure-templates/issues) tab of this GitHub project.
-For other questions related to this project, contact [github@fortinet.com](mailto:github@fortinet.com).
-
 ## License
 [License](LICENSE) © Fortinet Technologies. All rights reserved.

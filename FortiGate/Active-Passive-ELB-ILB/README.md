@@ -1,12 +1,12 @@
 # Active/Passive High Available FortiGate pair with external and internal Azure Standard Load Balancer
 
-# Introduction
+## Introduction
 
 More and more enterprises are turning to Microsoft Azure to extend internal data centers and take advantage of the elasticity of the public cloud. While Azure secures the infrastructure, you are responsible for protecting everything you put in it. Fortinet Security Fabric provides Azure the broad protection, native integration and automated management enabling customers with consistent enforcement and visibility across their multi-cloud infrastructure.
 
 This ARM template deploys a High Availability pair of FortiGate Next-Generation Firewalls accompanied by the required infrastructure. Additionally, Fortinet Fabric Connectors deliver the ability to create dynamic security policies.
 
-# Design
+## Design
 
 In Microsoft Azure, you can deploy an active/passive pair of FortiGate VMs that communicate with each other and the Azure fabric. This FortiGate setup will receive the traffic to be inspected traffic using user defined routing (UDR) and public IPs. You can send all or specific traffic that needs inspection, going to/coming from on-prem networks or public internet by adapting the UDR routing.
 
@@ -63,7 +63,7 @@ To deploy via Azure Cloud Shell you can connect via the Azure Portal or directly
 
 After deployment you will be shown the IP address of all deployed components. Both FortiGate VMs are accessible using the public management IPs using HTTPS on port 443 and SSH on port 22.
 
-# Requirements and limitations
+## Requirements and limitations
 
 The ARM template deploys different resources and it is required to have the access rights and quota in your Microsoft Azure subscription to deploy the resources.
 
@@ -80,22 +80,23 @@ The ARM template deploys different resources and it is required to have the acce
   - PAYG
 `az vm image accept-terms --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm_payg_20190624`
 
-## Fabric Connector
-
-The FortiGate-VM uses [Managed Identities](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/) for the SDN Fabric Connector. A SDN Fabric Connector is created automatically during deployment. After deployment, it is required apply the 'Reader' role to the Azure Subscription you want to resolve Azure Resources from. More information can be found on the [Fortinet Documentation Libary](https://docs.fortinet.com/vm/azure/fortigate/6.4/azure-cookbook/6.4.0/236610/creating-a-fabric-connector-using-a-managed-identity).
-
-# FortiGate configuration
+## FortiGate configuration
 
 The FortiGate VMs need a specific configuration to match the deployed environment. This configuration can be injected during provisioning or afterwards via the different options including GUI, CLI, FortiManager or REST API.
 
 - [Default configuration using this template](doc/config-provisioning.md)
+- [High Availability probe](doc/config-ha.md)
 - [Cloud-init](doc/config-cloud-init.md)
 - [Inbound connections](doc/config-inbound-connections.md)
 - [Outbound connections](doc/config-outbound-connections.md)
   - [NAT considerations: 1-to-1 and 1-to-many](doc/config-outbound-nat-considerations.md)
 - [East-West connections](doc/config-east-west-connections.md)
 
-# Troubleshooting
+### Fabric Connector
+
+The FortiGate-VM uses [Managed Identities](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/) for the SDN Fabric Connector. A SDN Fabric Connector is created automatically during deployment. After deployment, it is required apply the 'Reader' role to the Azure Subscription you want to resolve Azure Resources from. More information can be found on the [Fortinet Documentation Libary](https://docs.fortinet.com/vm/azure/fortigate/6.4/azure-cookbook/6.4.0/236610/creating-a-fabric-connector-using-a-managed-identity).
+
+## Troubleshooting
 
 You can find a troubleshooting guide for this setup [here](doc/troubleshooting.md)
 

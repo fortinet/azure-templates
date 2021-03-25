@@ -73,7 +73,6 @@ The FortiGate Next-Generation Firewall can be deployed in Microsoft Azure in dif
 ## Support
 Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.
 For direct issues, please refer to the [Issues](https://github.com/fortinet/azure-templates/issues) tab of this GitHub project.
-For other questions related to this project, contact [github@fortinet.com](mailto:github@fortinet.com).
 
 ## License
 [License](LICENSE) © Fortinet Technologies. All rights reserved.

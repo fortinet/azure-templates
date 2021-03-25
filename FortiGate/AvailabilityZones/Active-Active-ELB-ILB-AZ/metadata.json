@@ -4,6 +4,6 @@
     "itemDisplayName": "Fortinet FortiGate Active Active cluster using the Azure Standard Load Balancer in Availability Zones",
     "description": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure, routing and load balancers",
     "summary": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure, routing and load balancers",
-    "githubUsername": "jvhoof",
-    "dateUpdated":  "2020-12-01"
+    "githubUsername": "40net-cloud",
+    "dateUpdated":  "2021-01-12"
 }

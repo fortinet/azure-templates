@@ -297,7 +297,7 @@
 								"type": "Microsoft.Common.TextBlock",
 								"visible": true,
 								"options": {
-									"text": "Enabled SR-IOS support allowing the FortiOS to bypass the hypervisor and talk directly with the PCIe card underneath.",
+									"text": "Enabled SR-IOV support allowing the FortiOS to bypass the hypervisor and talk directly with the PCIe card underneath.",
 									"link": {
 										"label": "Learn more",
 										"uri": "https://docs.fortinet.com/document/fortigate/6.4.0/azure-cookbook/651644/enabling-accelerated-networking-on-the-fortigate-vm"
