@@ -58,23 +58,24 @@ variable "FGT_ACCELERATED_NETWORKING" {
 
 variable "FGT_CONFIG_HA" {
   description = "Automatically configures the FGCP HA configuration using cloudinit"
-  default     = "false"
-}
-
-##############################################################################################################
-# Microsoft Azure Storage Account for storage of Terraform state file
-##############################################################################################################
-
-terraform {
-  required_version = ">= 0.12"
+  default     = "true"
 }
 
 ##############################################################################################################
 # Deployment in Microsoft Azure
 ##############################################################################################################
 
+terraform {
+  required_version = ">= 0.12"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">=2.0.0"
+    }
+  }
+}
+
 provider "azurerm" {
-  version = ">= 2.0.0"
   features {}
 }
 

@@ -31,7 +31,7 @@ variable "FGT_IMAGE_SKU" {
 
 variable "FGT_VERSION" {
   description = "FortiGate version by default the 'latest' available version in the Azure Marketplace is selected"
-  default     = "6.2.3"
+  default     = "latest"
 }
 
 variable "FGT_BYOL_LICENSE_FILE_A" {
@@ -57,19 +57,20 @@ variable "FGT_ACCELERATED_NETWORKING" {
 }
 
 ##############################################################################################################
-# Microsoft Azure Storage Account for storage of Terraform state file
+# Deployment in Microsoft Azure
 ##############################################################################################################
 
 terraform {
   required_version = ">= 0.12"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">=2.0.0"
+    }
+  }
 }
 
-##############################################################################################################
-# Deployment in Microsoft Azure
-##############################################################################################################
-
 provider "azurerm" {
-  version = ">= 2.0.0"
   features {}
 }
 
@@ -144,6 +145,15 @@ variable "lb_internal_ipaddress" {
 
 variable "fgt_vmsize" {
   default = "Standard_F4s"
+}
+
+variable "fortinet_tags" {
+    type = map(string)
+    default = {
+      publisher : "Fortinet",
+      template : "Active-Active-ELB-ILB",
+      provider : "7EB3B02F-50E5-4A3E-8CB8-2E129258AA"
+  }
 }
 
 ##############################################################################################################

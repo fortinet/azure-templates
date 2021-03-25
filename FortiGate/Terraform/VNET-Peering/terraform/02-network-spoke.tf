@@ -26,7 +26,7 @@ resource "azurerm_subnet" "subnet1spoke1" {
   name                 = "${var.PREFIX}-SPOKE1-SUBNET1"
   resource_group_name  = azurerm_resource_group.resourcegroup.name
   virtual_network_name = azurerm_virtual_network.vnetspoke1.name
-  address_prefix       = var.subnetspoke1["1"]
+  address_prefixes     = [var.subnetspoke1["1"]]
 }
 
 resource "azurerm_virtual_network_peering" "hub2spoke1" {
@@ -172,7 +172,7 @@ resource "azurerm_subnet" "subnet1spoke2" {
   name                 = "${var.PREFIX}-SPOKE2-SUBNET1"
   resource_group_name  = azurerm_resource_group.resourcegroup.name
   virtual_network_name = azurerm_virtual_network.vnetspoke2.name
-  address_prefix       = var.subnetspoke2["1"]
+  address_prefixes     = [var.subnetspoke2["1"]]
 }
 
 resource "azurerm_subnet_route_table_association" "spoke2rt" {
@@ -207,4 +207,3 @@ resource "azurerm_route_table" "spoke2route" {
     next_hop_in_ip_address = var.lb_internal_ipaddress
   }
 }
-

@@ -20,28 +20,28 @@ resource "azurerm_subnet" "subnet1" {
   name                 = "${var.PREFIX}-SUBNET-FGT-EXTERNAL"
   resource_group_name  = azurerm_resource_group.resourcegroup.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefix       = var.subnet["1"]
+  address_prefixes     = [var.subnet["1"]]
 }
 
 resource "azurerm_subnet" "subnet2" {
-  name                 = "${var.PREFIX}-A-SUBNET-FGT-INTERNAL"
+  name                 = "${var.PREFIX}-SUBNET-FGT-INTERNAL"
   resource_group_name  = azurerm_resource_group.resourcegroup.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefix       = var.subnet["2"]
+  address_prefixes     = [var.subnet["2"]]
 }
 
 resource "azurerm_subnet" "subnet3" {
   name                 = "${var.PREFIX}-SUBNET-PROTECTED-A"
   resource_group_name  = azurerm_resource_group.resourcegroup.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefix       = var.subnet["3"]
+  address_prefixes     = [var.subnet["3"]]
 }
 
 resource "azurerm_subnet" "subnet4" {
   name                 = "${var.PREFIX}-SUBNET-PROTECTED-B"
   resource_group_name  = azurerm_resource_group.resourcegroup.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefix       = var.subnet["4"]
+  address_prefixes     = [var.subnet["4"]]
 }
 
 resource "azurerm_subnet_route_table_association" "subnet5rt" {
@@ -109,4 +109,3 @@ resource "azurerm_route_table" "protectedbroute" {
     next_hop_in_ip_address = var.lb_internal_ipaddress
   }
 }
-
