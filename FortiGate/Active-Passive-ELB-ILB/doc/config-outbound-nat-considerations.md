@@ -91,7 +91,7 @@ end
   <img width="500px" src="../images/outbound-121-fgt-policy.png">
 </p>
 
-4. Configure the Azure Fabric Connector on the FortiGate CLI. Via an API call to Azure it will move the public IP from NIC1 of primary FortiGate to NIC1 of secondary FortiGate in case HA cluster failover. To authenticate to azure either managed identity or a service principal can be use. The authentication must be configured for the Azure Fabric Connector to work and information can be found on the [Fortinet documentation site](https://docs.fortinet.com/vm/azure/fortigate/6.4/azure-cookbook/6.4.0/502895/configuring-a-fabric-connector-in-azure).
+4. Configure the Azure Fabric Connector on the FortiGate CLI. Via an API call to Azure it will move the public IP from NIC1 of primary FortiGate to NIC1 of secondary FortiGate in case HA cluster failover. To authenticate to azure either managed identity or a service principal can be use. The authentication must be configured for the Azure Fabric Connector to work and information can be found on the [Fortinet documentation site](https://docs.fortinet.com/vm/azure/fortigate/7.0/azure-administration-guide/7.0.0/502895/configuring-a-fabric-connector-in-azure).
 
 - Primary FortiGate
 ```

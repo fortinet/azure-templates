@@ -155,7 +155,7 @@ echo "
 # FortiGate Cloud Security Services Hub deployment using Azure VNET Peering
 # Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
 #
-# The FortiGate VMs are reachable on their managment public IP on port HTTPS/443 and SSH/22.
+# The FortiGate VMs are reachable on their management public IP on port HTTPS/443 and SSH/22.
 #
 # BEWARE: The state files contain sensitive data like passwords and others. After the demo clean up your
 #         clouddrive directory.

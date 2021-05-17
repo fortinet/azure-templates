@@ -8,21 +8,10 @@
     This file has been created as an example of using Pester to evaluate ARM templates
 #>
 
-Function random-password ($length = 15) {
-    $punc = 46..46
-    $digits = 48..57
-    $letters = 65..90 + 97..122
-
-    # Thanks to
-    # https://blogs.technet.com/b/heyscriptingguy/archive/2012/01/07/use-pow
-    $password = get-random -count $length `
-        -input ($punc + $digits + $letters) |
-        % -begin { $aa = $null } `
-        -process {$aa += [char]$_} `
-        -end {$aa}
-
-    return $password
-}
+param (
+    [string]$sshkey,
+    [string]$sshkeypub
+)
 
 $templateName = "A-Single-VM"
 $sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName"
@@ -62,7 +51,6 @@ Describe 'FGT Single VM' {
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
                                  'Microsoft.Network/routeTables',
-                                 'Microsoft.Network/routeTables',
                                  'Microsoft.Network/virtualNetworks',
                                  'Microsoft.Network/networkSecurityGroups',
                                  'Microsoft.Network/publicIPAddresses',
@@ -73,13 +61,21 @@ Describe 'FGT Single VM' {
             $templateResources | Should Be $expectedResources
         }
 
+        ('acceleratedNetworking', 'adminPassword', 'adminUsername', 'fortiGateAditionalCustomData', 'fortiGateImageSKU', 'fortiGateImageVersion', 'fortiGateLicenseBYOL', 'fortiGateNamePrefix', 'fortiManager', 'fortiManagerIP')
+        ('acceleratedNetworking', 'adminPassword', 'adminUsername', 'fortiGateAditionalCustomData', 'fortiGateImageSKU', 'fortiGateImageVersion', 'fortiGateLicenseBYOL', 'fortiGateNamePrefix', 'fortiManager', 'fortiManagerIP')
+
         It 'Contains the expected parameters' {
             $expectedTemplateParameters = 'acceleratedNetworking',
                                           'adminPassword',
                                           'adminUsername',
+                                          'fortiGateAditionalCustomData',
                                           'fortiGateImageSKU',
                                           'fortiGateImageVersion',
+                                          'fortiGateLicenseBYOL',
                                           'fortiGateNamePrefix',
+                                          'fortiManager',
+                                          'fortiManagerIP',
+                                          'fortiManagerSerial',
                                           'fortinetTags',
                                           'instanceType',
                                           'location',
@@ -89,12 +85,12 @@ Describe 'FGT Single VM' {
                                           'publicIPResourceGroup',
                                           'subnet1Name',
                                           'subnet1Prefix',
+                                          'subnet1StartAddress',
                                           'subnet2Name',
                                           'subnet2Prefix',
+                                          'subnet2StartAddress',
                                           'subnet3Name',
                                           'subnet3Prefix',
-                                          'subnet4Name',
-                                          'subnet4Prefix',
                                           'vnetAddressPrefix',
                                           'vnetName',
                                           'vnetNewOrExisting',
@@ -112,18 +108,23 @@ Describe 'FGT Single VM' {
         New-AzResourceGroup -Name $testsResourceGroupName -Location "$testsResourceGroupLocation"
 
         # Validate all ARM templates one by one
-        $testsErrorFound = $false
+        $config = "config system global `n set gui-theme mariner `n end `n config system admin `n edit devops `n set accprofile super_admin `n set ssh-public-key1 `""
+        $config += Get-Content $sshkeypub
+        $config += "`" `n set password $testsResourceGroupName `n next `n end"
 
         $params = @{ 'adminUsername'=$testsAdminUsername
                      'adminPassword'=$testsResourceGroupName
-                     'fortigateNamePrefix'=$testsPrefix
+                     'fortiGateNamePrefix'=$testsPrefix
+                     'fortiGateAditionalCustomData'=$config
                     }
-        $publicIPName = "FGTPublicIP"
+        $publicIPName = "$testsPrefix-FGT-PIP"
 
         It "Test Deployment" {
             (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should not BeGreaterThan 0
         }
         It "Deployment" {
+            Write-Host ( "Deployment name: $testsResourceGroupName" )
+
             $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params
             Write-Host ($resultDeployment | Format-Table | Out-String)
             Write-Host ("Deployment state: " + $resultDeployment.ProvisioningState | Out-String)
@@ -140,7 +141,30 @@ Describe 'FGT Single VM' {
                 $result = Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName
                 $portListening = (Test-Connection -TargetName $result.IpAddress -TCPPort $_ -TimeoutSeconds 100)
                 $portListening | Should -Be $true
+
+                $fgt = $result.IpAddress
+                Write-Host ("Host: " + $fgt)
+
+                Start-Sleep -Seconds 120
+
+                chmod 400 $sshkey
+                $verify_commands = @'
+                set output standard
+                end
+                show system interface
+                show router static
+                exit
+'@
+
+                $result = $verify_commands | ssh -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
+                Write-Output ("Output: " + $result)
+                "Output 2: " + $result
+                Write-Host ("Output 3: " + $result)
+
+#                $output = sshpass -p "$testsResourceGroupName" ssh -t -o StrictHostKeyChecking=no $testsAdminUsername@$fgt 'show system interface'
+#                "Output: " + $output
             }
+
         }
 
         It "Cleanup of deployment" {

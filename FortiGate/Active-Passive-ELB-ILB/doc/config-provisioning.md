@@ -80,6 +80,8 @@ config system ha
 end
 </pre>
 
+## FortiGate B
+
 <pre>
 config system sdn-connector
   edit AzureSDN

@@ -90,32 +90,48 @@ Describe 'FGT A/P SDN' {
         }
 
         It 'Contains the expected parameters' {
-            $expectedTemplateParameters = 'adminPassword',
+            $expectedTemplateParameters = 'acceleratedNetworking',
+                                          'adminPassword',
                                           'adminUsername',
-                                          'fortigateImageSKU',
-                                          'fortigateImageVersion',
-                                          'fortigateNamePrefix',
+                                          'fortiGateAditionalCustomData',
+                                          'fortiGateImageSKU',
+                                          'fortiGateImageVersion',
+                                          'fortiGateLicenseBYOLA',
+                                          'fortiGateLicenseBYOLB',
+                                          'fortiGateNamePrefix',
+                                          'fortiManager',
+                                          'fortiManagerIP',
+                                          'fortiManagerSerial',
                                           'fortinetTags',
                                           'instanceType',
                                           'location',
+                                          'publicIP2AddressSKU',
+                                          'publicIP2AddressType',
                                           'publicIP2Name',
                                           'publicIP2NewOrExisting',
                                           'publicIP2ResourceGroup',
+                                          'publicIP3AddressSKU',
+                                          'publicIP3AddressType',
                                           'publicIP3Name',
                                           'publicIP3NewOrExisting',
                                           'publicIP3ResourceGroup',
+                                          'publicIPAddressSKU',
                                           'publicIPAddressType',
                                           'publicIPName',
                                           'publicIPNewOrExisting',
                                           'publicIPResourceGroup',
                                           'subnet1Name',
                                           'subnet1Prefix',
+                                          'subnet1StartAddress',
                                           'subnet2Name',
                                           'subnet2Prefix',
+                                          'subnet2StartAddress',
                                           'subnet3Name',
                                           'subnet3Prefix',
+                                          'subnet3StartAddress',
                                           'subnet4Name',
                                           'subnet4Prefix',
+                                          'subnet4StartAddress',
                                           'subnet5Name',
                                           'subnet5Prefix',
                                           'vnetAddressPrefix',
@@ -141,8 +157,8 @@ Describe 'FGT A/P SDN' {
                      'adminPassword'=$testsResourceGroupName
                      'fortigateNamePrefix'=$testsPrefix
                     }
-        $publicIPName = "FGTAMgmtPublicIP"
-        $publicIP2Name = "FGTBMgmtPublicIP"
+        $publicIPName = "$testsPrefix-FGT-A-MGMT-PIP"
+        $publicIP2Name = "$testsPrefix-FGT-B-MGMT-PIP"
 
         It "Test Deployment" {
             (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should not BeGreaterThan 0

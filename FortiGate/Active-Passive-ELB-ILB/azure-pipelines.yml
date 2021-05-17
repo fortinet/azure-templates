@@ -34,6 +34,7 @@ trigger:
   branches:
     include:
     - main
+    - dev
   paths:
     exclude:
     - FortiGate/Active-Passive-ELB-ILB/*.md

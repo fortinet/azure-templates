@@ -58,10 +58,10 @@ then
     stty $stty_orig     # restore terminal setting.
     if [ -z "$USERNAME" ]
     then
-        username="azureuser"
+        USERNAME="azureuser"
     fi
 else
-    username="$DEPLOY_USERNAME"
+    USERNAME="$DEPLOY_USERNAME"
 fi
 echo ""
 echo "--> Using username '$USERNAME' ..."

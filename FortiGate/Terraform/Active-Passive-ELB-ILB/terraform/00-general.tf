@@ -31,7 +31,7 @@ variable "FGT_IMAGE_SKU" {
 
 variable "FGT_VERSION" {
   description = "FortiGate version by default the 'latest' available version in the Azure Marketplace is selected"
-  default     = "6.2.3"
+  default     = "latest"
 }
 
 variable "FGT_BYOL_LICENSE_FILE_A" {
@@ -160,6 +160,15 @@ variable "lb_internal_ipaddress" {
 
 variable "fgt_vmsize" {
   default = "Standard_F4s"
+}
+
+variable "fortinet_tags" {
+  type = map(string)
+  default = {
+    publisher : "Fortinet",
+    template : "Active-Passive-ELB-ILB",
+    provider : "7EB3B02F-50E5-4A3E-8CB8-2E12925831AP"
+  }
 }
 
 ##############################################################################################################

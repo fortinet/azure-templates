@@ -82,17 +82,17 @@ then
     # Input username
     echo -n "Enter username (default: azureuser): "
     stty_orig=`stty -g` # save original terminal setting.
-    read username         # read the prefix
+    read USERNAME         # read the prefix
     stty $stty_orig     # restore terminal setting.
     if [ -z "$username" ]
     then
-        username="azureuser"
+        USERNAME="azureuser"
     fi
 else
-    username="$DEPLOY_USERNAME"
+    USERNAME="$DEPLOY_USERNAME"
 fi
 echo ""
-echo "--> Using username '$username' ..."
+echo "--> Using username '$USERNAME' ..."
 echo ""
 
 if [ -z "$DEPLOY_PASSWORD" ]
@@ -101,11 +101,11 @@ then
     echo -n "Enter password: "
     stty_orig=`stty -g` # save original terminal setting.
     stty -echo          # turn-off echoing.
-    read password         # read the password
+    read PASSWORD         # read the password
     stty $stty_orig     # restore terminal setting.
     echo ""
 else
-    password="$DEPLOY_PASSWORD"
+    PASSWORD="$DEPLOY_PASSWORD"
     echo ""
     echo "--> Using password found in env variable DEPLOY_PASSWORD ..."
     echo ""
@@ -128,8 +128,8 @@ echo ""
 echo "==> Terraform plan"
 echo ""
 terraform plan --out "$PLAN" \
-                -var "USERNAME=$username" \
-                -var "PASSWORD=$password"
+                -var "USERNAME=$USERNAME" \
+                -var "PASSWORD=$PASSWORD"
 
 echo ""
 echo "==> Terraform apply"
@@ -153,7 +153,7 @@ echo "
 # FortiGate Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
 # Terraform deployment template for Microsoft Azure
 #
-# The FortiGate VMs are reachable on their managment public IP on port HTTPS/443 and SSH/22.
+# The FortiGate VMs are reachable on their management public IP on port HTTPS/443 and SSH/22.
 #
 # BEWARE: The state files contain sensitive data like passwords and others. After the demo clean up your
 #         clouddrive directory.
@@ -162,7 +162,7 @@ echo "
 
 Deployment information:
 
-Username: $USERNAME
+Username:
 "
 cat "output/$SUMMARY"
 echo "

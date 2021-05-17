@@ -8,17 +8,23 @@
         "adminPassword": {
             "value": "## TO BE DEFINED ##"
         },
-        "FortiGateNamePrefix": {
+        "fortiGateNamePrefix": {
             "value": "## TO BE DEFINED ##"
         },
-        "FortiGateImageSKU": {
+        "fortiGateImageSKU": {
             "value": "fortinet_fg-vm"
         },
-        "FortiGateImageVersion": {
+        "fortiGateImageVersion": {
             "value": "latest"
+        },
+        "fortiGateAditionalCustomData": {
+            "value": ""
         },
         "instanceType": {
             "value": "Standard_F2s"
+        },
+        "acceleratedNetworking": {
+            "value": "true"
         },
         "publicIPNewOrExisting": {
             "value": "new"
@@ -28,9 +34,6 @@
         },
         "publicIPResourceGroup": {
             "value": ""
-        },
-        "publicIPAddressType": {
-            "value": "Static"
         },
         "vnetNewOrExisting": {
             "value": "new"
@@ -50,11 +53,17 @@
         "subnet1Prefix": {
             "value": "172.16.136.0/26"
         },
+        "subnet1StartAddress": {
+            "value": "172.16.136.4"
+        },
         "subnet2Name": {
             "value": "InternalSubnet"
         },
         "subnet2Prefix": {
             "value": "172.16.136.64/26"
+        },
+        "subnet2StartAddress": {
+            "value": "172.16.136.68"
         },
         "subnet3Name": {
             "value": "ProtectedSubnet"
@@ -62,12 +71,28 @@
         "subnet3Prefix": {
             "value": "172.16.137.0/24"
         },
+        "fortiManager": {
+            "value": "no"
+        },
+        "fortiManagerIP": {
+            "value": ""
+        },
+        "fortiManagerSerial": {
+            "value": ""
+        },
+        "fortiGateLicenseBYOLA": {
+            "value": ""
+        },
+        "fortiGateLicenseBYOLB": {
+            "value": ""
+        },
         "location": {
             "value": "[resourceGroup().location]"
         },
-        "FortinetTags": {
+        "fortinetTags": {
             "value": {
                 "publisher": "Fortinet",
+                "template": "Active-Active-ELB-ILB",
                 "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831AA"
             }
         }

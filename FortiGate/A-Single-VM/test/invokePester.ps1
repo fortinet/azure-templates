@@ -1,5 +1,7 @@
 param (
-    [string]$templatename
+    [string]$templatename,
+    [string]$sshkey,
+    [string]$sshkeypub
 )
 
 $SourceDir = Join-Path $env:BUILD_SOURCESDIRECTORY "$templatename"
@@ -61,4 +63,8 @@ $outputFile = Join-Path $SourceDir "TEST-custom.xml";
 
 "Running custom tests"
 
-Invoke-Pester -Path $SourceDir -PassThru -OutputFile $outputFile -OutputFormat NUnitXml -EnableExit
+$a = @()
+$params = @{sshkey = $sshkey; sshkeypub = $sshkeypub}
+$a += @{Path =  $SourceDir; Parameters = $params}
+
+Invoke-Pester -Script $a -PassThru -OutputFile $outputFile -OutputFormat NUnitXml -EnableExit
