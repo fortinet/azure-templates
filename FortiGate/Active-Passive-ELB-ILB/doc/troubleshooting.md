@@ -114,4 +114,4 @@ Azure CLI NIC information
 # az network nic show -g <Resource group name> -n <NIC name>
 ```
 
-- Fabric connector: This connector enables integration with the Azure platform. More troubleshooting can be found [here](https://docs.fortinet.com/vm/azure/fortigate/6.4/azure-cookbook/6.4.0/985498/troubleshooting-azure-fabric-connector)
+- Fabric connector: This connector enables integration with the Azure platform. More troubleshooting can be found [here](https://docs.fortinet.com/vm/azure/fortigate/7.0/azure-administration-guide/7.0.0/985498/troubleshooting-azure-fabric-connector)

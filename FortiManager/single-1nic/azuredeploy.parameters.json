@@ -20,7 +20,7 @@
         "instanceType": {
             "value": "Standard_D2s_v3"
         },
-        "publicIPNewOrExistingOrNone": {
+        "publicIPNewOrExisting": {
             "value": "new"
         },
         "publicIPName": {

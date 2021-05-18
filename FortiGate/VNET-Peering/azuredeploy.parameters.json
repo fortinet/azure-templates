@@ -8,14 +8,14 @@
         "adminPassword": {
             "value": "## TO BE DEFINED ##"
         },
-        "FortiGateNamePrefix": {
+        "fortiGateNamePrefix": {
             "value": "## TO BE DEFINED ##"
         },
-        "FortiGateImageSKU": {
+        "fortiGateImageSKU": {
             "value": "fortinet_fg-vm"
         },
-        "FortiGateImageVersion": {
-            "value": "6.2.3"
+        "fortiGateImageVersion": {
+            "value": "latest"
         },
         "instanceType": {
             "value": "Standard_F4s"
@@ -49,9 +49,6 @@
         },
         "publicIP3ResourceGroup": {
             "value": ""
-        },
-        "publicIPAddressType": {
-            "value": "Static"
         },
         "vnetNewOrExisting": {
             "value": "new"
@@ -140,7 +137,7 @@
         "location": {
             "value": "[resourceGroup().location]"
         },
-        "FortinetTags": {
+        "fortinetTags": {
             "value": {
                 "publisher": "Fortinet",
                 "template": "VNET Peering",

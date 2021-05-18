@@ -33,6 +33,7 @@ trigger:
   branches:
     include:
     - main
+    - dev
   paths:
     exclude:
     - FortiManager/single-1nic/*.md

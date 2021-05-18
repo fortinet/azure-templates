@@ -144,7 +144,7 @@ resource "azurerm_lb_rule" "lb_haports_rule" {
 }
 
 resource "azurerm_network_interface" "fgtaifcext" {
-  name                          = "${var.PREFIX}-VM-FGT-A-IFC-EXT"
+  name                          = "${var.PREFIX}-A-VM-FGT-IFC-EXT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
   enable_ip_forwarding          = true
@@ -214,7 +214,7 @@ resource "azurerm_network_interface_security_group_association" "fgtaifchasyncns
 }
 
 resource "azurerm_public_ip" "fgtamgmtpip" {
-  name                = "${var.PREFIX}-FGT-A-MGMT-PIP"
+  name                = "${var.PREFIX}-A-FGT-MGMT-PIP"
   location            = var.LOCATION
   resource_group_name = azurerm_resource_group.resourcegroup.name
   allocation_method   = "Static"
@@ -277,11 +277,11 @@ resource "azurerm_virtual_machine" "fgtavm" {
   }
 
   storage_data_disk {
-    name = "${var.PREFIX}-A-FGT-VM-DATADISK"
+    name              = "${var.PREFIX}-A-FGT-VM-DATADISK"
     managed_disk_type = "Premium_LRS"
-    create_option = "Empty"
-    lun = 0
-    disk_size_gb = "10"
+    create_option     = "Empty"
+    lun               = 0
+    disk_size_gb      = "10"
   }
 
 
@@ -296,10 +296,7 @@ resource "azurerm_virtual_machine" "fgtavm" {
     disable_password_authentication = false
   }
 
-  tags = {
-    environment = "Quickstart-VNET-Peering"
-    vendor      = "Fortinet"
-  }
+  tags = var.fortinet_tags
 }
 
 data "template_file" "fgt_a_custom_data" {
@@ -331,7 +328,7 @@ data "template_file" "fgt_a_custom_data" {
 }
 
 resource "azurerm_network_interface" "fgtbifcext" {
-  name                          = "${var.PREFIX}-VM-FGT-B-IFC-EXT"
+  name                          = "${var.PREFIX}-B-VM-FGT-IFC-EXT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
   enable_ip_forwarding          = true
@@ -403,7 +400,7 @@ resource "azurerm_network_interface_security_group_association" "fgtbifchasyncns
 }
 
 resource "azurerm_public_ip" "fgtbmgmtpip" {
-  name                = "${var.PREFIX}-FGT-B-MGMT-PIP"
+  name                = "${var.PREFIX}-B-FGT-MGMT-PIP"
   location            = var.LOCATION
   resource_group_name = azurerm_resource_group.resourcegroup.name
   allocation_method   = "Static"
@@ -466,11 +463,11 @@ resource "azurerm_virtual_machine" "fgtbvm" {
   }
 
   storage_data_disk {
-    name = "${var.PREFIX}-B-FGT-VM-DATADISK"
+    name              = "${var.PREFIX}-B-FGT-VM-DATADISK"
     managed_disk_type = "Premium_LRS"
-    create_option = "Empty"
-    lun = 0
-    disk_size_gb = "10"
+    create_option     = "Empty"
+    lun               = 0
+    disk_size_gb      = "10"
   }
 
   os_profile {
@@ -521,11 +518,13 @@ data "template_file" "fgt_b_custom_data" {
 data "azurerm_public_ip" "fgtamgmtpip" {
   name                = azurerm_public_ip.fgtamgmtpip.name
   resource_group_name = azurerm_resource_group.resourcegroup.name
+  depends_on          = [azurerm_virtual_machine.fgtavm]
 }
 
 data "azurerm_public_ip" "fgtbmgmtpip" {
   name                = azurerm_public_ip.fgtbmgmtpip.name
   resource_group_name = azurerm_resource_group.resourcegroup.name
+  depends_on          = [azurerm_virtual_machine.fgtbvm]
 }
 
 output "fgt_a_public_ip_address" {
@@ -539,6 +538,7 @@ output "fgt_b_public_ip_address" {
 data "azurerm_public_ip" "elbpip" {
   name                = azurerm_public_ip.elbpip.name
   resource_group_name = azurerm_resource_group.resourcegroup.name
+  depends_on          = [azurerm_lb.elb]
 }
 
 output "elb_public_ip_address" {

@@ -59,7 +59,7 @@ After deployment you will be shown the IP address of all deployed components. Yo
 
 ## Requirements and limitations
 
-More documentation can be found on [the Availability Set version of this template](../../Active-Active-ELB-ILB/README.md).
+More documentation can be found [here](../../Active-Active-ELB-ILB/README.md).
 
 ## License
 [License](LICENSE) © Fortinet Technologies. All rights reserved.

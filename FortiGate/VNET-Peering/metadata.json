@@ -4,6 +4,6 @@
     "itemDisplayName": "Deployment of a FortiGate Active Passive setup Cloud Security Services Hub using VNET peering",
     "description": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure and routing",
     "summary": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure and routing",
-    "githubUsername": "jvhoof",
-    "dateUpdated":  "2020-12-01"
+    "githubUsername": "fortinet",
+    "dateUpdated":  "2021-05-17"
 }
