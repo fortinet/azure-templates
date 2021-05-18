@@ -24,8 +24,6 @@ Microsoft offers different [SLAs](https://azure.microsoft.com/en-au/support/lega
 - Availability Set (different rack and power): 99,95%
 - Single VM with Premium SSD: 99.9%
 
-A cluster of FortiGate VMs will have a cross region/parallel SLA of 99,999975% when using Availability Sets. A cluster of FortiGate VMs will have a cross region/parallel SLA of 99,999999% when using Availability Zones. More information about the uptime of the Azure datacenter can be found on [this blog post](https://kvaes.wordpress.com/2020/02/16/is-azure-a-tier-3-datacenter-and-what-about-service-levels-in-a-broader-sense/).
-
 ### Building blocks
 
 - [__**A Single VM**__](A-Single-VM/): This single FortiGate VM will process all the traffic and as such become a single point of failure during operations as well as upgrades. This block can also be used in an architecture with multiple regions where a FortiGate is deployed in each region. This setup provides an SLA of 99.9% when using a Premium SSD disk.
