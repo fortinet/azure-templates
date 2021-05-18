@@ -19,7 +19,7 @@ This Azure ARM template will automatically deploy a full working environment con
   - 3 public IPs. The first public IP is for cluster access to/through the active FortiGate.  The other two PIPs are for Management access
   - User Defined Routes (UDR) for the protected subnets
 
-![active/passive design](images/fgt-ha.png)
+![active/passive design](images/fgt-ap.png)
 
 This ARM template can also be used to extend or customized based on your requirements. Additional subnets besides the one's mentioned above are not automatically generated. By adapting the ARM templates you can add additional subnets which preferably require their own routing tables.
 
