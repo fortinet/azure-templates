@@ -1,0 +1,364 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "config": {
+              "resourceGroup": {
+                  "allowExisting": true
+              } 
+        },
+    "resourceTypes": [
+            "microsoft.resources/resourcegroups"
+        ],
+    "basics": [
+      {
+        "name": "VMName",
+        "type": "Microsoft.Common.TextBox",
+        "label": "FortiWeb Instance Name",
+        "toolTip": "This is the name of the FortiWeb instance.",
+        "constraints": {
+          "required": true,
+          "regex": "^[A-Za-z0-9]{1,15}$",
+          "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1 to 15 characters."
+        }
+      },
+      {
+        "name": "skuSelectorElement",
+        "type": "Microsoft.Common.DropDown",
+        "label": "Version",
+        "toolTip": "BYOL licenses must be purchased through a Fortinet Channel Partner separately.  PAYG licensing is billed at an additional hourly rate through your Azure subscription.",
+        "defaultValue": "FortiWeb 6.3.11 (BYOL)",
+        "constraints": {
+          "allowedValues": [
+            {
+              "label": "FortiWeb 5.7.1 (BYOL)",
+              "value": {
+                "SKU": "fortinet_fw-vm",
+                "Version": "5.7.1"
+              }
+            },
+            {
+              "label": "FortiWeb 5.8.6 (BYOL)",
+              "value": {
+                "SKU": "fortinet_fw-vm",
+                "Version": "5.8.6"
+              }
+            },
+            {
+              "label": "FortiWeb 5.8.6 (PAYG)",
+              "value": {
+                "SKU": "fortinet_fw-vm_payg",
+                "Version": "5.8.6"
+              }
+            },
+            {
+              "label": "FortiWeb 6.0.2 (BYOL)",
+              "value": {
+                "SKU": "fortinet_fw-vm",
+                "Version": "6.0.2"
+              }
+            },
+            {
+              "label": "FortiWeb 6.0.2 (PAYG)",
+              "value": {
+                "SKU": "fortinet_fw-vm_payg",
+                "Version": "6.0.2"
+              }
+            },
+            {
+              "label": "FortiWeb 6.1.0 (BYOL)",
+              "value": {
+                "SKU": "fortinet_fw-vm",
+                "Version": "6.1.0"
+              }
+            },
+            {
+              "label": "FortiWeb 6.1.0 (PAYG)",
+              "value": {
+                "SKU": "fortinet_fw-vm_payg",
+                "Version": "6.1.0"
+              }
+            },
+            {
+              "label": "FortiWeb 6.2.1 (BYOL)",
+              "value": {
+                "SKU": "fortinet_fw-vm",
+                "Version": "6.2.1"
+              }
+            },
+            {
+              "label": "FortiWeb 6.2.1 (PAYG)",
+              "value": {
+                "SKU": "fortinet_fw-vm_payg",
+                "Version": "6.2.1"
+              }
+            },
+            {
+              "label": "FortiWeb 6.3.2 (BYOL)",
+              "value": {
+                "SKU": "fortinet_fw-vm",
+                "Version": "6.3.2"
+              }
+            },
+            {
+              "label": "FortiWeb 6.3.2 (PAYG)",
+              "value": {
+                "SKU": "fortinet_fw-vm_payg",
+                "Version": "6.3.2"
+              }
+            },
+            {
+              "label": "FortiWeb 6.3.4 (BYOL)",
+              "value": {
+                "SKU": "fortinet_fw-vm",
+                "Version": "6.3.4"
+              }
+            },
+            {
+              "label": "FortiWeb 6.3.4 (PAYG)",
+              "value": {
+                "SKU": "fortinet_fw-vm_payg",
+                "Version": "6.3.4"
+              }
+            },
+            {
+              "label": "FortiWeb 6.3.11 (BYOL)",
+              "value": {
+                "SKU": "fortinet_fw-vm",
+                "Version": "6.3.11"
+              }
+            },
+            {
+              "label": "FortiWeb 6.3.11 (PAYG)",
+              "value": {
+                "SKU": "fortinet_fw-vm_payg",
+                "Version": "6.3.11"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "adminUsername",
+        "type": "Microsoft.Compute.UserNameTextBox",
+        "label": "FortiWeb administrative username",
+        "toolTip": "Admin username for the FortiWeb instance. Must not be 'admin' nor 'root'.",
+        "osPlatform": "Linux",
+        "constraints": {
+          "required": true
+        }
+      },
+      {
+        "name": "passwordElement",
+        "type": "Microsoft.Common.PasswordBox",
+        "label": {
+          "password": "FortiWeb Password",
+          "confirmPassword": "Confirm Password"
+        },
+        "toolTip": "Administrative account password for the FortiWeb instance",
+        "constraints": {
+          "required": true,
+          "regex": "^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\\d\\W])|(?=.*\\W)(?=.*\\d))|(?=.*\\W)(?=.*[A-Z])(?=.*\\d)).{12,123}$",
+          "validationMessage": "The password must be between 12 and 123 characters long, and contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters."
+        },
+        "options": {
+          "hideConfirmation": false
+        }
+      }
+    ],
+    "steps": [
+      {
+        "name": "NetworkandInstanceConfig",
+        "label": "Network Settings and Instance Type",
+        "subLabel": {
+          "preValidation": "Configure the virtual network and select an instance type",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "Network and Instance Settings",
+        "elements": [
+          {
+              "name": "virtualnetworktext",
+              "type": "Microsoft.Common.TextBlock",
+              "visible": true,
+              "options": {
+                  "text": "Create a new or select an existing virtual network with the required subnets."
+              }
+          },
+          {
+            "name": "virtualNetwork",
+            "type": "Microsoft.Network.VirtualNetworkCombo",
+            "label": {
+              "virtualNetwork": "Virtual network",
+              "subnets": "Subnets"
+            },
+            "toolTip": {
+              "virtualNetwork": "Virtual Network Name",
+              "subnets": "Subnets requied for the FortiWeb solution"
+            },
+            "defaultValue": {
+              "name": "FortiWebProtectedVNet",
+              "addressPrefixSize": "/22"
+            },
+            "constraints": {
+              "minAddressPrefixSize": "/28"
+            },
+            "options":{
+                  "hideExisting": false
+            },
+            "subnets": {
+              "subnet1": {
+                "label": "Outside Subnet",
+                "defaultValue": {
+                  "name": "PublicFacingSubnet",
+                  "addressPrefixSize": "/24"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/29",
+                  "minAddressCount": 1,
+                  "requireContiguousAddresses": false
+                }
+              },
+              "subnet2": {
+                "label": "Inside Subnet",
+                "defaultValue": {
+                  "name": "InsideSubnet",
+                  "addressPrefixSize": "/24"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/29",
+                  "minAddressCount": 1,
+                  "requireContiguousAddresses": false
+                }
+              }
+            },
+            "visible": true
+          },
+          {
+            "name": "vmSize",
+            "type": "Microsoft.Compute.SizeSelector",
+            "label": "Virtual machine size",
+            "toolTip": "The size of virtual machine to provision.",
+            "recommendedSizes": [
+              "Standard_F2s_v2",
+              "Standard_F4s_v2",
+              "Standard_F8s_v2"
+            ],
+            "constraints": {
+              "allowedSizes": [
+                "Standard_A4",
+                "Standard_D2",
+                "Standard_D3",
+                "Standard_D4",
+                "Standard_D1_v2",
+                "Standard_D2_v2",
+                "Standard_D3_v2",
+                "Standard_D4_v2",
+                "Standard_D2_v3",
+                "Standard_D4_v3",
+                "Standard_D8_v3",
+                "Standard_D2s_v3",
+                "Standard_D4s_v3",
+                "Standard_D8s_v3",
+                "Standard_F1",
+                "Standard_F2",
+                "Standard_F4",
+                "Standard_F8",
+                "Standard_F1s",
+                "Standard_F2s",
+                "Standard_F4s",
+                "Standard_F8s",
+                "Standard_F2s_v2",
+                "Standard_F4s_v2",
+                "Standard_F8s_v2"
+              ]
+            },
+            "osPlatform": "Linux",
+            "imageReference": {
+              "publisher": "Fortinet",
+              "offer": "fortinet_fortiweb-vm_v5",
+              "sku": "fortinet_fw-vm"
+            },
+            "count": "1"
+          }
+        ]
+      },
+      {
+        "name": "IPConfig",
+        "label": "FortiWeb IP Address Assignments",
+        "subLabel": {
+          "preValidation": "Configure the Public IP",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "IP Assignment",
+        "elements": [
+          {
+            "name": "publicIpAddress",
+            "type": "Microsoft.Network.PublicIpAddressCombo",
+            "label": {
+              "publicIpAddress": "Public IP address name",
+              "domainNameLabel": ""
+            },
+            "toolTip": {
+              "publicIpAddress": "Name of the public IP address object"
+            },
+            "defaultValue": {
+              "publicIpAddressName": "publicip-fortiweb"
+            },
+            "constraints": {
+              "required": {
+                "domainNameLabel": false
+              }
+            },
+            "options": {
+              "hideNone": false,
+              "hideDomainNameLabel": true
+            }
+          },
+          {
+            "name": "publicIPAddressTypeElement",
+            "type": "Microsoft.Common.OptionsGroup",
+            "label": "Public IP Address Type",
+            "toolTip": "",
+            "defaultValue": "Static",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Static",
+                  "value": "Static"
+                },
+                {
+                  "label": "Dynamic",
+                  "value": "Dynamic"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "FortiWebInstanceName": "[basics('VMName')]",
+      "adminUsername": "[basics('adminUsername')]",
+      "adminPassword": "[basics('passwordElement')]",
+      "FortiWebImageSKU": "[basics('skuSelectorElement').SKU]",
+      "FortiWebImageVersion": "[basics('skuSelectorElement').Version]",
+      "instanceType": "[steps('NetworkandInstanceConfig').vmSize]",
+      "publicIPAddressName": "[steps('IPConfig').publicIpAddress.name]",
+      "publicIPAddressType": "[steps('IPConfig').publicIPAddressTypeElement]",
+      "publicIPNewOrExistingOrNone": "[steps('IPConfig').publicIpAddress.newOrExistingOrNone]",
+      "publicIPAddressResourceGroup": "[steps('IPConfig').publicIpAddress.resourceGroup]",
+      "location": "[location()]",
+      "vnetNewOrExisting": "[steps('NetworkandInstanceConfig').virtualNetwork.newOrExisting]",
+      "vnetName": "[steps('NetworkandInstanceConfig').virtualNetwork.name]",
+      "vnetResourceGroup": "[steps('NetworkandInstanceConfig').virtualNetwork.resourceGroup]",
+      "vnetAddressPrefixes": "[steps('NetworkandInstanceConfig').virtualNetwork.addressPrefixes]",
+      "Subnet1Name": "[steps('NetworkandInstanceConfig').virtualNetwork.subnets.subnet1.name]",
+      "Subnet1Prefix": "[steps('NetworkandInstanceConfig').virtualNetwork.subnets.subnet1.addressPrefix]",
+      "Subnet2Name": "[steps('NetworkandInstanceConfig').virtualNetwork.subnets.subnet2.name]",
+      "Subnet2Prefix": "[steps('NetworkandInstanceConfig').virtualNetwork.subnets.subnet2.addressPrefix]",
+      "FortiWebIPSub1": "[steps('NetworkandInstanceConfig').virtualNetwork.subnets.subnet1.startAddress]",
+      "FortiWebIPSub2": "[steps('NetworkandInstanceConfig').virtualNetwork.subnets.subnet2.startAddress]"
+    }
+  }
+}
