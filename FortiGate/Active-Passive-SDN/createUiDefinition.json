@@ -56,7 +56,7 @@
 				"visible": true
 			},
 			{
-				"name": "fortigateNamePrefix",
+				"name": "fortiGateNamePrefix",
 				"type": "Microsoft.Common.TextBox",
 				"label": "Fortigate Name Prefix",
 				"defaultValue": "",
