@@ -8,45 +8,49 @@
     This file has been created as an example of using Pester to evaluate ARM templates
 #>
 
-Function random-password ($length = 15) {
-    $punc = 46..46
-    $digits = 48..57
-    $letters = 65..90 + 97..122
+param (
+    [string]$sshkey,
+    [string]$sshkeypub
+)
 
-    # Thanks to
-    # https://blogs.technet.com/b/heyscriptingguy/archive/2012/01/07/use-pow
-    $password = get-random -count $length `
-        -input ($punc + $digits + $letters) |
-        % -begin { $aa = $null } `
-        -process {$aa += [char]$_} `
-        -end {$aa}
+BeforeAll {
+    $templateName = "Active-Active-ELB-ILB"
+    $sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName"
+    $scriptPath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName\test"
+    $templateFileName = "azuredeploy.json"
+    $templateFileLocation = "$sourcePath\$templateFileName"
+    $templateParameterFileName = "azuredeploy.parameters.json"
+    $templateParameterFileLocation = "$sourcePath\$templateParameterFileName"
 
-    return $password
+    # Basic Variables
+    $testsRandom = Get-Random 10001
+    $testsPrefix = "FORTIQA"
+    $testsResourceGroupName = "FORTIQA-$testsRandom-$templateName"
+    $testsAdminUsername = "azureuser"
+    $testsResourceGroupLocation = "westeurope"
+
+    # ARM Template Variables
+    $config = "config system global `n set gui-theme mariner `n end `n config system admin `n edit devops `n set accprofile super_admin `n set ssh-public-key1 `""
+    $config += Get-Content $sshkeypub
+    $config += "`" `n set password $testsResourceGroupName `n next `n end"
+    $publicIPName = "$testsPrefix-FGT-PIP"
+    $params = @{ 'adminUsername'=$testsAdminUsername
+                 'adminPassword'=$testsResourceGroupName
+                 'fortiGateNamePrefix'=$testsPrefix
+                 'fortiGateAditionalCustomData'=$config
+                 'publicIPName'=$publicIPName
+               }
+    $ports = @(40030, 50030, 40031, 50031)
 }
-
-# Basic Variables
-$templateName = "Active-Active-ELB-ILB"
-$sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName"
-$scriptPath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName\test"
-$templateFileName = "azuredeploy.json"
-$templateFileLocation = "$sourcePath\$templateFileName"
-$templateParameterFileName = "azuredeploy.parameters.json"
-$templateParameterFileLocation = "$sourcePath\$templateParameterFileName"
-
-$testsRandom = Get-Random 10001
-$testsPrefix = "FORTIQA"
-$testsResourceGroupName = "FORTIQA-$testsRandom-$templateName"
-$testsAdminUsername = "azureuser"
-$testsResourceGroupLocation = "northeurope"
 
 Describe 'FGT A/A' {
     Context 'Validation' {
         It 'Has a JSON template' {
-            $templateFileLocation | Should Exist
+            $templateFileLocation | Should -Exist
         }
 
         It 'Has a parameters file' {
-            $templateParameterFileLocation | Should Exist
+            $templateParameterFileLocation | Should -Exist
         }
 
         It 'Converts from JSON and has the expected properties' {
@@ -56,7 +60,7 @@ Describe 'FGT A/A' {
             'resources',
             'variables'
             $templateProperties = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue) | Get-Member -MemberType NoteProperty | % Name
-            $templateProperties | Should Be $expectedProperties
+            $templateProperties | Should -Be $expectedProperties
         }
 
         It 'Creates the expected Azure resources' {
@@ -75,7 +79,7 @@ Describe 'FGT A/A' {
                                  'Microsoft.Compute/virtualMachines',
                                  'Microsoft.Compute/virtualMachines'
             $templateResources = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Resources.type
-            $templateResources | Should Be $expectedResources
+            $templateResources | Should -Be $expectedResources
         }
 
         It 'Contains the expected parameters' {
@@ -87,6 +91,8 @@ Describe 'FGT A/A' {
                                           'fortiGateImageVersion',
                                           'fortiGateLicenseBYOLA',
                                           'fortiGateLicenseBYOLB',
+                                          'fortiGateLicenseFlexVMA',
+                                          'fortiGateLicenseFlexVMB',
                                           'fortiGateNamePrefix',
                                           'fortiManager',
                                           'fortiManagerIP',
@@ -95,7 +101,7 @@ Describe 'FGT A/A' {
                                           'instanceType',
                                           'location',
                                           'publicIPName',
-                                          'publicIPNewOrExisting',
+                                          'publicIPNewOr-Existing',
                                           'publicIPResourceGroup',
                                           'subnet1Name',
                                           'subnet1Prefix',
@@ -107,54 +113,69 @@ Describe 'FGT A/A' {
                                           'subnet3Prefix',
                                           'vnetAddressPrefix',
                                           'vnetName',
-                                          'vnetNewOrExisting',
+                                          'vnetNewOr-Existing',
                                           'vnetResourceGroup'
             $templateParameters = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Parameters | Get-Member -MemberType NoteProperty | % Name | sort
-            $templateParameters | Should Be $expectedTemplateParameters
+            $templateParameters | Should -Be $expectedTemplateParameters
         }
 
     }
 
     Context 'Deployment' {
 
-        # Set working directory & create resource group
-        Set-Location $sourcePath
-        New-AzResourceGroup -Name $testsResourceGroupName -Location "$testsResourceGroupLocation"
-
-        # Validate all ARM templates one by one
-        $testsErrorFound = $false
-
-        $params = @{ 'adminUsername'=$testsAdminUsername
-                     'adminPassword'=$testsResourceGroupName
-                     'FortiGateNamePrefix'=$testsPrefix
-                    }
-        $publicIPName = "FGTLBPublicIP"
-        $publicIP2Name = "FGTLBPublicIP2"
-
         It "Test deployment" {
-            (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should not BeGreaterThan 0
+            New-AzResourceGroup -Name $testsResourceGroupName -Location "$testsResourceGroupLocation"
+            (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should -Not -BeGreaterThan 0
         }
         It "Deployment" {
             $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params
             Write-Host ($resultDeployment | Format-Table | Out-String)
             Write-Host ("Deployment state: " + $resultDeployment.ProvisioningState | Out-String)
-            $resultDeployment.ProvisioningState | Should Be "Succeeded"
+            $resultDeployment.ProvisioningState | Should -Be "Succeeded"
         }
         It "Search deployment" {
             $result = Get-AzVM | Where-Object { $_.Name -like "$testsPrefix*" }
             Write-Host ($result | Format-Table | Out-String)
-            $result | Should Not Be $null
+            $result | Should -Not -Be $null
         }
+    }
 
-        40030, 50030, 40031, 50031 | Foreach-Object {
-            it "Port [$_] is listening" {
-                $result = Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName
-                $portListening = (Test-Connection -TargetName $result.IpAddress -TCPPort $_ -TimeoutSeconds 100)
+    Context 'Deployment test' {
+
+        BeforeAll {
+            $fgt = (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName).IpAddress
+            Write-Host ("FortiGate public IP: " + $fgt)
+            chmod 400 $sshkey
+            $verify_commands = @'
+            config system console
+            set output standard
+            end
+            show system interface
+            show router static
+            diag debug cloudinit show
+            exit
+'@
+            $OFS = "`n"
+        }
+        It "FGT: Ports listening" {
+            ForEach( $port in $ports ) {
+                Write-Host ("Check port: $port" )
+                $portListening = (Test-Connection -TargetName $fgt -TCPPort $port -TimeoutSeconds 100)
                 $portListening | Should -Be $true
             }
         }
+        It "FGT A: Verify configuration" {
+            $result = $verify_commands | ssh -p 50030 -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
+            Write-Host ("Config: " + $result) -Separator `n
+        }
+        It "FGT B: Verify configuration" {
+            $result = $verify_commands | ssh -p 50031 -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
+            Write-Host ("Config: " + $result) -Separator `n
+        }
+    }
 
-        It "Cleanup" {
+    Context 'Cleanup' {
+        It "Cleanup of deployment" {
             Remove-AzResourceGroup -Name $testsResourceGroupName -Force
         }
     }

@@ -43,7 +43,10 @@
         "6.4.2",
         "6.4.3",
         "6.4.5",
+        "6.4.6",
+        "6.4.7",
         "7.0.0",
+        "7.0.1",
         "latest"
       ],
       "metadata": {
@@ -225,6 +228,20 @@
         "description": "Secondary FortiGate BYOL license content"
       }
     },
+    "fortiGateLicenseFlexVMA": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary FortiGate BYOL Flex-VM license token"
+      }
+    },
+    "fortiGateLicenseFlexVMB": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Secondary FortiGate BYOL Flex-VM license token"
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -255,9 +272,11 @@
     "fgaVmName": "[concat(parameters('fortiGateNamePrefix'),'-FGT-A')]",
     "fgbVmName": "[concat(parameters('fortiGateNamePrefix'),'-FGT-B')]",
     "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
+    "fgaCustomDataFlexVM": "[if(equals(parameters('fortiGateLicenseFlexVMA'),''),'',concat('exec vm-license ',parameters('fortiGateLicenseFlexVMA'), '\n'))]",
+    "fgBCustomDataFlexVM": "[if(equals(parameters('fortiGateLicenseFlexVMB'),''),'',concat('exec vm-license ',parameters('fortiGateLicenseFlexVMB'), '\n'))]",
     "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
-    "fgaCustomDataBody": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\n edit 1\n set gateway ', variables('sn1GatewayIP'), '\n set device port1\n next\n edit 2\n set dst ', parameters('vnetAddressPrefix'), '\n set gateway ', variables('sn2GatewayIP'), '\n set device port2\n next\n edit 3\nset dst 168.63.129.16 255.255.255.255\nset device port2\n set gateway ', variables ('sn2GatewayIP'), '\n next\nedit 4\nset dst 168.63.129.16 255.255.255.255\nset device port1\n set gateway ', variables ('sn1GatewayIP'), '\n next\n end\n config system probe-response\n set mode http-probe\n end\n config system interface\n edit port1\n set mode static\n set ip ', variables('sn1IPfga'), '/', variables('sn1CIDRmask'), '\n set description external\n set allowaccess ping ssh https probe-response\n next\n edit port2\n set mode static\n set ip ', variables('sn2IPfga'), '/', variables('sn2CIDRmask'), '\n set description internal\n set allowaccess ping ssh https probe-response\n next\n end\n', variables('fmgCustomData'), parameters('fortiGateAditionalCustomData'), '\n')]",
-    "fgbCustomDataBody": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\n edit 1\n set gateway ', variables('sn1GatewayIP'), '\n set device port1\n next\n edit 2\n set dst ', parameters('vnetAddressPrefix'), '\n set gateway ', variables('sn2GatewayIP'), '\n set device port2\n next\n edit 3\nset dst 168.63.129.16 255.255.255.255\nset device port2\n set gateway ', variables ('sn2GatewayIP'), '\n next\nedit 4\nset dst 168.63.129.16 255.255.255.255\nset device port1\n set gateway ', variables ('sn1GatewayIP'), '\n next\n end\n config system probe-response\n set mode http-probe\n end\n config system interface\n edit port1\n set mode static\n set ip ', variables('sn1IPfgb'), '/', variables('sn1CIDRmask'), '\n set description external\n set allowaccess ping ssh https probe-response\n next\n edit port2\n set mode static\n set ip ', variables('sn2IPfgb'), '/', variables('sn2CIDRmask'), '\n set description internal\n set allowaccess ping ssh https probe-response\n next\n end\n', variables('fmgCustomData'), parameters('fortiGateAditionalCustomData'), '\n')]",
+    "fgaCustomDataBody": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\n edit 1\n set gateway ', variables('sn1GatewayIP'), '\n set device port1\n next\n edit 2\n set dst ', parameters('vnetAddressPrefix'), '\n set gateway ', variables('sn2GatewayIP'), '\n set device port2\n next\n edit 3\nset dst 168.63.129.16 255.255.255.255\nset device port2\n set gateway ', variables ('sn2GatewayIP'), '\n next\nedit 4\nset dst 168.63.129.16 255.255.255.255\nset device port1\n set gateway ', variables ('sn1GatewayIP'), '\n next\n end\n config system probe-response\n set mode http-probe\n end\n config system interface\n edit port1\n set mode static\n set ip ', variables('sn1IPfga'), '/', variables('sn1CIDRmask'), '\n set description external\n set allowaccess ping ssh https probe-response\n next\n edit port2\n set mode static\n set ip ', variables('sn2IPfga'), '/', variables('sn2CIDRmask'), '\n set description internal\n set allowaccess ping ssh https probe-response\n next\n end\n', variables('fmgCustomData'), parameters('fortiGateAditionalCustomData'), '\n', variables('fgaCustomDataFlexVM'), '\n')]",
+    "fgbCustomDataBody": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\n edit 1\n set gateway ', variables('sn1GatewayIP'), '\n set device port1\n next\n edit 2\n set dst ', parameters('vnetAddressPrefix'), '\n set gateway ', variables('sn2GatewayIP'), '\n set device port2\n next\n edit 3\nset dst 168.63.129.16 255.255.255.255\nset device port2\n set gateway ', variables ('sn2GatewayIP'), '\n next\nedit 4\nset dst 168.63.129.16 255.255.255.255\nset device port1\n set gateway ', variables ('sn1GatewayIP'), '\n next\n end\n config system probe-response\n set mode http-probe\n end\n config system interface\n edit port1\n set mode static\n set ip ', variables('sn1IPfgb'), '/', variables('sn1CIDRmask'), '\n set description external\n set allowaccess ping ssh https probe-response\n next\n edit port2\n set mode static\n set ip ', variables('sn2IPfgb'), '/', variables('sn2CIDRmask'), '\n set description internal\n set allowaccess ping ssh https probe-response\n next\n end\n', variables('fmgCustomData'), parameters('fortiGateAditionalCustomData'), '\n', variables('fgbCustomDataFlexVM'), '\n')]",
     "customDataLicenseHeader": "--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"fgtlicense\"\n\n",
     "customDataFooter": "--12345--\n",
     "fgaCustomDataCombined": "[concat(variables('customDataHeader'),variables('fgaCustomDataBody'),variables('customDataLicenseHeader'), parameters('fortiGateLicenseBYOLA'), variables('customDataFooter'))]",
@@ -338,20 +357,20 @@
   },
   "resources": [
     {
-      "apiVersion": "2019-10-01",
+      "apiVersion": "2020-10-01",
       "name": "[concat(parameters('fortiGateNamePrefix'), '-fortinetdeployment-', uniquestring(resourceGroup().id))]",
       "type": "Microsoft.Resources/deployments",
       "properties":{
        "mode": "Incremental",
        "template": {
-         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deplymentTemplate.json#",
+         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
          "contentVersion": "1.0.0.0",
          "resources": []
        }
       }
     },
     {
-      "apiVersion": "2019-07-01",
+      "apiVersion": "2021-07-01",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('availabilitySetName')]",
       "location": "[parameters('location')]",
@@ -853,7 +872,7 @@
       }
     },
     {
-      "apiVersion": "2019-07-01",
+      "apiVersion": "2021-07-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgaVmName')]",
       "location": "[parameters('location')]",
@@ -922,7 +941,7 @@
       }
     },
     {
-      "apiVersion": "2019-07-01",
+      "apiVersion": "2021-07-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgbVmName')]",
       "location": "[parameters('location')]",
