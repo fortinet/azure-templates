@@ -4,8 +4,10 @@
 	"version": "0.1.2-preview",
 	"parameters": {
 		"config": {
-			"resourceGroup": {
-				"allowExisting": true
+			"basics": {
+				"resourceGroup": {
+					"allowExisting": true
+				}
 			}
 		},
 		"resourceTypes": [
@@ -56,7 +58,7 @@
 				"visible": true
 			},
 			{
-				"name": "fortigateNamePrefix",
+				"name": "fortiGateNamePrefix",
 				"type": "Microsoft.Common.TextBox",
 				"label": "Fortigate Name Prefix",
 				"defaultValue": "",
@@ -69,7 +71,7 @@
 				"visible": true
 			},
 			{
-				"name": "fortigateImageSKU",
+				"name": "fortiGateImageSKU",
 				"type": "Microsoft.Common.DropDown",
 				"label": "Fortigate Image SKU",
 				"defaultValue": "Bring Your Own License",
@@ -90,7 +92,7 @@
 				"visible": true
 			},
 			{
-				"name": "fortigateImageVersion",
+				"name": "fortiGateImageVersion",
 				"type": "Microsoft.Common.DropDown",
 				"label": "Fortigate Image Version",
 				"defaultValue": "latest",
@@ -129,6 +131,10 @@
 						{
 							"label": "6.4.5",
 							"value": "6.4.5"
+						},
+						{
+							"label": "6.4.6",
+							"value": "6.4.6"
 						},
 						{
 							"label": "7.0.0",
@@ -193,7 +199,7 @@
 						"imageReference": {
 							"publisher": "Fortinet",
 							"offer": "fortinet_fortigate-vm_v5",
-							"sku": "[basics('fortigateImageSKU')]"
+							"sku": "[basics('fortiGateImageSKU')]"
 						},
 						"count": 2,
 						"visible": true
@@ -250,8 +256,8 @@
 											"addressPrefixSize": "/26"
 										},
 										"constraints": {
-											"minAddressPrefixSize": "/27",
-											"minAddressCount": 12,
+											"minAddressPrefixSize": "/29",
+											"minAddressCount": 2,
 											"requireContiguousAddresses": true
 										}
 									},
@@ -262,8 +268,8 @@
 											"addressPrefixSize": "/26"
 										},
 										"constraints": {
-											"minAddressPrefixSize": "/27",
-											"minAddressCount": 8,
+											"minAddressPrefixSize": "/29",
+											"minAddressCount": 2,
 											"requireContiguousAddresses": true
 										}
 									},
@@ -274,8 +280,8 @@
 											"addressPrefixSize": "/26"
 										},
 										"constraints": {
-											"minAddressPrefixSize": "/27",
-											"minAddressCount": 8,
+											"minAddressPrefixSize": "/29",
+											"minAddressCount": 2,
 											"requireContiguousAddresses": true
 										}
 									},
@@ -286,8 +292,8 @@
 											"addressPrefixSize": "/26"
 										},
 										"constraints": {
-											"minAddressPrefixSize": "/27",
-											"minAddressCount": 8,
+											"minAddressPrefixSize": "/29",
+											"minAddressCount": 2,
 											"requireContiguousAddresses": true
 										}
 									},
@@ -298,8 +304,8 @@
 											"addressPrefixSize": "/24"
 										},
 										"constraints": {
-											"minAddressPrefixSize": "/27",
-											"minAddressCount": 8,
+											"minAddressPrefixSize": "/29",
+											"minAddressCount": 0,
 											"requireContiguousAddresses": true
 										}
 									}
@@ -634,7 +640,41 @@
 									"icon": "Warning",
 									"text": "Pay as you go licenses was selected in the basics blade. The licenses uploaded here will not be used."
 								},
-								"visible": "[not(equals(basics('fortigateImageSKU'), 'fortinet_fg-vm'))]"
+								"visible": "[not(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'))]"
+							},
+							{
+								"name": "licenseflexvmtext",
+								"type": "Microsoft.Common.TextBlock",
+								"visible": true,
+								"options": {
+									"text": "When your organisation is subscribed to Flex-VM you can provide the licenses token here."
+								}
+							},
+							{
+								"name": "licenseaflexvmtoken",
+								"type": "Microsoft.Common.TextBox",
+								"label": "FortiGate A Flex-VM",
+								"defaultValue": "",
+								"toolTip": "FortiGate A Flex-VM license token",
+								"constraints": {
+									"required": false,
+									"regex": "^[A-Za-z0-9-]{1,64}$",
+									"validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
+								},
+								"visible": true
+							},
+							{
+								"name": "licensebflexvmtoken",
+								"type": "Microsoft.Common.TextBox",
+								"label": "FortiGate B Flex-VM",
+								"defaultValue": "",
+								"toolTip": "FortiGate B Flex-VM license token",
+								"constraints": {
+									"required": false,
+									"regex": "^[A-Za-z0-9-]{1,64}$",
+									"validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
+								},
+								"visible": true
 							}
 						]
 					}
@@ -642,9 +682,9 @@
 			}
 		],
 		"outputs": {
-			"fortigateNamePrefix": "[basics('fortigateNamePrefix')]",
-			"fortigateImageSKU": "[basics('fortigateImageSKU')]",
-			"fortigateImageVersion": "[basics('fortigateImageVersion')]",
+			"fortiGateNamePrefix": "[basics('fortiGateNamePrefix')]",
+			"fortiGateImageSKU": "[basics('fortiGateImageSKU')]",
+			"fortiGateImageVersion": "[basics('fortiGateImageVersion')]",
 			"adminUsername": "[basics('adminUsername')]",
 			"adminPassword": "[basics('adminPassword')]",
 			"location": "[location()]",
@@ -688,7 +728,9 @@
 			"fortiManagerSerial": "[steps('advanced').fortimanager.fortimanagerserial]",
 			"fortiGateAditionalCustomData": "[steps('advanced').customdata.config]",
 			"fortiGateLicenseBYOLA": "[steps('advanced').fgtlicense.licenseacontent]",
-			"fortiGateLicenseBYOLB": "[steps('advanced').fgtlicense.licensebcontent]"
+			"fortiGateLicenseBYOLB": "[steps('advanced').fgtlicense.licensebcontent]",
+			"fortiGateLicenseFlexVMA": "[steps('advanced').fgtlicense.licenseaflexvmtoken]",
+			"fortiGateLicenseFlexVMB": "[steps('advanced').fgtlicense.licensebflexvmtoken]"
 		}
 	}
 }

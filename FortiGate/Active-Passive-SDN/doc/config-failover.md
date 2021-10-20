@@ -20,10 +20,10 @@ config system sdn-connector
     next
   end
   config route-table
-    edit "FortiGateDefaultAPRouteTable"
+    edit "FGTDefaultAPRouteTable"
     config route
     edit "toDefault"
-      set next-hop "10.0.2.4"
+      set next-hop "172.16.136.68"
     next
   end
   next
@@ -49,10 +49,10 @@ config system sdn-connector
   next
   end
   config route-table
-    edit "FortiGateDefaultAPRouteTable"
+    edit "FGTDefaultAPRouteTable"
       config route
       edit "toDefault"
-         set next-hop "10.0.2.5"
+         set next-hop "172.16.136.69"
       next
     end
     next
