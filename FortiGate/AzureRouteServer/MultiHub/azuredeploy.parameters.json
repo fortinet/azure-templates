@@ -1,0 +1,220 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "adminPassword": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "fortiGateNamePrefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "fortiGateImageSKU": {
+            "value": "fortinet_fg-vm"
+        },
+        "fortiGateImageVersion": {
+            "value": "latest"
+        },
+        "instanceType": {
+            "value": "Standard_F4s"
+        },
+        "hubAFortiGateASN": {
+            "value": "65005"
+        },
+        "hubAVnetNewOrExisting": {
+            "value": "new"
+        },
+        "hubAVnetName": {
+            "value": ""
+        },
+        "hubAVnetResourceGroup": {
+            "value": ""
+        },
+        "hubAVnetAddressPrefix": {
+            "value": "172.16.136.0/22"
+        },
+        "hubASubnet1Name": {
+            "value": "ExternalSubnet"
+        },
+        "hubASubnet1Prefix": {
+            "value": "172.16.136.0/26"
+        },
+        "hubASubnet1StartAddress": {
+            "value": "172.16.136.4"
+        },
+        "hubASubnet2Name": {
+            "value": "TransitSubnet"
+        },
+        "hubASubnet2Prefix": {
+            "value": "172.16.136.64/26"
+        },
+        "hubASubnet2StartAddress": {
+            "value": "172.16.136.68"
+        },
+        "hubASubnet3Name": {
+            "value": "HASyncSubnet"
+        },
+        "hubASubnet3Prefix": {
+            "value": "172.16.136.128/26"
+        },
+        "hubASubnet3StartAddress": {
+            "value": "172.16.136.132"
+        },
+        "hubASubnet4Name": {
+            "value": "ManagementSubnet"
+        },
+        "hubASubnet4Prefix": {
+            "value": "172.16.136.192/27"
+        },
+        "hubASubnet4StartAddress": {
+            "value": "172.16.136.196"
+        },
+        "hubASubnet5Name": {
+            "value": "RouteServerSubnet"
+        },
+        "hubASubnet5Prefix": {
+            "value": "172.16.136.224/27"
+        },
+        "hubASubnet5StartAddress": {
+            "value": "172.16.136.228"
+        },
+        "hubASubnet6Name": {
+            "value": "ProtectedSubnet"
+        },
+        "hubASubnet6Prefix": {
+            "value": "172.16.137.0/24"
+        },
+        "hubAVnetNewOrExistingSpoke1": {
+            "value": "new"
+        },
+        "hubAVnetNameSpoke1": {
+            "value": ""
+        },
+        "hubAVnetResourceGroupSpoke1": {
+            "value": ""
+        },
+        "hubAVnetAddressPrefixSpoke1": {
+            "value": "172.16.140.0/24"
+        },
+        "hubASubnet1Spoke1Name": {
+            "value": "SPOKE1Subnet"
+        },
+        "hubASubnet1Spoke1Prefix": {
+            "value": "172.16.140.0/26"
+        },
+        "hubBFortiGateASN": {
+            "value": "65006"
+        },
+        "hubBVnetNewOrExisting": {
+            "value": "new"
+        },
+        "hubBVnetName": {
+            "value": ""
+        },
+        "hubBVnetResourceGroup": {
+            "value": ""
+        },
+        "hubBVnetAddressPrefix": {
+            "value": "172.16.144.0/22"
+        },
+        "hubBSubnet1Name": {
+            "value": "ExternalSubnet"
+        },
+        "hubBSubnet1Prefix": {
+            "value": "172.16.144.0/26"
+        },
+        "hubBSubnet1StartAddress": {
+            "value": "172.16.144.4"
+        },
+        "hubBSubnet2Name": {
+            "value": "TransitSubnet"
+        },
+        "hubBSubnet2Prefix": {
+            "value": "172.16.144.64/26"
+        },
+        "hubBSubnet2StartAddress": {
+            "value": "172.16.144.68"
+        },
+        "hubBSubnet3Name": {
+            "value": "HASyncSubnet"
+        },
+        "hubBSubnet3Prefix": {
+            "value": "172.16.144.128/26"
+        },
+        "hubBSubnet3StartAddress": {
+            "value": "172.16.144.132"
+        },
+        "hubBSubnet4Name": {
+            "value": "ManagementSubnet"
+        },
+        "hubBSubnet4Prefix": {
+            "value": "172.16.144.192/27"
+        },
+        "hubBSubnet4StartAddress": {
+            "value": "172.16.144.196"
+        },
+        "hubBSubnet5Name": {
+            "value": "RouteServerSubnet"
+        },
+        "hubBSubnet5Prefix": {
+            "value": "172.16.144.224/27"
+        },
+        "hubBSubnet5StartAddress": {
+            "value": "172.16.144.228"
+        },
+        "hubBSubnet6Name": {
+            "value": "ProtectedSubnet"
+        },
+        "hubBSubnet6Prefix": {
+            "value": "172.16.145.0/24"
+        },
+        "hubBVnetNewOrExistingSpoke1": {
+            "value": "new"
+        },
+        "hubBVnetNameSpoke1": {
+            "value": ""
+        },
+        "hubBVnetResourceGroupSpoke1": {
+            "value": ""
+        },
+        "hubBVnetAddressPrefixSpoke1": {
+            "value": "172.16.140.0/24"
+        },
+        "hubBSubnet1Spoke1Name": {
+            "value": "SPOKE1Subnet"
+        },
+        "hubBSubnet1Spoke1Prefix": {
+            "value": "172.16.140.0/26"
+        },
+        "overlaySubnetPrefix": {
+            "value": "172.16.135.0/24"
+        },
+        "hubAFortiGateLicenseBYOLA": {
+            "value": ""
+        },
+        "hubAFortiGateLicenseBYOLB": {
+            "value": ""
+        },
+        "hubBFortiGateLicenseBYOLA": {
+            "value": ""
+        },
+        "hubBFortiGateLicenseBYOLB": {
+            "value": ""
+        },
+        "hubALocation": {
+            "value": "[resourceGroup().location]"
+        },
+        "hubBLocation": {
+            "value": ""
+        },
+        "fortinetTags": {
+            "value": {
+                "publisher": "Fortinet",
+                "template": "Azure Route Server - Multi Hub",
+                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925ARSMH"
+            }
+        }
+    }
+}

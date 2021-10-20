@@ -1,0 +1,1091 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machine."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
+    },
+    "fortiGateNamePrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Naming prefix for all deployed resources"
+      }
+    },
+    "hubBLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Location for HUB B resources."
+      }
+    },
+
+    "fortiGateImageSKU": {
+      "type": "string",
+      "defaultValue": "fortinet_fg-vm",
+      "allowedValues": [
+        "fortinet_fg-vm",
+        "fortinet_fg-vm_payg_20190624"
+      ],
+      "metadata": {
+        "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)"
+      }
+    },
+    "fortiGateImageVersion": {
+      "type": "string",
+      "defaultValue": "latest",
+      "allowedValues": [
+        "6.2.0",
+        "6.2.2",
+        "6.2.4",
+        "6.2.5",
+        "6.4.0",
+        "6.4.2",
+        "6.4.3",
+        "6.4.5",
+        "6.4.6",
+        "7.0.0",
+        "7.0.1",
+        "latest"
+      ],
+      "metadata": {
+        "description": "Only 6.x has the A/P HA feature currently"
+      }
+    },
+    "instanceType": {
+      "type": "string",
+      "defaultValue": "Standard_F4s",
+      "allowedValues": [ "Standard_F4s", "Standard_F8s", "Standard_F16s", "Standard_F4", "Standard_F8", "Standard_F16", "Standard_F8s_v2", "Standard_F16s_v2", "Standard_F32s_v2", "Standard_DS3_v2", "Standard_DS4_v2", "Standard_DS5_v2", "Standard_D8s_v3", "Standard_D16s_v3", "Standard_D32s_v3" ],
+      "metadata": {
+        "description": "Virtual Machine size selection - must be F4 or other instance that supports 4 NICs"
+      }
+    },
+    "hubAFortiGateASN": {
+      "type": "string",
+      "defaultValue": "65005",
+      "metadata": {
+        "description": "FortiGate BGP ASN to setup the communication with the Azure Route Server"
+      }
+    },
+    "hubAVnetNewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing vnet"
+      }
+    },
+    "hubAVnetName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure virtual network."
+      }
+    },
+    "hubAVnetResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource Group containing the virtual network - or new resource group from above (if new vnet)"
+      }
+    },
+    "hubAVnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.0/22",
+      "metadata": {
+        "description": "Virtual Network Address prefix"
+      }
+    },
+    "hubASubnet1Name": {
+      "type": "string",
+      "defaultValue": "ExternalSubnet",
+      "metadata": {
+        "description": "Subnet 1 Name"
+      }
+    },
+    "hubASubnet1Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.0/26",
+      "metadata": {
+        "description": "Subnet 1 Prefix"
+      }
+    },
+    "hubASubnet1StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.136.4",
+      "metadata": {
+        "description": "Subnet 1 start address, 2 consecutive private IPs are required"
+      }
+    },
+    "hubASubnet2Name": {
+      "type": "string",
+      "defaultValue": "TransitSubnet",
+      "metadata": {
+        "description": "Subnet 2 Name"
+      }
+    },
+    "hubASubnet2Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.64/26",
+      "metadata": {
+        "description": "Subnet 2 Prefix"
+      }
+    },
+    "hubASubnet2StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.136.68",
+      "metadata": {
+        "description": "Subnet 2 start address, 2 consecutive private IPs are required"
+      }
+    },
+    "hubASubnet3Name": {
+      "type": "string",
+      "defaultValue": "HASyncSubnet",
+      "metadata": {
+        "description": "Subnet 3 Name"
+      }
+    },
+    "hubASubnet3Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.128/26",
+      "metadata": {
+        "description": "Subnet 3 Prefix"
+      }
+    },
+    "hubASubnet3StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.136.132",
+      "metadata": {
+        "description": "Subnet 3 start address, 2 consecutive private IPs are required"
+      }
+    },
+    "hubASubnet4Name": {
+      "type": "string",
+      "defaultValue": "ManagementSubnet",
+      "metadata": {
+        "description": "Subnet 4 Name"
+      }
+    },
+    "hubASubnet4Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.192/27",
+      "metadata": {
+        "description": "Subnet 4 Prefix"
+      }
+    },
+    "hubASubnet4StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.136.196",
+      "metadata": {
+        "description": "Subnet 4 start address, 2 consecutive private IPs are required"
+      }
+    },
+
+    "hubASubnet5Name": {
+      "type": "string",
+      "defaultValue": "RouteServerSubnet",
+      "metadata": {
+        "description": "Subnet 5 Name"
+      }
+    },
+    "hubASubnet5Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.224/27",
+      "metadata": {
+        "description": "Subnet 5 Prefix"
+      }
+    },
+    "hubASubnet5StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.136.228",
+      "metadata": {
+        "description": "Subnet 5 start address, 2 consecutive private IPs are required"
+      }
+    },
+
+    "hubASubnet6Name": {
+      "type": "string",
+      "defaultValue": "ProtectedSubnet",
+      "metadata": {
+        "description": "Subnet 6 Name"
+      }
+    },
+    "hubASubnet6Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.137.0/24",
+      "metadata": {
+        "description": "Subnet 6 Prefix"
+      }
+    },
+    "hubAVnetNewOrExistingSpoke1": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing vnet"
+      }
+    },
+    "hubAVnetNameSpoke1": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure virtual network for Spoke1"
+      }
+    },
+    "hubAVnetResourceGroupSpoke1": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource Group containing the existing virtual network Spoke 1 (with new vnet the current resourcegroup is used)"
+      }
+    },
+    "hubAVnetAddressPrefixSpoke1": {
+      "type": "string",
+      "defaultValue": "172.16.140.0/24",
+      "metadata": {
+        "description": "Virtual Network Address prefix for Spoke 1"
+      }
+    },
+    "hubASubnet1Spoke1Name": {
+      "type": "string",
+      "defaultValue": "SPOKE1Subnet",
+      "metadata": {
+        "description": "Subnet 1 Spoke 1"
+      }
+    },
+    "hubASubnet1Spoke1Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.140.0/26",
+      "metadata": {
+        "description": "Subnet 1 Spoke 1"
+      }
+    },
+    "hubBFortiGateASN": {
+      "type": "string",
+      "defaultValue": "65006",
+      "metadata": {
+        "description": "FortiGate BGP ASN to setup the communication with the Azure Route Server"
+      }
+    },
+    "hubBVnetNewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing vnet"
+      }
+    },
+    "hubBVnetName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure virtual network."
+      }
+    },
+    "hubBVnetResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource Group containing the virtual network - or new resource group from above (if new vnet)"
+      }
+    },
+    "hubBVnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.144.0/22",
+      "metadata": {
+        "description": "Virtual Network Address prefix"
+      }
+    },
+    "hubBSubnet1Name": {
+      "type": "string",
+      "defaultValue": "ExternalSubnet",
+      "metadata": {
+        "description": "Subnet 1 Name"
+      }
+    },
+    "hubBSubnet1Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.144.0/26",
+      "metadata": {
+        "description": "Subnet 1 Prefix"
+      }
+    },
+    "hubBSubnet1StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.144.4",
+      "metadata": {
+        "description": "Subnet 1 start address, 2 consecutive private IPs are required"
+      }
+    },
+    "hubBSubnet2Name": {
+      "type": "string",
+      "defaultValue": "TransitSubnet",
+      "metadata": {
+        "description": "Subnet 2 Name"
+      }
+    },
+    "hubBSubnet2Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.144.64/26",
+      "metadata": {
+        "description": "Subnet 2 Prefix"
+      }
+    },
+    "hubBSubnet2StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.144.68",
+      "metadata": {
+        "description": "Subnet 2 start address, 2 consecutive private IPs are required"
+      }
+    },
+    "hubBSubnet3Name": {
+      "type": "string",
+      "defaultValue": "HASyncSubnet",
+      "metadata": {
+        "description": "Subnet 3 Name"
+      }
+    },
+    "hubBSubnet3Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.144.128/26",
+      "metadata": {
+        "description": "Subnet 3 Prefix"
+      }
+    },
+    "hubBSubnet3StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.144.132",
+      "metadata": {
+        "description": "Subnet 3 start address, 2 consecutive private IPs are required"
+      }
+    },
+    "hubBSubnet4Name": {
+      "type": "string",
+      "defaultValue": "ManagementSubnet",
+      "metadata": {
+        "description": "Subnet 4 Name"
+      }
+    },
+    "hubBSubnet4Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.144.192/27",
+      "metadata": {
+        "description": "Subnet 4 Prefix"
+      }
+    },
+    "hubBSubnet4StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.144.196",
+      "metadata": {
+        "description": "Subnet 4 start address, 2 consecutive private IPs are required"
+      }
+    },
+
+    "hubBSubnet5Name": {
+      "type": "string",
+      "defaultValue": "RouteServerSubnet",
+      "metadata": {
+        "description": "Subnet 5 Name"
+      }
+    },
+    "hubBSubnet5Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.144.224/27",
+      "metadata": {
+        "description": "Subnet 5 Prefix"
+      }
+    },
+    "hubBSubnet5StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.144.228",
+      "metadata": {
+        "description": "Subnet 5 start address, 2 consecutive private IPs are required"
+      }
+    },
+
+    "hubBSubnet6Name": {
+      "type": "string",
+      "defaultValue": "ProtectedSubnet",
+      "metadata": {
+        "description": "Subnet 6 Name"
+      }
+    },
+    "hubBSubnet6Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.145.0/24",
+      "metadata": {
+        "description": "Subnet 6 Prefix"
+      }
+    },
+    "hubBVnetNewOrExistingSpoke1": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing vnet"
+      }
+    },
+    "hubBVnetNameSpoke1": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure virtual network for Spoke1"
+      }
+    },
+    "hubBVnetResourceGroupSpoke1": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource Group containing the existing virtual network Spoke 1 (with new vnet the current resourcegroup is used)"
+      }
+    },
+    "hubBVnetAddressPrefixSpoke1": {
+      "type": "string",
+      "defaultValue": "172.16.140.0/24",
+      "metadata": {
+        "description": "Virtual Network Address prefix for Spoke 1"
+      }
+    },
+    "hubBSubnet1Spoke1Name": {
+      "type": "string",
+      "defaultValue": "SPOKE1Subnet",
+      "metadata": {
+        "description": "Subnet 1 Spoke 1"
+      }
+    },
+    "hubBSubnet1Spoke1Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.140.0/26",
+      "metadata": {
+        "description": "Subnet 1 Spoke 1"
+      }
+    },
+    "overlaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.135.0/24",
+      "metadata": {
+        "description": "Overlay Subnet for the VXLAN"
+      }
+    },
+    "hubAFortiGateLicenseBYOLA": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary FortiGate BYOL license content"
+      }
+    },
+    "hubAFortiGateLicenseBYOLB": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Secondary FortiGate BYOL license content"
+      }
+    },
+    "hubBFortiGateLicenseBYOLA": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Primary FortiGate BYOL license content"
+      }
+    },
+    "hubBFortiGateLicenseBYOLB": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Secondary FortiGate BYOL license content"
+      }
+    },
+    "hubALocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for HUB A resources."
+      }
+    },
+    "fortinetTags": {
+      "type": "object",
+      "defaultValue": {
+        "publisher": "Fortinet",
+        "template": "Azure Route Server - Multi Hub",
+        "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925ARSMH"
+      }
+    }
+  },
+  "variables": {
+
+    "hubAVnetName": "[if(equals(parameters('hubAVnetName'),''),concat(parameters('fortiGateNamePrefix'),'-HUBA-VNET'),parameters('hubAVnetName'))]",
+    "hubAVnetId": "[if(equals(parameters('hubAVnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('hubAVnetName')),resourceId(parameters('hubAVnetResourceGroup'),'Microsoft.Network/virtualNetworks', variables('hubAVnetName')))]",
+    "hubAVnetNameSpoke1": "[if(equals(parameters('hubAVnetNameSpoke1'),''),concat(parameters('fortiGateNamePrefix'),'-HUBA-VNET-SPOKE1'),parameters('hubAVnetNameSpoke1'))]",
+    "hubAVnetIdSpoke1": "[if(equals(parameters('hubAVnetNewOrExistingSpoke1'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('hubAVnetNameSpoke1')),resourceId(parameters('hubAVnetResourceGroupSpoke1'),'Microsoft.Network/virtualNetworks', variables('hubAVnetNameSpoke1')))]",
+    "hubAVnetResourceGroup": "[if(equals(parameters('hubAVnetNewOrExisting'),'new'),resourceGroup().name, parameters('hubAVnetResourceGroup'))]",
+    "hubARouteTableFGTName": "[concat(parameters('fortiGateNamePrefix'),'-HUBA-FGT-RT')]",
+    "hubARouteTableFGTId": "[resourceId('Microsoft.Network/routeTables',variables('hubARouteTableFGTName'))]",
+
+    "hubAtoSpoke1PeeringName": "[concat(variables('hubAVnetName'), 'To', variables('hubAVnetNameSpoke1'))]",
+    "spoke1toHubAPeeringName": "[concat(variables('hubAVnetNameSpoke1'), 'To', variables('hubAVnetName'))]",
+
+    "hubBVnetName": "[if(equals(parameters('hubBVnetName'),''),concat(parameters('fortiGateNamePrefix'),'-HUBB-VNET'),parameters('hubBVnetName'))]",
+    "hubBVnetId": "[if(equals(parameters('hubBVnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('hubBVnetName')),resourceId(parameters('hubBVnetResourceGroup'),'Microsoft.Network/virtualNetworks', variables('hubBVnetName')))]",
+    "hubBVnetNameSpoke1": "[if(equals(parameters('hubBVnetNameSpoke1'),''),concat(parameters('fortiGateNamePrefix'),'-HUBB-VNET-SPOKE1'),parameters('hubBVnetNameSpoke1'))]",
+    "hubBVnetIdSpoke1": "[if(equals(parameters('hubBVnetNewOrExistingSpoke1'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('hubBVnetNameSpoke1')),resourceId(parameters('hubBVnetResourceGroupSpoke1'),'Microsoft.Network/virtualNetworks', variables('hubBVnetNameSpoke1')))]",
+    "hubBVnetResourceGroup": "[if(equals(parameters('hubBVnetNewOrExisting'),'new'),resourceGroup().name, parameters('hubBVnetResourceGroup'))]",
+    "hubBRouteTableFGTName": "[concat(parameters('fortiGateNamePrefix'),'-HUBB-FGT-RT')]",
+    "hubBRouteTableFGTId": "[resourceId('Microsot.Network/routeTables',variables('hubBRouteTableFGTName'))]",
+
+    "hubBtoSpoke1PeeringName": "[concat(variables('hubBVnetName'), 'To', variables('hubBVnetNameSpoke1'))]",
+    "spoke1toHubBPeeringName": "[concat(variables('hubBVnetNameSpoke1'), 'To', variables('hubBVnetName'))]",
+
+    "hubASn1IPArray": "[split(parameters('hubASubnet1Prefix'),'.')]",
+    "hubASn1IPArray2": "[string(int(variables('hubASn1IPArray')[2]))]",
+    "hubASn1IPArray1": "[string(int(variables('hubASn1IPArray')[1]))]",
+    "hubASn1IPArray0": "[string(int(variables('hubASn1IPArray')[0]))]",
+    "hubASn1IPStartAddress": "[split(parameters('hubASubnet1StartAddress'),'.')]",
+    "hubASn1IPfga": "[concat(variables('hubASn1IPArray0'),'.',variables('hubASn1IPArray1'),'.',variables('hubASn1IPArray2'),'.',int(variables('hubASn1IPStartAddress')[3]))]",
+    "hubASn1IPfgb": "[concat(variables('hubASn1IPArray0'),'.',variables('hubASn1IPArray1'),'.',variables('hubASn1IPArray2'),'.',add(int(variables('hubASn1IPStartAddress')[3]),1))]",
+
+    "hubBSn1IPArray": "[split(parameters('hubBSubnet1Prefix'),'.')]",
+    "hubBSn1IPArray2": "[string(int(variables('hubBSn1IPArray')[2]))]",
+    "hubBSn1IPArray1": "[string(int(variables('hubBSn1IPArray')[1]))]",
+    "hubBSn1IPArray0": "[string(int(variables('hubBSn1IPArray')[0]))]",
+    "hubBSn1IPStartAddress": "[split(parameters('hubBSubnet1StartAddress'),'.')]",
+    "hubBSn1IPfga": "[concat(variables('hubBSn1IPArray0'),'.',variables('hubBSn1IPArray1'),'.',variables('hubBSn1IPArray2'),'.',int(variables('hubBSn1IPStartAddress')[3]))]",
+    "hubBSn1IPfgb": "[concat(variables('hubBSn1IPArray0'),'.',variables('hubBSn1IPArray1'),'.',variables('hubBSn1IPArray2'),'.',add(int(variables('hubBSn1IPStartAddress')[3]),1))]",
+
+    "overlaySubnetIPArray": "[split(parameters('overlaySubnetPrefix'),'.')]",
+    "overlaySubnetCIDRmask": "[int( split( variables('overlaySubnetIPArray')[3], '/' )[1] )]",
+    "overlaySubnetIPArray3": "[int( split( variables('overlaySubnetIPArray')[3], '/' )[0] )]",
+    "overlaySubnetIPArray2": "[string(int(variables('overlaySubnetIPArray')[2]))]",
+    "overlaySubnetIPArray1": "[string(int(variables('overlaySubnetIPArray')[1]))]",
+    "overlaySubnetIPArray0": "[string(int(variables('overlaySubnetIPArray')[0]))]",
+    "overlaySubnetIPhubAfgA": "[concat(variables('overlaySubnetIPArray0'),'.',variables('overlaySubnetIPArray1'),'.',variables('overlaySubnetIPArray2'),'.',add(variables('overlaySubnetIPArray3'),1))]",
+    "overlaySubnetIPhubAfgB": "[concat(variables('overlaySubnetIPArray0'),'.',variables('overlaySubnetIPArray1'),'.',variables('overlaySubnetIPArray2'),'.',add(variables('overlaySubnetIPArray3'),2))]",
+    "overlaySubnetIPhubBfgA": "[concat(variables('overlaySubnetIPArray0'),'.',variables('overlaySubnetIPArray1'),'.',variables('overlaySubnetIPArray2'),'.',add(variables('overlaySubnetIPArray3'),3))]",
+    "overlaySubnetIPhubBfgB": "[concat(variables('overlaySubnetIPArray0'),'.',variables('overlaySubnetIPArray1'),'.',variables('overlaySubnetIPArray2'),'.',add(variables('overlaySubnetIPArray3'),4))]",
+
+    "hubAFGTACustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubBSn1IPfga'), ' ', variables('hubBSn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubAfgA'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n config neighbor\n edit', variables('overlaySubnetIPhubBfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as ', parameters('hubBFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubBfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as', parameters('hubBFortiGateASN'), '\n next\n end\n end\n config firewall policy\n edit 1\n set name ', variables('hubAVnetName'), '-2-', variables('hubBVnetName'), '\n set srcintf port2\n set dstintf vx1\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n edit 2\n set name ', variables('hubBVnetName'), '-2-', variables('hubAVnetName'), '\n set srcintf vx1\n set dstintf port2\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n end')]",
+    "hubAFGTBCustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubBSn1IPfga'), ' ', variables('hubBSn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubAfgB'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n config neighbor\n edit', variables('overlaySubnetIPhubBfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as ', parameters('hubBFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubBfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as', parameters('hubBFortiGateASN'), '\n next\n end\n end')]",
+    "hubBFGTACustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubASn1IPfga'), ' ', variables('hubASn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubBfgA'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n config neighbor\n edit', variables('overlaySubnetIPhubAfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as ', parameters('hubAFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubAfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as', parameters('hubAFortiGateASN'), '\n next\n end\n end\n config firewall policy\n edit 1\n set name ', variables('hubAVnetName'), '-2-', variables('hubBVnetName'), '\n set srcintf vx1\n set dstintf port2\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n edit 2\n set name ', variables('hubBVnetName'), '-2-', variables('hubAVnetName'), '\n set srcintf port2\n set dstintf vx1\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n end')]",
+    "hubBFGTBCustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubASn1IPfga'), ' ', variables('hubASn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubBfgA'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n config neighbor\n edit', variables('overlaySubnetIPhubAfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as ', parameters('hubAFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubAfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as', parameters('hubAFortiGateASN'), '\n next\n end\n end')]",
+
+    "hubADeployementName": "[concat(parameters('fortiGateNamePrefix'), '-azurerouteserver-huba-', uniquestring(resourceGroup().id))]",
+    "hubBDeployementName": "[concat(parameters('fortiGateNamePrefix'), '-azurerouteserver-hubb-', uniquestring(resourceGroup().id))]",
+    "hubARTDeployementName": "[concat(parameters('fortiGateNamePrefix'), '-huba-update-route-tables-', uniquestring(resourceGroup().id))]",
+    "hubBRTDeployementName": "[concat(parameters('fortiGateNamePrefix'), '-hubb-update-route-tables-', uniquestring(resourceGroup().id))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('fortiGateNamePrefix'), '-fortinetdeployment-', uniquestring(resourceGroup().id))]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('hubAVnetNewOrExisting'), 'new')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2020-04-01",
+      "name": "[variables('hubAVnetName')]",
+      "location": "[parameters('hubALocation')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('hubAVnetAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('hubASubnet1Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubASubnet1Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('hubASubnet2Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubASubnet2Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('hubASubnet3Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubASubnet3Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('hubASubnet4Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubASubnet4Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('hubASubnet5Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubASubnet5Prefix')]"
+            }
+          }
+        ]
+      },
+      "resources": [
+        {
+          "condition": "[equals(parameters('hubAVnetNewOrExisting'), 'new')]",
+          "apiVersion": "2020-04-01",
+          "type": "virtualNetworkPeerings",
+          "name": "[variables('hubAtoSpoke1PeeringName')]",
+          "location": "[parameters('hubALocation')]",
+          "dependsOn": [
+            "[variables('hubAVnetName')]",
+            "[variables('hubAVnetNameSpoke1')]"
+          ],
+          "comments": "Hub to Spoke 1",
+          "properties": {
+            "allowVirtualNetworkAccess": true,
+            "allowForwardedTraffic": true,
+            "allowGatewayTransit": false,
+            "useRemoteGateways": false,
+            "remoteVirtualNetwork": {
+              "id": "[variables('hubAVnetIdSpoke1')]"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "condition": "[equals(parameters('hubAVnetNewOrExistingSpoke1'), 'new')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2020-04-01",
+      "name": "[variables('hubAVnetNameSpoke1')]",
+      "location": "[parameters('hubALocation')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('hubAVnetAddressPrefixSpoke1')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('hubASubnet1Spoke1Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubASubnet1Spoke1Prefix')]"
+            }
+          }
+        ]
+      },
+      "resources": [
+        {
+          "apiVersion": "2020-04-01",
+          "type": "virtualNetworkPeerings",
+          "name": "[variables('spoke1toHubAPeeringName')]",
+          "location": "[parameters('hubALocation')]",
+          "dependsOn": [
+            "[variables('hubAVnetName')]",
+            "[variables('hubAVnetNameSpoke1')]"
+          ],
+          "comments": "Spoke 1 to Hub",
+          "properties": {
+            "allowVirtualNetworkAccess": true,
+            "allowForwardedTraffic": true,
+            "allowGatewayTransit": false,
+            "useRemoteGateways": false,
+            "remoteVirtualNetwork": {
+              "id": "[variables('hubAVnetId')]"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "condition": "[equals(parameters('hubBVnetNewOrExisting'), 'new')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2020-04-01",
+      "name": "[variables('hubBVnetName')]",
+      "location": "[parameters('hubBLocation')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('hubBVnetAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('hubBSubnet1Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubBSubnet1Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('hubBSubnet2Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubBSubnet2Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('hubBSubnet3Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubBSubnet3Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('hubBSubnet4Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubBSubnet4Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('hubBSubnet5Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubBSubnet5Prefix')]"
+            }
+          }
+        ]
+      },
+      "resources": [
+        {
+          "condition": "[equals(parameters('hubBVnetNewOrExisting'), 'new')]",
+          "apiVersion": "2020-04-01",
+          "type": "virtualNetworkPeerings",
+          "name": "[variables('hubBtoSpoke1PeeringName')]",
+          "location": "[parameters('hubBLocation')]",
+          "dependsOn": [
+            "[variables('hubBVnetName')]",
+            "[variables('hubBVnetNameSpoke1')]"
+          ],
+          "comments": "Hub to Spoke 1",
+          "properties": {
+            "allowVirtualNetworkAccess": true,
+            "allowForwardedTraffic": true,
+            "allowGatewayTransit": false,
+            "useRemoteGateways": false,
+            "remoteVirtualNetwork": {
+              "id": "[variables('hubBVnetIdSpoke1')]"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "condition": "[equals(parameters('hubBVnetNewOrExistingSpoke1'), 'new')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2020-04-01",
+      "name": "[variables('hubBVnetNameSpoke1')]",
+      "location": "[parameters('hubBLocation')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('hubBVnetAddressPrefixSpoke1')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('hubBSubnet1Spoke1Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('hubBSubnet1Spoke1Prefix')]"
+            }
+          }
+        ]
+      },
+      "resources": [
+        {
+          "apiVersion": "2020-04-01",
+          "type": "virtualNetworkPeerings",
+          "name": "[variables('spoke1toHubBPeeringName')]",
+          "location": "[parameters('hubBLocation')]",
+          "dependsOn": [
+            "[variables('hubBVnetName')]",
+            "[variables('hubBVnetNameSpoke1')]"
+          ],
+          "comments": "Spoke 1 to Hub",
+          "properties": {
+            "allowVirtualNetworkAccess": true,
+            "allowForwardedTraffic": true,
+            "allowGatewayTransit": false,
+            "useRemoteGateways": false,
+            "remoteVirtualNetwork": {
+              "id": "[variables('hubBVnetId')]"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[variables('hubADeployementName')]",
+      "dependsOn": [
+          "[variables('hubAVnetName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/fortinet/azure-templates/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": { "value": "[parameters('adminUsername')]" },
+          "adminPassword": { "value": "[parameters('adminPassword')]" },
+          "fortiGateNamePrefix": { "value": "[concat(parameters('fortiGateNamePrefix'),'-HubA')]" },
+          "fortiGateImageSKU": { "value": "[parameters('fortiGateImageSKU')]" },
+          "fortiGateImageVersion": { "value": "[parameters('fortiGateImageVersion')]" },
+          "fortiGateAAditionalCustomData": { "value": "[variables('hubAFGTACustomData')]" },
+          "fortiGateBAditionalCustomData": { "value": "[variables('hubAFGTBCustomData')]" },
+          "fortiGateBGPASN": { "value": "65005" },
+          "instanceType": { "value": "[parameters('instanceType')]" },
+          "acceleratedNetworking": { "value": "false" },
+          "publicIpNewOrExisting": { "value": "new" },
+          "publicIp2NewOrExisting": { "value": "new" },
+          "publicIp3NewOrExisting": { "value": "new" },
+          "publicIp4NewOrExisting": { "value": "new" },
+          "vnetNewOrExisting": { "value": "existing" },
+          "vnetName": { "value": "[variables('hubAVnetName')]" },
+          "vnetResourceGroup": { "value": "[variables('hubAVnetResourceGroup')]" },
+          "vnetAddressPrefix": { "value": "[parameters('hubAVnetAddressPrefix')]" },
+          "subnet1Name": { "value": "[parameters('hubASubnet1Name')]" },
+          "subnet1Prefix": { "value": "[parameters('hubASubnet1Prefix')]" },
+          "subnet1StartAddress": { "value": "[parameters('hubASubnet1StartAddress')]" },
+          "subnet2Name": { "value": "[parameters('hubASubnet2Name')]" },
+          "subnet2Prefix": { "value": "[parameters('hubASubnet2Prefix')]" },
+          "subnet2StartAddress": { "value": "[parameters('hubASubnet2StartAddress')]" },
+          "subnet3Name": { "value": "[parameters('hubASubnet3Name')]" },
+          "subnet3Prefix": { "value": "[parameters('hubASubnet3Prefix')]" },
+          "subnet3StartAddress": { "value": "[parameters('hubASubnet3StartAddress')]" },
+          "subnet4Name": { "value": "[parameters('hubASubnet4Name')]" },
+          "subnet4Prefix": { "value": "[parameters('hubASubnet4Prefix')]" },
+          "subnet4StartAddress": { "value": "[parameters('hubASubnet4StartAddress')]" },
+          "subnet5Name": { "value": "[parameters('hubASubnet5Name')]" },
+          "subnet5Prefix": { "value": "[parameters('hubASubnet5Prefix')]" },
+          "subnet5StartAddress": { "value": "[parameters('hubASubnet5StartAddress')]" },
+          "subnet6Name": { "value": "[parameters('hubASubnet6Name')]" },
+          "subnet6Prefix": { "value": "[parameters('hubASubnet6Prefix')]" },
+          "routeTableFGTName": { "value": "[variables('hubARouteTableFGTName')]" },
+          "fortiManager": { "value": "no" },
+          "fortiGateLicenseBYOLA": { "value": "[parameters('hubAFortiGateLicenseBYOLA')]" },
+          "fortiGateLicenseBYOLB": { "value": "[parameters('hubAFortiGateLicenseBYOLB')]" },
+          "location": { "value": "[parameters('hubALocation')]" },
+          "fortinetTags": { "value": "[parameters('fortinetTags')]" }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[variables('hubBDeployementName')]",
+      "dependsOn": [
+          "[variables('hubBVnetName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/fortinet/azure-templates/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": { "value": "[parameters('adminUsername')]" },
+          "adminPassword": { "value": "[parameters('adminPassword')]" },
+          "fortiGateNamePrefix": { "value": "[concat(parameters('fortiGateNamePrefix'),'-HubB')]" },
+          "fortiGateImageSKU": { "value": "[parameters('fortiGateImageSKU')]" },
+          "fortiGateImageVersion": { "value": "[parameters('fortiGateImageVersion')]" },
+          "fortiGateAAditionalCustomData": { "value": "[variables('hubBFGTACustomData')]" },
+          "fortiGateBAditionalCustomData": { "value": "[variables('hubBFGTBCustomData')]" },
+          "fortiGateBGPASN": { "value": "65005" },
+          "instanceType": { "value": "[parameters('instanceType')]" },
+          "acceleratedNetworking": { "value": "false" },
+          "publicIpNewOrExisting": { "value": "new" },
+          "publicIp2NewOrExisting": { "value": "new" },
+          "publicIp3NewOrExisting": { "value": "new" },
+          "publicIp4NewOrExisting": { "value": "new" },
+          "vnetNewOrExisting": { "value": "existing" },
+          "vnetName": { "value": "[variables('hubBVnetName')]" },
+          "vnetResourceGroup": { "value": "[variables('hubBVnetResourceGroup')]" },
+          "vnetAddressPrefix": { "value": "[parameters('hubBVnetAddressPrefix')]" },
+          "subnet1Name": { "value": "[parameters('hubBSubnet1Name')]" },
+          "subnet1Prefix": { "value": "[parameters('hubBSubnet1Prefix')]" },
+          "subnet1StartAddress": { "value": "[parameters('hubBSubnet1StartAddress')]" },
+          "subnet2Name": { "value": "[parameters('hubBSubnet2Name')]" },
+          "subnet2Prefix": { "value": "[parameters('hubBSubnet2Prefix')]" },
+          "subnet2StartAddress": { "value": "[parameters('hubBSubnet2StartAddress')]" },
+          "subnet3Name": { "value": "[parameters('hubBSubnet3Name')]" },
+          "subnet3Prefix": { "value": "[parameters('hubBSubnet3Prefix')]" },
+          "subnet3StartAddress": { "value": "[parameters('hubBSubnet3StartAddress')]" },
+          "subnet4Name": { "value": "[parameters('hubBSubnet4Name')]" },
+          "subnet4Prefix": { "value": "[parameters('hubBSubnet4Prefix')]" },
+          "subnet4StartAddress": { "value": "[parameters('hubBSubnet4StartAddress')]" },
+          "subnet5Name": { "value": "[parameters('hubBSubnet5Name')]" },
+          "subnet5Prefix": { "value": "[parameters('hubBSubnet5Prefix')]" },
+          "subnet5StartAddress": { "value": "[parameters('hubBSubnet5StartAddress')]" },
+          "subnet6Name": { "value": "[parameters('hubBSubnet6Name')]" },
+          "subnet6Prefix": { "value": "[parameters('hubBSubnet6Prefix')]" },
+          "routeTableFGTName": { "value": "[variables('hubBRouteTableFGTName')]" },
+          "fortiManager": { "value": "no" },
+          "fortiGateLicenseBYOLA": { "value": "[parameters('hubBFortiGateLicenseBYOLA')]" },
+          "fortiGateLicenseBYOLB": { "value": "[parameters('hubBFortiGateLicenseBYOLB')]" },
+          "location": { "value": "[parameters('hubBLocation')]" },
+          "fortinetTags": { "value": "[parameters('fortinetTags')]" }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "name": "[variables('hubARTDeployementName')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.Resources/deployments', variables('hubADeployementName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2019-09-01",
+              "name": "[concat(variables('hubAVnetName'),'/',parameters('hubASubnet1Name'))]",
+              "properties": {
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet1Name')), '2020-04-01').addressPrefix]",
+                "routeTable": {
+                  "id": "[variables('hubARouteTableFGTId')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2019-09-01",
+              "name": "[concat(variables('hubAVnetName'),'/',parameters('hubASubnet2Name'))]",
+              "dependsOn": [
+                "[parameters('hubASubnet1Name')]"
+              ],
+              "properties": {
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet2Name')), '2020-04-01').addressPrefix]",
+                "routeTable": {
+                  "id": "[variables('hubARouteTableFGTId')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2019-09-01",
+              "name": "[concat(variables('hubAVnetName'),'/',parameters('hubASubnet3Name'))]",
+              "dependsOn": [
+                "[parameters('hubASubnet2Name')]"
+              ],
+              "properties": {
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet3Name')), '2020-04-01').addressPrefix]",
+                "routeTable": {
+                  "id": "[variables('hubARouteTableFGTId')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2019-09-01",
+              "name": "[concat(variables('hubAVnetName'),'/',parameters('hubASubnet4Name'))]",
+              "dependsOn": [
+                "[parameters('hubASubnet3Name')]"
+              ],
+              "properties": {
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet4Name')), '2020-04-01').addressPrefix]",
+                "routeTable": {
+                  "id": "[variables('hubARouteTableFGTId')]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "name": "[variables('hubBRTDeployementName')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.Resources/deployments', variables('hubADeployementName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2019-09-01",
+              "name": "[concat(variables('hubBVnetName'),'/',parameters('hubBSubnet1Name'))]",
+              "properties": {
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet1Name')), '2020-04-01').addressPrefix]",
+                "routeTable": {
+                  "id": "[variables('hubBRouteTableFGTId')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2019-09-01",
+              "name": "[concat(variables('hubBVnetName'),'/',parameters('hubBSubnet2Name'))]",
+              "dependsOn": [
+                "[parameters('hubBSubnet1Name')]"
+              ],
+              "properties": {
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet2Name')), '2020-04-01').addressPrefix]",
+                "routeTable": {
+                  "id": "[variables('hubBRouteTableFGTId')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2019-09-01",
+              "name": "[concat(variables('hubBVnetName'),'/',parameters('hubBSubnet3Name'))]",
+              "dependsOn": [
+                "[parameters('hubBSubnet2Name')]"
+              ],
+              "properties": {
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet3Name')), '2020-04-01').addressPrefix]",
+                "routeTable": {
+                  "id": "[variables('hubBRouteTableFGTId')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2019-09-01",
+              "name": "[concat(variables('hubBVnetName'),'/',parameters('hubBSubnet4Name'))]",
+              "dependsOn": [
+                "[parameters('hubBSubnet3Name')]"
+              ],
+              "properties": {
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet4Name')), '2020-04-01').addressPrefix]",
+                "routeTable": {
+                  "id": "[variables('hubBRouteTableFGTId')]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
