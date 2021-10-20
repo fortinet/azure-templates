@@ -14,13 +14,13 @@
         "description": "Password for the Virtual Machine."
       }
     },
-    "fortigateNamePrefix": {
+    "fortiGateNamePrefix": {
       "type": "string",
       "metadata": {
         "description": "Naming prefix for all deployed resources"
       }
     },
-    "fortigateImageSKU": {
+    "fortiGateImageSKU": {
       "type": "string",
       "defaultValue": "fortinet_fg-vm",
       "allowedValues": [
@@ -31,7 +31,7 @@
         "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)"
       }
     },
-    "fortigateImageVersion": {
+    "fortiGateImageVersion": {
       "type": "string",
       "defaultValue": "latest",
       "allowedValues": [
@@ -263,14 +263,14 @@
     }
   },
   "variables": {
-    "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('fortigateNamePrefix'),'-VNET'),parameters('vnetName'))]",
+    "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('fortiGateNamePrefix'),'-VNET'),parameters('vnetName'))]",
     "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
     "subnet2Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')))]",
     "subnet3Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet3Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet3Name')))]",
     "subnet4Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet4Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet4Name')))]",
 
-    "vmName": "[concat(parameters('fortigateNamePrefix'),'-FGT-A')]",
-    "vm2Name": "[concat(parameters('fortigateNamePrefix'),'-FGT-B')]",
+    "vmName": "[concat(parameters('fortiGateNamePrefix'),'-FGT-A')]",
+    "vm2Name": "[concat(parameters('fortiGateNamePrefix'),'-FGT-B')]",
 
     "routeTableName": "FGTDefaultAPRouteTable",
     "routeTableId": "[resourceId('Microsoft.Network/routeTables',variables('routeTableName'))]",
@@ -299,7 +299,7 @@
     "publicIP2Id": "[if(equals(parameters('publicIP2NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIP2Name')),resourceId(parameters('publicIP2ResourceGroup'),'Microsoft.Network/publicIPAddresses',parameters('publicIP2Name')))]",
     "publicIP3Id": "[if(equals(parameters('publicIP3NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIP3Name')),resourceId(parameters('publicIP3ResourceGroup'),'Microsoft.Network/publicIPAddresses',parameters('publicIP3Name')))]",
 
-    "NSGName": "[concat(parameters('fortigateNamePrefix'),'-',uniqueString(resourceGroup().id),'-NSG')]",
+    "NSGName": "[concat(parameters('fortiGateNamePrefix'),'-',uniqueString(resourceGroup().id),'-NSG')]",
     "NSGId": "[resourceID('Microsoft.Network/networkSecurityGroups/',variables('NSGName'))]",
 
     "sn1IPArray": "[split(parameters('subnet1Prefix'),'.')]",
@@ -795,7 +795,7 @@
       ],
       "location": "[parameters('location')]",
       "plan": {
-        "name": "[parameters('fortigateImageSKU')]",
+        "name": "[parameters('fortiGateImageSKU')]",
         "publisher": "fortinet",
         "product": "fortinet_fortigate-vm_v5"
       },
@@ -819,7 +819,7 @@
           "imageReference": {
             "publisher": "fortinet",
             "offer": "fortinet_fortigate-vm_v5",
-            "sku": "[parameters('fortigateImageSKU')]",
+            "sku": "[parameters('fortiGateImageSKU')]",
             "version": "[parameters('FortigateImageVersion')]"
           },
           "osDisk": {
@@ -878,7 +878,7 @@
       ],
       "location": "[parameters('location')]",
       "plan": {
-        "name": "[parameters('fortigateImageSKU')]",
+        "name": "[parameters('fortiGateImageSKU')]",
         "publisher": "fortinet",
         "product": "fortinet_fortigate-vm_v5"
       },
@@ -902,7 +902,7 @@
           "imageReference": {
             "publisher": "fortinet",
             "offer": "fortinet_fortigate-vm_v5",
-            "sku": "[parameters('fortigateImageSKU')]",
+            "sku": "[parameters('fortiGateImageSKU')]",
             "version": "[parameters('FortigateImageVersion')]"
           },
           "osDisk": {

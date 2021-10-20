@@ -94,7 +94,7 @@ echo "--> Validation deployment in $rg resource group ..."
 az deployment group validate --resource-group "$rg" \
                            --template-file azuredeploy.json \
                            --parameters adminUsername="$USERNAME" adminPassword="$PASSWORD" \
-                                        fortigateNamePrefix=$prefix vnetName="$vnet" vnetResourceGroup="$rgvnet" \
+                                        fortiGateNamePrefix=$prefix vnetName="$vnet" vnetResourceGroup="$rgvnet" \
                                         vnetNewOrExisting="existing"
 
 result=$?
@@ -109,7 +109,7 @@ echo "--> Deployment of $rg resources ..."
 az deployment group create --resource-group "$rg" \
                            --template-file azuredeploy.json \
                            --parameters adminUsername="$USERNAME" adminPassword=$PASSWORD \
-                                        fortigateNamePrefix=$prefix vnetName="$vnet" vnetResourceGroup="$rgvnet" \
+                                        fortiGateNamePrefix=$prefix vnetName="$vnet" vnetResourceGroup="$rgvnet" \
                                         vnetNewOrExisting="existing"
 result=$?
 if [[ $result != 0 ]];

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "adminUsername": {
@@ -43,7 +43,9 @@
         "6.4.2",
         "6.4.3",
         "6.4.5",
+        "6.4.6",
         "7.0.0",
+        "7.0.1",
         "latest"
       ],
       "metadata": {
@@ -398,7 +400,7 @@
     "routeTableSpoke2Id": "[resourceId('Microsoft.Network/routeTables',variables('routeTableSpoke2Name'))]",
 
     "hubtoSpoke1PeeringName": "[concat(variables('vnetName'), 'To', variables('vnetNameSpoke1'))]",
-    "spoke1toHubPeeringName": "[concat(variables('vnetNameSpoke1'), 'To', variables('vNetName'))]",
+    "spoke1toHubPeeringName": "[concat(variables('vnetNameSpoke1'), 'To', variables('vnetName'))]",
     "hubtoSpoke2PeeringName": "[concat(variables('vnetName'), 'To', variables('vnetNameSpoke2'))]",
     "spoke2toHubPeeringName": "[concat(variables('vnetNameSpoke2'), 'To', variables('vnetName'))]",
 
@@ -496,20 +498,20 @@
   },
   "resources": [
     {
-      "apiVersion": "2019-05-01",
+      "apiVersion": "2020-10-01",
       "name": "pid-2dc4b447-552f-557f-b1cc-2faec6f9f133",
       "type": "Microsoft.Resources/deployments",
       "properties":{
        "mode": "Incremental",
        "template": {
-         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deplymentTemplate.json#",
+         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
          "contentVersion": "1.0.0.0",
          "resources": []
        }
       }
     },
     {
-      "apiVersion": "2019-07-01",
+      "apiVersion": "2021-07-01",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('compute_AvailabilitySet_FG_Name')]",
       "tags": {
@@ -1399,7 +1401,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgaVmName')]",
-      "apiVersion": "2019-07-01",
+      "apiVersion": "2021-07-01",
       "tags": {
        "provider": "[toUpper(parameters('FortinetTags').provider)]"
       },
@@ -1482,7 +1484,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgbVmName')]",
-      "apiVersion": "2019-07-01",
+      "apiVersion": "2021-07-01",
       "tags": {
        "provider": "[toUpper(parameters('FortinetTags').provider)]"
       },

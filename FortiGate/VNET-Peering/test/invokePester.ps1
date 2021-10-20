@@ -28,7 +28,7 @@ if (-not(Test-Path $modulePath)) {
     # Note: PSGet and chocolatey are not supported in hosted vsts build agent
     $tempFile = Join-Path $TempDir pester.zip
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Invoke-WebRequest https://github.com/pester/Pester/archive/master.zip -OutFile $tempFile
+    Invoke-WebRequest https://github.com/pester/Pester/archive/main.zip -OutFile $tempFile
 
     [System.Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') | Out-Null
     [System.IO.Compression.ZipFile]::ExtractToDirectory($tempFile, $tempDir)
@@ -52,7 +52,7 @@ Import-Module $modulePath -DisableNameChecking
 $outputFile = Join-Path $SourceDir "TEST-armttk.xml";
 
 "Running ARM TTK"
-$results = @(Test-AzTemplate -TemplatePath $SourceDir)
+$results = @(Test-AzTemplate -TemplatePath $SourceDir -File azuredeploy.json)
 $results
 Export-NUnitXml -TestResults $results -Path $SourceDir
 dir $SourceDir

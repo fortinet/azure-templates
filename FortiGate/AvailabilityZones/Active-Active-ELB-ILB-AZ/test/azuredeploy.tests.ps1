@@ -82,9 +82,9 @@ Describe 'FGT A/A' {
         It 'Contains the expected parameters' {
             $expectedTemplateParameters = 'adminPassword',
                                           'adminUsername',
-                                          'fortigateImageSKU',
-                                          'fortigateImageVersion',
-                                          'fortigateNamePrefix',
+                                          'fortiGateImageSKU',
+                                          'fortiGateImageVersion',
+                                          'fortiGateNamePrefix',
                                           'fortinetTags',
                                           'instanceType',
                                           'location',
@@ -119,7 +119,7 @@ Describe 'FGT A/A' {
 
         $params = @{ 'adminUsername'=$testsAdminUsername
                      'adminPassword'=$testsResourceGroupName
-                     'fortigateNamePrefix'=$testsPrefix
+                     'fortiGateNamePrefix'=$testsPrefix
                     }
         $publicIPName = "FGTLBPublicIP"
         $publicIP2Name = "FGTLBPublicIP2"

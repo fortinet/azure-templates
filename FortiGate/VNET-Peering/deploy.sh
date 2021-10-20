@@ -96,7 +96,7 @@ result=$?
 if [ $result != 0 ];
 then
     echo "--> Validation failed ..."
-    exit $rc;
+    exit $result;
 fi
 
 # Template deployment
@@ -108,13 +108,13 @@ result=$?
 if [[ $result != 0 ]];
 then
     echo "--> Deployment failed ..."
-    exit $rc;
+    exit $result;
 else
 echo "
 ##############################################################################################################
 #
 # FortiGate Azure deployment using ARM Template
-# Cloud security services hub deployment - VNET peerin
+# Cloud security services hub deployment - VNET peering
 # Fortigate Active/Passive cluster with External + Internal Load Balancer
 #
 # The FortiGate systems is reachable via the management public IP addresses of the firewall
