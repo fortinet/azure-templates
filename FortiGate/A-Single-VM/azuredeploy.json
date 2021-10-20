@@ -43,7 +43,10 @@
         "6.4.2",
         "6.4.3",
         "6.4.5",
+        "6.4.6",
+        "6.4.7",
         "7.0.0",
+        "7.0.1",
         "latest"
       ],
       "metadata": {
@@ -230,6 +233,14 @@
         "description": "FortiGate BYOL license content"
       }
     },
+    "fortiGateLicenseFlexVM": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FortiGate BYOL Flex-VM license token"
+      }
+    },
+
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -255,10 +266,11 @@
 
     "fgaVmName": "[concat(parameters('fortiGateNamePrefix'),'-FGT-A')]",
     "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
-    "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
-    "customDataBody": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\nedit 1\nset gateway ', variables('sn1GatewayIP'), '\nset device port1\nnext\nedit 2\nset dst ', parameters('vnetAddressPrefix'), '\nset gateway ', variables('sn2GatewayIP'), '\nset device port2\nnext\nend\nconfig system interface\nedit port1\nset mode static\nset ip ',  variables('sn1IPfga'), '/', variables('sn1CIDRmask'), '\nset description external\nset allowaccess ping ssh https\nnext\nedit port2\nset mode static\nset ip ', variables('sn2IPfga'), '/', variables('sn2CIDRmask'), '\nset description internal\nset allowaccess ping ssh https\nnext\nend\n', variables('fmgCustomData'), parameters('fortiGateAditionalCustomData'), '\n')]",
+    "customDataFlexVM": "[if(equals(parameters('fortiGateLicenseFlexVM'),''),'',concat('exec vm-license ',parameters('fortiGateLicenseFlexVM'), '\n'))]",
+    "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
+    "customDataBody": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\nedit 1\nset gateway ', variables('sn1GatewayIP'), '\nset device port1\nnext\nedit 2\nset dst ', parameters('vnetAddressPrefix'), '\nset gateway ', variables('sn2GatewayIP'), '\nset device port2\nnext\nend\nconfig system interface\nedit port1\nset mode static\nset ip ',  variables('sn1IPfga'), '/', variables('sn1CIDRmask'), '\nset description external\nset allowaccess ping ssh https\nnext\nedit port2\nset mode static\nset ip ', variables('sn2IPfga'), '/', variables('sn2CIDRmask'), '\nset description internal\nset allowaccess ping ssh https\nnext\nend\n', variables('fmgCustomData'), parameters('fortiGateAditionalCustomData'), '\n', variables('customDataFlexVM'), '\n')]",
     "customDataLicenseHeader": "--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"fgtlicense\"\n\n",
-    "customDataFooter": "--12345--\n",
+    "customDataFooter": "\n--12345--\n",
     "customDataCombined": "[concat(variables('customDataHeader'),variables('customDataBody'),variables('customDataLicenseHeader'), parameters('fortiGateLicenseBYOL'), variables('customDataFooter'))]",
     "fgaCustomData": "[base64(if(equals(parameters('fortiGateLicenseBYOL'),''),variables('customDataBody'),variables('customDataCombined')))]",
 
@@ -303,13 +315,13 @@
   },
   "resources": [
     {
-      "apiVersion": "2019-10-01",
+      "apiVersion": "2020-10-01",
       "name": "[concat(parameters('fortiGateNamePrefix'), '-fortinetdeployment-', uniquestring(resourceGroup().id))]",
       "type": "Microsoft.Resources/deployments",
       "properties":{
        "mode": "Incremental",
        "template": {
-         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deplymentTemplate.json#",
+         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
          "contentVersion": "1.0.0.0",
          "resources": []
        }
@@ -516,7 +528,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgaVmName')]",
-      "apiVersion": "2019-07-01",
+      "apiVersion": "2021-07-01",
       "tags": {
        "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -579,5 +591,12 @@
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "customdata": {
+      "type": "string",
+      "value": "[variables('fgaCustomData')]"
+    }
   }
+
+}

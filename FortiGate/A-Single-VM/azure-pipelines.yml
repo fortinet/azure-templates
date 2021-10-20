@@ -6,7 +6,6 @@ pool:
   demands: azureps
 
 steps:
-
 - task: DownloadSecureFile@1
   name: sshkey
   displayName: 'Download SSH private key'
