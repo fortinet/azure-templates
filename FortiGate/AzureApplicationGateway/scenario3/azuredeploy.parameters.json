@@ -1,0 +1,134 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "adminPassword": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "fortiGateNamePrefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "fortiGateImageSKU": {
+            "value": "fortinet_fg-vm"
+        },
+        "fortiGateImageVersion": {
+            "value": "6.2.4"
+        },
+        "instanceType": {
+            "value": "Standard_F4s"
+        },
+        "acceleratedNetworking": {
+            "value": "true"
+        },
+        "publicIPNewOrExisting": {
+            "value": "new"
+        },
+        "publicIP2NewOrExisting": {
+            "value": "new"
+        },
+        "publicIP3NewOrExisting": {
+            "value": "new"
+        },
+        "publicIPName": {
+            "value": "FGTAPClusterPublicIP"
+        },
+        "publicIPResourceGroup": {
+            "value": ""
+        },
+        "publicIP2Name": {
+            "value": "FGTAMgmtPublicIP"
+        },
+        "publicIP2ResourceGroup": {
+            "value": ""
+        },
+        "publicIP3Name": {
+            "value": "FGTBMgmtPublicIP"
+        },
+        "publicIP3ResourceGroup": {
+            "value": ""
+        },
+        "publicIP4Name": {
+            "value": "AppGWPublicIP"
+        },
+        "publicIP4ResourceGroup": {
+            "value": ""
+        },
+        "publicIPAddressType": {
+            "value": "Static"
+        },
+        "vnetNewOrExisting": {
+            "value": "new"
+        },
+        "vnetName": {
+            "value": ""
+        },
+        "vnetResourceGroup": {
+            "value": ""
+        },
+        "vnetAddressPrefix": {
+            "value": "172.16.136.0/22"
+        },
+        "subnet1Name": {
+            "value": "ExternalSubnet"
+        },
+        "subnet1Prefix": {
+            "value": "172.16.136.0/26"
+        },
+        "subnet2Name": {
+            "value": "InternalSubnet"
+        },
+        "subnet2Prefix": {
+            "value": "172.16.136.64/26"
+        },
+        "subnet3Name": {
+            "value": "HASyncSubnet"
+        },
+        "subnet3Prefix": {
+            "value": "172.16.136.128/26"
+        },
+        "subnet4Name": {
+            "value": "ManagementSubnet"
+        },
+        "subnet4Prefix": {
+            "value": "172.16.136.192/26"
+        },
+        "subnet5Name": {
+            "value": "ProtectedSubnet"
+        },
+        "subnet5Prefix": {
+            "value": "172.16.137.0/24"
+        },
+        "subnet6Name": {
+            "value": "AppGWSubnet"
+        },
+        "subnet6Prefix": {
+            "value": "172.16.138.0/24"
+        },
+        "minCapacity": {
+            "value": 2
+        },
+        "frontendPort": {
+            "value": 80
+        },
+        "backendPool": {
+            "value": "1.2.3.4"
+        },
+        "backendPort": {
+            "value": 80
+        },
+        "cookieBasedAffinity": {
+            "value": "Disabled"
+        },
+        "location": {
+            "value": "[resourceGroup().location]"
+        },
+        "FortinetTags": {
+            "value": {
+                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E129258317D"
+            }
+        }
+    }
+}
