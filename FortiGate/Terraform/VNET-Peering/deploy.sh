@@ -82,7 +82,7 @@ rg_cgf="$prefix-RG"
 if [ -z "$DEPLOY_USERNAME" ]
 then
     # Input username
-    echo -n "Enter username: "
+    echo -n "Enter username (default: azureuser): "
     stty_orig=`stty -g` # save original terminal setting.
     read USERNAME         # read the prefix
     stty $stty_orig     # restore terminal setting.
@@ -139,34 +139,13 @@ terraform apply "$PLAN"
 if [[ $? != 0 ]];
 then
     echo "--> ERROR: Deployment failed ..."
-    exit $rc;
+    exit $result;
 fi
 
 echo ""
 echo "==> Terraform output deployment summary"
 echo ""
-terraform output deployment_summary > "../output/$SUMMARY"
+terraform output -raw deployment_summary > "../output/$SUMMARY"
 
 cd ../
-echo "
-##############################################################################################################
-#
-# Fortinet FortiGate Terraform deployment template
-# FortiGate Cloud Security Services Hub deployment using Azure VNET Peering
-# Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
-#
-# The FortiGate VMs are reachable on their management public IP on port HTTPS/443 and SSH/22.
-#
-# BEWARE: The state files contain sensitive data like passwords and others. After the demo clean up your
-#         clouddrive directory.
-#
-##############################################################################################################
-
- Deployment information:
-
-Username: $USERNAME
-"
 cat "output/$SUMMARY"
-echo "
-
-##############################################################################################################"

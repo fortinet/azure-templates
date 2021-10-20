@@ -81,6 +81,9 @@ end
 #        set peerip ${fgt_ha_peerip}
 #    next
 #end
+%{ if fgt_license_flexvm != "" }
+exec vm-license ${fgt_license_flexvm}
+%{ endif }
 
 %{ if fgt_license_file != "" }
 --===============0086047718136476635==

@@ -138,33 +138,13 @@ terraform apply "$PLAN"
 if [[ $? != 0 ]];
 then
     echo "--> ERROR: Deployment failed ..."
-    exit $rc;
+    exit $result;
 fi
 
 echo ""
 echo "==> Terraform output deployment summary"
 echo ""
-terraform output deployment_summary > "../output/$SUMMARY"
+terraform output -raw deployment_summary > "../output/$SUMMARY"
 
 cd ../
-echo "
-##############################################################################################################
-#
-# FortiGate Active/Passive High Availability with Azure Standard Load Balancer - External and Internal
-# Terraform deployment template for Microsoft Azure
-#
-# The FortiGate VMs are reachable on their management public IP on port HTTPS/443 and SSH/22.
-#
-# BEWARE: The state files contain sensitive data like passwords and others. After the demo clean up your
-#         clouddrive directory.
-#
-##############################################################################################################
-
-Deployment information:
-
-Username:
-"
 cat "output/$SUMMARY"
-echo "
-
-##############################################################################################################"

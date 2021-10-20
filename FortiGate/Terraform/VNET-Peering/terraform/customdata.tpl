@@ -95,6 +95,9 @@ config system ha
     set unicast-hb enable
     set unicast-hb-peerip ${fgt_ha_peerip}
 end
+%{ if fgt_license_flexvm != "" }
+exec vm-license ${fgt_license_flexvm}
+%{ endif }
 
 %{ if fgt_license_file != "" }
 --===============0086047718136476635==

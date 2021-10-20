@@ -42,6 +42,14 @@ variable "FGT_BYOL_LICENSE_FILE_B" {
   default = ""
 }
 
+variable "FGT_BYOL_FLEXVM_LICENSE_FILE_A" {
+  default = ""
+}
+
+variable "FGT_BYOL_FLEXVM_LICENSE_FILE_B" {
+  default = ""
+}
+
 variable "FGT_SSH_PUBLIC_KEY_FILE" {
   default = ""
 }
@@ -72,6 +80,17 @@ terraform {
 
 provider "azurerm" {
   features {}
+}
+
+##############################################################################################################
+# Accept the Terms license for the FortiGate Marketplace image
+# This is a one-time agreement that needs to be accepted per subscription
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/marketplace_agreement
+##############################################################################################################
+resource "azurerm_marketplace_agreement" "fortinet" {
+  publisher = "fortinet"
+  offer     = "fortinet_fortigate-vm_v5"
+  plan      = var.FGT_IMAGE_SKU
 }
 
 ##############################################################################################################
@@ -148,11 +167,11 @@ variable "fgt_vmsize" {
 }
 
 variable "fortinet_tags" {
-    type = map(string)
-    default = {
-      publisher : "Fortinet",
-      template : "Active-Active-ELB-ILB",
-      provider : "7EB3B02F-50E5-4A3E-8CB8-2E129258AA"
+  type = map(string)
+  default = {
+    publisher : "Fortinet",
+    template : "Active-Active-ELB-ILB",
+    provider : "7EB3B02F-50E5-4A3E-8CB8-2E129258AA"
   }
 }
 

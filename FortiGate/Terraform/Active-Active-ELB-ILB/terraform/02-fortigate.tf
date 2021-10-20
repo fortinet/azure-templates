@@ -68,9 +68,8 @@ resource "azurerm_lb" "elb" {
 }
 
 resource "azurerm_lb_backend_address_pool" "elbbackend" {
-  resource_group_name = azurerm_resource_group.resourcegroup.name
-  loadbalancer_id     = azurerm_lb.elb.id
-  name                = "BackEndPool"
+  loadbalancer_id = azurerm_lb.elb.id
+  name            = "BackEndPool"
 }
 
 resource "azurerm_lb_probe" "elbprobe" {
@@ -109,7 +108,7 @@ resource "azurerm_lb_rule" "lbruleudp" {
 resource "azurerm_lb_nat_rule" "fgtamgmthttps" {
   resource_group_name            = azurerm_resource_group.resourcegroup.name
   loadbalancer_id                = azurerm_lb.elb.id
-  name                           = "${var.PREFIX}-A-VM-FGT-HTTPS"
+  name                           = "${var.PREFIX}-FGT-A-HTTPS"
   protocol                       = "Tcp"
   frontend_port                  = 40030
   backend_port                   = 443
@@ -119,7 +118,7 @@ resource "azurerm_lb_nat_rule" "fgtamgmthttps" {
 resource "azurerm_lb_nat_rule" "fgtbmgmthttps" {
   resource_group_name            = azurerm_resource_group.resourcegroup.name
   loadbalancer_id                = azurerm_lb.elb.id
-  name                           = "${var.PREFIX}-B-VM-FGT-HTTPS"
+  name                           = "${var.PREFIX}-FGT-B-HTTPS"
   protocol                       = "Tcp"
   frontend_port                  = 40031
   backend_port                   = 443
@@ -129,7 +128,7 @@ resource "azurerm_lb_nat_rule" "fgtbmgmthttps" {
 resource "azurerm_lb_nat_rule" "fgtamgmtssh" {
   resource_group_name            = azurerm_resource_group.resourcegroup.name
   loadbalancer_id                = azurerm_lb.elb.id
-  name                           = "${var.PREFIX}-A-VM-FGT-SSH"
+  name                           = "${var.PREFIX}-FGT-A-SSH"
   protocol                       = "Tcp"
   frontend_port                  = 50030
   backend_port                   = 22
@@ -139,7 +138,7 @@ resource "azurerm_lb_nat_rule" "fgtamgmtssh" {
 resource "azurerm_lb_nat_rule" "fgtbmgmtssh" {
   resource_group_name            = azurerm_resource_group.resourcegroup.name
   loadbalancer_id                = azurerm_lb.elb.id
-  name                           = "${var.PREFIX}-B-VM-FGT-SSH"
+  name                           = "${var.PREFIX}-FGT-B-SSH"
   protocol                       = "Tcp"
   frontend_port                  = 50031
   backend_port                   = 22
@@ -161,9 +160,8 @@ resource "azurerm_lb" "ilb" {
 }
 
 resource "azurerm_lb_backend_address_pool" "ilbbackend" {
-  resource_group_name = azurerm_resource_group.resourcegroup.name
-  loadbalancer_id     = azurerm_lb.ilb.id
-  name                = "BackEndPool"
+  loadbalancer_id = azurerm_lb.ilb.id
+  name            = "BackEndPool"
 }
 
 resource "azurerm_lb_probe" "ilbprobe" {
@@ -186,7 +184,7 @@ resource "azurerm_lb_rule" "lb_haports_rule" {
 }
 
 resource "azurerm_network_interface" "fgtaifcext" {
-  name                          = "${var.PREFIX}-VM-FGT-A-IFC-EXT"
+  name                          = "${var.PREFIX}-FGT-A-IFC-EXT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
   enable_ip_forwarding          = true
@@ -212,7 +210,7 @@ resource "azurerm_network_interface_backend_address_pool_association" "fgtaifcex
 }
 
 resource "azurerm_network_interface" "fgtaifcint" {
-  name                 = "${var.PREFIX}-A-VM-FGT-IFC-INT"
+  name                 = "${var.PREFIX}-FGT-A-IFC-INT"
   location             = azurerm_resource_group.resourcegroup.location
   resource_group_name  = azurerm_resource_group.resourcegroup.name
   enable_ip_forwarding = true
@@ -237,7 +235,7 @@ resource "azurerm_network_interface_backend_address_pool_association" "fgtaifcin
 }
 
 resource "azurerm_virtual_machine" "fgtavm" {
-  name                         = "${var.PREFIX}-A-VM-FGT"
+  name                         = "${var.PREFIX}-FGT-A-VM"
   location                     = azurerm_resource_group.resourcegroup.location
   resource_group_name          = azurerm_resource_group.resourcegroup.name
   network_interface_ids        = [azurerm_network_interface.fgtaifcext.id, azurerm_network_interface.fgtaifcint.id]
@@ -263,14 +261,14 @@ resource "azurerm_virtual_machine" "fgtavm" {
   }
 
   storage_os_disk {
-    name              = "${var.PREFIX}-A-VM-FGT-OSDISK"
+    name              = "${var.PREFIX}-FGT-A-OSDISK"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "${var.PREFIX}-A-VM-FGT"
+    computer_name  = "${var.PREFIX}-FGT-A"
     admin_username = var.USERNAME
     admin_password = var.PASSWORD
     custom_data    = data.template_file.fgt_a_custom_data.rendered
@@ -287,8 +285,9 @@ data "template_file" "fgt_a_custom_data" {
   template = file("${path.module}/customdata.tpl")
 
   vars = {
-    fgt_vm_name         = "${var.PREFIX}-A-VM-FGT"
+    fgt_vm_name         = "${var.PREFIX}-FGT-A"
     fgt_license_file    = var.FGT_BYOL_LICENSE_FILE_A
+    fgt_license_flexvm  = var.FGT_BYOL_FLEXVM_LICENSE_FILE_A
     fgt_username        = var.USERNAME
     fgt_ssh_public_key  = var.FGT_SSH_PUBLIC_KEY_FILE
     fgt_external_ipaddr = var.fgt_ipaddress_a["1"]
@@ -304,7 +303,7 @@ data "template_file" "fgt_a_custom_data" {
 }
 
 resource "azurerm_network_interface" "fgtbifcext" {
-  name                          = "${var.PREFIX}-VM-FGT-B-IFC-EXT"
+  name                          = "${var.PREFIX}-FGT-B-IFC-EXT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
   enable_ip_forwarding          = true
@@ -330,19 +329,19 @@ resource "azurerm_network_interface_backend_address_pool_association" "fgtbifcex
 }
 
 resource "azurerm_network_interface_nat_rule_association" "fgtamgmthttpsvm" {
-  network_interface_id    = azurerm_network_interface.fgtaifcext.id
-  ip_configuration_name   = "interface1"
-  nat_rule_id             = azurerm_lb_nat_rule.fgtamgmthttps.id
+  network_interface_id  = azurerm_network_interface.fgtaifcext.id
+  ip_configuration_name = "interface1"
+  nat_rule_id           = azurerm_lb_nat_rule.fgtamgmthttps.id
 }
 
 resource "azurerm_network_interface_nat_rule_association" "fgtamgmtsshvm" {
-  network_interface_id    = azurerm_network_interface.fgtaifcext.id
-  ip_configuration_name   = "interface1"
-  nat_rule_id             = azurerm_lb_nat_rule.fgtamgmtssh.id
+  network_interface_id  = azurerm_network_interface.fgtaifcext.id
+  ip_configuration_name = "interface1"
+  nat_rule_id           = azurerm_lb_nat_rule.fgtamgmtssh.id
 }
 
 resource "azurerm_network_interface" "fgtbifcint" {
-  name                          = "${var.PREFIX}-B-VM-FGT-IFC-INT"
+  name                          = "${var.PREFIX}-FGT-B-IFC-INT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
   enable_ip_forwarding          = true
@@ -368,19 +367,19 @@ resource "azurerm_network_interface_backend_address_pool_association" "fgtbifcin
 }
 
 resource "azurerm_network_interface_nat_rule_association" "fgtbmgmthttpsvm" {
-  network_interface_id    = azurerm_network_interface.fgtbifcext.id
-  ip_configuration_name   = "interface1"
-  nat_rule_id             = azurerm_lb_nat_rule.fgtbmgmthttps.id
+  network_interface_id  = azurerm_network_interface.fgtbifcext.id
+  ip_configuration_name = "interface1"
+  nat_rule_id           = azurerm_lb_nat_rule.fgtbmgmthttps.id
 }
 
 resource "azurerm_network_interface_nat_rule_association" "fgtbmgmtsshvm" {
-  network_interface_id    = azurerm_network_interface.fgtbifcext.id
-  ip_configuration_name   = "interface1"
-  nat_rule_id             = azurerm_lb_nat_rule.fgtbmgmtssh.id
+  network_interface_id  = azurerm_network_interface.fgtbifcext.id
+  ip_configuration_name = "interface1"
+  nat_rule_id           = azurerm_lb_nat_rule.fgtbmgmtssh.id
 }
 
 resource "azurerm_virtual_machine" "fgtbvm" {
-  name                         = "${var.PREFIX}-B-VM-FGT"
+  name                         = "${var.PREFIX}-FGT-B"
   location                     = azurerm_resource_group.resourcegroup.location
   resource_group_name          = azurerm_resource_group.resourcegroup.name
   network_interface_ids        = [azurerm_network_interface.fgtbifcext.id, azurerm_network_interface.fgtbifcint.id]
@@ -406,14 +405,14 @@ resource "azurerm_virtual_machine" "fgtbvm" {
   }
 
   storage_os_disk {
-    name              = "${var.PREFIX}-B-VM-FGT-OSDISK"
+    name              = "${var.PREFIX}-FGT-B-OSDISK"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "${var.PREFIX}-B-VM-FGT"
+    computer_name  = "${var.PREFIX}-FGT-B"
     admin_username = var.USERNAME
     admin_password = var.PASSWORD
     custom_data    = data.template_file.fgt_b_custom_data.rendered
@@ -430,8 +429,9 @@ data "template_file" "fgt_b_custom_data" {
   template = file("${path.module}/customdata.tpl")
 
   vars = {
-    fgt_vm_name         = "${var.PREFIX}-B-VM-FGT"
+    fgt_vm_name         = "${var.PREFIX}-FGT-B"
     fgt_license_file    = var.FGT_BYOL_LICENSE_FILE_B
+    fgt_license_flexvm  = var.FGT_BYOL_FLEXVM_LICENSE_FILE_B
     fgt_username        = var.USERNAME
     fgt_ssh_public_key  = var.FGT_SSH_PUBLIC_KEY_FILE
     fgt_external_ipaddr = var.fgt_ipaddress_b["1"]

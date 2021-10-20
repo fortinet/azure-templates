@@ -29,7 +29,7 @@ terraform init
 echo ""
 echo "==> terraform destroy"
 echo ""
-terraform destroy -var "USERNAME=x" -var "PASSWORD=x" -var "LOCATION=x" -var "PREFIX=x" -auto-approve
+terraform destroy -var "USERNAME=x" -var "PASSWORD=x" -var "PREFIX=x" -auto-approve
 if [ $? != 0 ];
 then
     echo "--> ERROR: Destroy failed ..."
