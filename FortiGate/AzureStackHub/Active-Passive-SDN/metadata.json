@@ -1,0 +1,9 @@
+{
+    "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+    "type": "QuickStart",
+    "itemDisplayName": "Fortinet FortiGate Active Passive with ELB ILB loadbalancers and Availability Zones",
+    "description": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure and routing",
+    "summary": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure and routing",
+    "githubUsername": "fortinet",
+    "dateUpdated":  "2021-01-21"
+}
