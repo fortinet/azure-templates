@@ -31,7 +31,7 @@ variable "FMG_IMAGE_SKU" {
 
 variable "FMG_VERSION" {
   description = "FortiGate version by default the 'latest' available version in the Azure Marketplace is selected"
-  default     = "6.4.1"
+  default     = "latest"
 }
 
 variable "FMG_BYOL_LICENSE_FILE" {
@@ -43,20 +43,32 @@ variable "FMG_SSH_PUBLIC_KEY_FILE" {
 }
 
 ##############################################################################################################
-# Microsoft Azure Storage Account for storage of Terraform state file
+# Deployment in Microsoft Azure
 ##############################################################################################################
 
 terraform {
   required_version = ">= 0.12"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">=2.0.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
 }
 
 ##############################################################################################################
-# Deployment in Microsoft Azure
+# Accept the Terms license for the FortiGate Marketplace image
+# This is a one-time agreement that needs to be accepted per subscription
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/marketplace_agreement
 ##############################################################################################################
-
-provider "azurerm" {
-  version = ">= 2.0.0"
-  features {}
+resource "azurerm_marketplace_agreement" "fortinet" {
+  publisher = "fortinet"
+  offer     = "fortinet-fortimanager"
+  plan      = var.FMG_IMAGE_SKU
 }
 
 ##############################################################################################################
@@ -73,7 +85,7 @@ variable "subnet" {
   description = ""
 
   default = {
-    "1" = "172.16.137.0/24"  # FMG network
+    "1" = "172.16.137.0/24" # FMG network
   }
 }
 
@@ -91,7 +103,7 @@ variable "fmg_ipaddress_a" {
   description = ""
 
   default = {
-    "1" = "172.16.137.5"  # FMG network
+    "1" = "172.16.137.5" # FMG network
   }
 }
 
@@ -100,7 +112,7 @@ variable "gateway_ipaddress" {
   description = ""
 
   default = {
-    "1" = "172.16.137.1"  # FMG network
+    "1" = "172.16.137.1" # FMG network
   }
 }
 

@@ -2,8 +2,7 @@
 
 This directory includes a set of templates using ARM or Terraform to get you started in Azure with FortiManager.
 
-- [single 1 NIC](single-1nic/): Default deployment ARM template in a new or existing VNET with access from internet via a public IP
-- [single 1 NIC private](single-1nic-private/): Deployment ARM template in a new or existing VNET without any public IP
+- [single 1 NIC](single-1nic/): Default deployment ARM template in a new or existing VNET with or without access from internet via a public IP
 - [Terraform](Terraform/single-1nic/): Default deployment using Terraform
 
 ## Support

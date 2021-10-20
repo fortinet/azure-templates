@@ -48,7 +48,7 @@
             "value": "FortiManagerSubnet"
         },
         "subnet1Prefix": {
-            "value": "172.16.136.0/26"
+            "value": "172.16.137.0/24"
         },
         "dataDiskSize": {
             "value": "1024"
@@ -59,6 +59,7 @@
         "fortinetTags": {
             "value": {
                 "publisher": "Fortinet",
+                "template": "FortiManager",
                 "provider": "6EB3B02F-50E5-4A3E-8CB8-2E1292583FMG"
             }
         }

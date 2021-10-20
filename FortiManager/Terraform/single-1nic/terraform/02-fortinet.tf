@@ -92,10 +92,10 @@ resource "azurerm_public_ip" "fmgpip" {
 
 
 resource "azurerm_network_interface" "fmgifc" {
-  name                          = "${var.PREFIX}-FMG-IFC"
-  location                      = azurerm_resource_group.resourcegroup.location
-  resource_group_name           = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding          = true
+  name                 = "${var.PREFIX}-FMG-IFC"
+  location             = azurerm_resource_group.resourcegroup.location
+  resource_group_name  = azurerm_resource_group.resourcegroup.name
+  enable_ip_forwarding = true
 
   ip_configuration {
     name                          = "interface1"
@@ -155,9 +155,9 @@ resource "azurerm_virtual_machine" "fmgvm" {
   }
 
   tags = {
-    publisher   = "Fortinet",
-    template   = "FortiManager-Terraform",
-    provider    = "6EB3B02F-50E5-4A3E-8CB8-2E1292583FMG"
+    publisher = "Fortinet",
+    template  = "FortiManager-Terraform",
+    provider  = "6EB3B02F-50E5-4A3E-8CB8-2E1292583FMG"
   }
 }
 
@@ -165,14 +165,14 @@ data "template_file" "fmg_custom_data" {
   template = file("${path.module}/customdata.tpl")
 
   vars = {
-    fmg_vm_name         = "${var.PREFIX}-FMG-A"
-    fmg_license_file    = var.FMG_BYOL_LICENSE_FILE
-    fmg_username        = var.USERNAME
-    fmg_ssh_public_key  = var.FMG_SSH_PUBLIC_KEY_FILE
-    fmg_ipaddr = var.fmg_ipaddress_a["1"]
-    fmg_mask   = var.subnetmask["1"]
-    fmg_gw     = var.gateway_ipaddress["1"]
-    vnet_network        = var.vnet
+    fmg_vm_name        = "${var.PREFIX}-FMG-A"
+    fmg_license_file   = var.FMG_BYOL_LICENSE_FILE
+    fmg_username       = var.USERNAME
+    fmg_ssh_public_key = var.FMG_SSH_PUBLIC_KEY_FILE
+    fmg_ipaddr         = var.fmg_ipaddress_a["1"]
+    fmg_mask           = var.subnetmask["1"]
+    fmg_gw             = var.gateway_ipaddress["1"]
+    vnet_network       = var.vnet
   }
 }
 
