@@ -43,21 +43,33 @@ variable "FAZ_SSH_PUBLIC_KEY_FILE" {
 }
 
 ##############################################################################################################
-# Microsoft Azure Storage Account for storage of Terraform state file
+# Deployment in Microsoft Azure
 ##############################################################################################################
 
 terraform {
   required_version = ">= 0.12"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">=2.0.0"
+    }
+  }
 }
-
-##############################################################################################################
-# Deployment in Microsoft Azure
-##############################################################################################################
 
 provider "azurerm" {
-  version = ">= 2.0.0"
   features {}
 }
+
+##############################################################################################################
+# Accept the Terms license for the FortiGate Marketplace image
+# This is a one-time agreement that needs to be accepted per subscription
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/marketplace_agreement
+##############################################################################################################
+#resource "azurerm_marketplace_agreement" "fortinet" {
+#  publisher = "fortinet"
+#  offer     = "fortinet-fortianalyzer"
+#  plan      = var.FAZ_IMAGE_SKU
+#}
 
 ##############################################################################################################
 # Static variables
@@ -73,7 +85,7 @@ variable "subnet" {
   description = ""
 
   default = {
-    "1" = "172.16.137.0/24"  # FAZ network
+    "1" = "172.16.137.0/24" # FAZ network
   }
 }
 
@@ -91,7 +103,7 @@ variable "faz_ipaddress_a" {
   description = ""
 
   default = {
-    "1" = "172.16.137.6"  # FAZ network
+    "1" = "172.16.137.6" # FAZ network
   }
 }
 
@@ -100,7 +112,7 @@ variable "gateway_ipaddress" {
   description = ""
 
   default = {
-    "1" = "172.16.137.1"  # FAZ network
+    "1" = "172.16.137.1" # FAZ network
   }
 }
 

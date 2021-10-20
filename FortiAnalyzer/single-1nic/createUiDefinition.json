@@ -1,0 +1,555 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "config": {
+      "basics": {
+        "resourceGroup": {
+          "allowExisting": true
+        }
+      }
+    },
+    "resourceTypes": [
+      "microsoft.resources/resourcegroups"
+    ],
+    "basics": [
+      {
+        "name": "adminUsername",
+        "type": "Microsoft.Common.TextBox",
+        "label": "FortiAnalyzer administrative username",
+        "defaultValue": "",
+        "toolTip": "Username for the FortiAnalyzer virtual appliance. Most not be root, administrator or admin",
+        "constraints": {
+          "required": true,
+          "validations": [
+            {
+              "regex": "^[a-z0-9A-Z]{1,30}$",
+              "message": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long"
+            },
+            {
+              "isValid": "[not(contains(toLower(basics('adminUsername')),'root'))]",
+              "message": "Usernames must not include reserved words"
+            },
+            {
+              "isValid": "[not(contains(toLower(basics('adminUsername')),'admin'))]",
+              "message": "Usernames must not include reserved words"
+            }
+          ]
+        },
+        "visible": true
+      },
+      {
+        "name": "adminPassword",
+        "type": "Microsoft.Common.PasswordBox",
+        "label": {
+          "password": "FortiAnalyzer password",
+          "confirmPassword": "Confirm password"
+        },
+        "toolTip": "Password for the Virtual Machine",
+        "constraints": {
+          "required": true,
+          "regex": "^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\\d\\W])|(?=.*\\W)(?=.*\\d))|(?=.*\\W)(?=.*[A-Z])(?=.*\\d)).{12,}$",
+          "validationMessage": "The password must be between 12 characters or longer, and contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters excluding '\\' or '-'."
+        },
+        "options": {
+          "hideConfirmation": false
+        },
+        "visible": true
+      },
+      {
+        "name": "namePrefix",
+        "type": "Microsoft.Common.TextBox",
+        "label": "FortiAnalyser Name Prefix",
+        "defaultValue": "",
+        "toolTip": "Naming prefix for all deployed resources",
+        "constraints": {
+          "required": true,
+          "regex": "^[A-Za-z0-9]{1,15}$",
+          "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1 to 15 characters."
+        },
+        "visible": true
+      },
+      {
+        "name": "fortiAnalyzerImageVersion",
+        "type": "Microsoft.Common.DropDown",
+        "label": "FortiAnalyzer Image Version",
+        "defaultValue": "latest",
+        "toolTip": "Only 6.x has the A/P HA feature currently",
+        "constraints": {
+          "required": false,
+          "allowedValues": [
+            {
+              "label": "6.4.6",
+              "value": "6.4.6"
+            },
+            {
+              "label": "6.4.7",
+              "value": "6.4.7"
+            },
+            {
+              "label": "7.0.1",
+              "value": "7.0.1"
+            },
+            {
+              "label": "latest",
+              "value": "latest"
+            }
+          ]
+        },
+        "visible": true
+      }
+    ],
+    "steps": [
+      {
+        "name": "instance",
+        "label": "Instance",
+        "subLabel": {
+          "preValidation": "Select instance type",
+          "postValidation": "Done"
+        },
+        "elements": [
+          {
+            "name": "instancetype",
+            "type": "Microsoft.Common.Section",
+            "label": "Instance Type",
+            "elements": [
+              {
+                "name": "instancetypeinfo",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "For this FortiAnalyzer deployment, it is recommended to use general purpose virtual machines. A selection of supported instances sizes is listed in our documentation.",
+                  "link": {
+                    "label": "Learn more",
+                    "uri": "https://docs.fortinet.com/document/fortianalyzer-public-cloud/7.0.0/azure-administration-guide/351055/instance-type-support"
+                  }
+                }
+              },
+              {
+                "name": "instancetypeselection",
+                "type": "Microsoft.Compute.SizeSelector",
+                "label": "Size",
+                "toolTip": "Select the instance size of your FortiAnalyzer VM solution. Minimum 4 NICs are required.",
+                "recommendedSizes": [
+                  "Standard_D2s_v3",
+                  "Standard_D2_v2",
+                  "Standard_D3_v2",
+                  "Standard_D4_v2",
+                  "Standard_D5_v2",
+                  "Standard_DS2_v2",
+                  "Standard_DS3_v2",
+                  "Standard_DS4_v2",
+                  "Standard_DS5_v2",
+                  "Standard_D2_v3",
+                  "Standard_D4_v3",
+                  "Standard_D8_v3",
+                  "Standard_D16_v3",
+                  "Standard_D2s_v3",
+                  "Standard_D4s_v3",
+                  "Standard_D8s_v3",
+                  "Standard_D16s_v3",
+                  "Standard_D2a_v4",
+                  "Standard_D4a_v4",
+                  "Standard_D8a_v4",
+                  "Standard_D16a_v4",
+                  "Standard_D2as_v4",
+                  "Standard_D4as_v4",
+                  "Standard_D8as_v4",
+                  "Standard_D16as_v4"
+                ],
+                "constraints": {
+                  "allowedValues": [
+                    "Standard_DS2_v2",
+                    "Standard_D2_v2",
+                    "Standard_D3_v2",
+                    "Standard_D4_v2",
+                    "Standard_D5_v2",
+                    "Standard_DS2_v2",
+                    "Standard_DS3_v2",
+                    "Standard_DS4_v2",
+                    "Standard_DS5_v2",
+                    "Standard_D2_v3",
+                    "Standard_D4_v3",
+                    "Standard_D8_v3",
+                    "Standard_D16_v3",
+                    "Standard_D2s_v3",
+                    "Standard_D4s_v3",
+                    "Standard_D8s_v3",
+                    "Standard_D16s_v3",
+                    "Standard_D2a_v4",
+                    "Standard_D4a_v4",
+                    "Standard_D8a_v4",
+                    "Standard_D16a_v4",
+                    "Standard_D2as_v4",
+                    "Standard_D4as_v4",
+                    "Standard_D8as_v4",
+                    "Standard_D16as_v4"
+                  ]
+                },
+                "options": {
+                  "hideDiskTypeFilter": false
+                },
+                "osPlatform": "Linux",
+                  "imageReference": {
+                    "publisher": "fortinet",
+                    "offer": "fortinet-fortianalyzer",
+                    "sku": "fortinet-fortianalyzer"
+                },
+                "count": 1,
+                "visible": true
+              }
+            ]
+          },
+          {
+            "name": "datadisk",
+            "type": "Microsoft.Common.Section",
+            "label": "Data Disk",
+            "elements": [
+              {
+                "name": "vmDataDiskCount",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Number of managed disks per data node",
+                "defaultValue": "1",
+                "toolTip": "Number of disks to attach to the FortiAnalyzer.",
+                "constraints": {
+                  "required": true,
+                  "regex": "^([0-9]|1[0-5])$",
+                  "validationMessage": "Value must be numeric and greater than or equal to 0"
+                }
+              },
+              {
+                "name": "vmDataDiskSize",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Size of each managed disk",
+                "visible": "[greater(steps('instance').datadisk.vmDataDiskCount, 0)]",
+                "defaultValue": "1TiB",
+                "toolTip": "The size of each data disk to attach to the FortiAnalyzer",
+                "constraints": {
+                  "allowedValues": [
+                    {
+                      "label": "32GiB",
+                      "value": "32"
+                    },
+                    {
+                      "label": "64GiB",
+                      "value": "64"
+                    },
+                    {
+                      "label": "128GiB",
+                      "value": "128"
+                    },
+                    {
+                      "label": "256GiB",
+                      "value": "256"
+                    },
+                    {
+                      "label": "512GiB",
+                      "value": "512"
+                    },
+                    {
+                      "label": "1TiB",
+                      "value": "1024"
+                    },
+                    {
+                      "label": "2TiB",
+                      "value": "2048"
+                    },
+                    {
+                      "label": "4TiB",
+                      "value": "4096"
+                    },
+                    {
+                      "label": "8TiB",
+                      "value": "8192"
+                    },
+                    {
+                      "label": "16TiB",
+                      "value": "16384"
+                    },
+                    {
+                      "label": "32TiB",
+                      "value": "32768"
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "diskType",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Type of managed disks",
+                "visible": "[greater(steps('instance').datadisk.vmDataDiskCount, 0)]",
+                "defaultValue": "Default disks for instance type",
+                "toolTip": "The storage type of managed disks. The default will be Premium disks for VMs that support Premium disks and Standard disks for those that do not.",
+                "constraints": {
+                  "allowedValues": [
+                    {
+                      "label": "Default disks for instance type",
+                      "value": "Default"
+                    },
+                    {
+                      "label": "Standard SSD disks - LRS",
+                      "value": "StandardSSD_LRS"
+                    },
+                    {
+                      "label": "Standard SSD disks - ZRS",
+                      "value": "StandardSSD_ZRS"
+                    },
+                    {
+                      "label": "Premium SSD disks - LRS",
+                      "value": "Premium_LRS"
+                    },
+                    {
+                      "label": "Premium SSD disks - ZRS",
+                      "value": "Premium_ZRS"
+                    },
+                    {
+                      "label": "Standard HDD disks - LRS",
+                      "value": "Standard_LRS"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "networking",
+        "label": "Networking",
+        "subLabel": {
+          "preValidation": "Configure internal networking",
+          "postValidation": "Done"
+        },
+        "elements": [
+          {
+            "name": "virtualnetworksection",
+            "type": "Microsoft.Common.Section",
+            "label": "Configure Internal Networking",
+            "elements": [
+              {
+                "name": "virtualnetworktext",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "Create a new or select an existing virtual network with the required subnets."
+                }
+              },
+              {
+                "name": "virtualnetwork",
+                "type": "Microsoft.Network.VirtualNetworkCombo",
+                "label": {
+                  "virtualNetwork": "Virtual network",
+                  "subnets": "Subnets"
+                },
+                "toolTip": {
+                  "virtualNetwork": "Virtual Network for deployment of the FortiAnalyzer VM solution",
+                  "subnets": "Standard deployment is to have an "
+                },
+                "defaultValue": {
+                  "name": "Fortinet-VNET",
+                  "addressPrefixSize": "/24"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/27"
+                },
+                "options": {
+                  "hideExisting": false
+                },
+                "subnets": {
+                  "subnet1": {
+                    "label": "FortiAnalyzer Subnet",
+                    "defaultValue": {
+                      "name": "ProtectedSubnet",
+                      "addressPrefixSize": "/26"
+                    },
+                    "constraints": {
+                      "minAddressPrefixSize": "/29",
+                      "minAddressCount": 1,
+                      "requireContiguousAddresses": true
+                    }
+                  }
+                },
+                "visible": true
+              },
+              {
+                "name": "virtualnetworkinfo",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                  "icon": "Info",
+                  "text": "More information about the deployment can be found here.",
+                  "uri": "https://github.com/fortinet/azure-templates/tree/main/FortiAnalyzer/single-1nic"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "publicip",
+        "label": "Public IP",
+        "subLabel": {
+          "preValidation": "Configure public networking",
+          "postValidation": "Done"
+        },
+        "elements": [
+          {
+            "name": "publiciptext",
+            "type": "Microsoft.Common.TextBlock",
+            "visible": true,
+            "options": {
+              "text": "The public IP will be used for connect to the FortiAnalyzer. The public IP is optional. Selecting none will result in a FortiAnalyzer that is not accessible from the public internet. Other means like VPN connection or Experess Route are needed to connect to the unit in that case."
+            }
+          },
+          {
+            "name": "publicip",
+            "type": "Microsoft.Network.PublicIpAddressCombo",
+            "label": {
+              "publicIpAddress": "Public IP address",
+              "domainNameLabel": "Domain name label"
+            },
+            "toolTip": {
+              "publicIpAddress": "Public IP attached to FortiAnalyzer VM",
+              "domainNameLabel": "DNS name linked to this public IP"
+            },
+            "defaultValue": {
+              "publicIpAddressName": "FAZPublicIP",
+              "domainNameLabel": "mydomain"
+            },
+            "constraints": {
+              "required": {
+                "domainNameLabel": false
+              }
+            },
+            "options": {
+              "hideNone": false,
+              "hideDomainNameLabel": true
+            },
+            "visible": true
+          },
+          {
+            "name": "standardsku",
+            "type": "Microsoft.Common.InfoBox",
+            "visible": true,
+            "options": {
+              "icon": "Info",
+              "text": "This deployment can use standard or basic SKU public IP's. Microsoft Azure offers a migration path from a basic to standard SKU public IP.",
+              "uri": "https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-public-ip-address-upgrade?tabs=option-upgrade-cli%2Coption-migrate-powershell"
+            }
+          }
+        ]
+      },
+      {
+        "name": "advanced",
+        "label": "Advanced",
+        "subLabel": {
+          "preValidation": "Configure central management",
+          "postValidation": "Done"
+        },
+        "elements": [
+          {
+            "name": "customdata",
+            "type": "Microsoft.Common.Section",
+            "label": "Custom Data",
+            "elements": [
+              {
+                "name": "customdatatext",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "Pass a configuration file into the virtual machine while it is being provisioned. This is additional to the configuration for this architecture."
+                }
+              },
+              {
+                "name": "config",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Custom Data",
+                "toolTip": "Custom Data",
+                "placeholder": "Add you required additional configuration here.",
+                "multiLine": true,
+                "constraints": {
+                  "required": false,
+                  "validations": [
+                    {
+                      "regex": "^[\\w\\W\n\t]{0,10240}$",
+                      "message": "All characters allowed, max 10240 characters."
+                    }
+                  ]
+                },
+                "visible": true
+              },
+              {
+                "name": "standardsku",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                  "icon": "Info",
+                  "text": "The default configuration already included in this deployment can be found on our github page. ",
+                  "uri": "https://github.com/fortinet/azure-templates/blob/main/FortiAnalyzer/single-1nic/doc/config-provisioning.md"
+                }
+              }
+            ]
+          },
+          {
+            "name": "fazlicense",
+            "type": "Microsoft.Common.Section",
+            "label": "FortiAnalyzer License",
+            "elements": [
+              {
+                "name": "licensetext",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "When using BYOL, you can upload the license file retrieved from support.fortinet.com here."
+                }
+              },
+              {
+                "name": "licensecontent",
+                "type": "Microsoft.Common.FileUpload",
+                "label": "FortiAnalyzer License",
+                "toolTip": "Upload the license file for the FortiAnalyzer BYOL here.",
+                "constraints": {
+                  "required": false,
+                  "accept": ".lic,.txt"
+                },
+                "options": {
+                  "multiple": false,
+                  "uploadMode": "file",
+                  "openMode": "text",
+                  "encoding": "UTF-8"
+                },
+                "visible": true
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "namePrefix": "[basics('namePrefix')]",
+      "imageSKU": "fortinet-fortianalyzer",
+      "imageVersion": "[basics('fortiAnalyzerImageVersion')]",
+      "adminUsername": "[basics('adminUsername')]",
+      "adminPassword": "[basics('adminPassword')]",
+      "location": "[location()]",
+      "instanceType": "[steps('instance').instancetype.instancetypeselection]",
+      "dataDiskCount": "[steps('instance').datadisk.vmDataDiskCount]",
+      "dataDiskSize": "[steps('instance').datadisk.vmDataDiskSize]",
+      "diskType": "[steps('instance').datadisk.diskType]",
+      "publicIPNewOrExisting": "[steps('publicip').publicip.newOrExistingOrNone]",
+      "publicIPName": "[steps('publicip').publicip.name]",
+      "publicIPResourceGroup": "[steps('publicip').publicip.resourceGroup]",
+      "publicIPAddressType": "[steps('publicip').publicip.publicIPAllocationMethod]",
+      "vnetNewOrExisting": "[steps('networking').virtualnetworksection.virtualnetwork.newOrExisting]",
+      "vnetName": "[steps('networking').virtualnetworksection.virtualnetwork.name]",
+      "vnetResourceGroup": "[steps('networking').virtualnetworksection.virtualnetwork.resourceGroup]",
+      "vnetAddressPrefix": "[steps('networking').virtualnetworksection.virtualnetwork.addressPrefix]",
+      "subnet1Name": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet1.name]",
+      "subnet1Prefix": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet1.addressPrefix]",
+      "subnet1StartAddress": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet1.startAddress]",
+      "aditionalCustomData": "[steps('advanced').customdata.config]",
+      "fortiAnalyzerLicenseBYOL": "[steps('advanced').fazlicense.licensecontent]"
+    }
+  }
+}

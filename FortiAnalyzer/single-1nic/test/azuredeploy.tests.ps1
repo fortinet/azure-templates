@@ -44,11 +44,11 @@ $testsResourceGroupLocation = "westeurope"
 Describe 'FAZ' {
     Context 'Validation' {
         It 'Has a JSON template' {
-            $templateFileLocation | Should Exist
+            $templateFileLocation | Should -Exist
         }
 
         It 'Has a parameters file' {
-            $templateParameterFileLocation | Should Exist
+            $templateParameterFileLocation | Should -Exist
         }
 
         It 'Converts from JSON and has the expected properties' {
@@ -58,7 +58,7 @@ Describe 'FAZ' {
             'resources',
             'variables'
             $templateProperties = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue) | Get-Member -MemberType NoteProperty | % Name
-            $templateProperties | Should Be $expectedProperties
+            $templateProperties | Should -Be $expectedProperties
         }
 
         It 'Creates the expected Azure resources' {
@@ -69,7 +69,7 @@ Describe 'FAZ' {
                                  'Microsoft.Network/networkInterfaces',
                                  'Microsoft.Compute/virtualMachines'
             $templateResources = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Resources.type
-            $templateResources | Should Be $expectedResources
+            $templateResources | Should -Be $expectedResources
         }
 
         It 'Contains the expected parameters' {
@@ -93,7 +93,7 @@ Describe 'FAZ' {
                                           'vnetNewOrExisting',
                                           'vnetResourceGroup'
             $templateParameters = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Parameters | Get-Member -MemberType NoteProperty | % Name | Sort-Object
-            $templateParameters | Should Be $expectedTemplateParameters
+            $templateParameters | Should -Be $expectedTemplateParameters
         }
 
     }
@@ -110,20 +110,20 @@ Describe 'FAZ' {
         $publicIPName = "FAZPublicIP"
 
         It "Test deployment" {
-            (Test-AzureRmResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should not BeGreaterThan 0
+            (Test-AzureRmResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should -Not -BeGreaterThan 0
         }
 
         It "Deployment" {
             $resultDeployment = New-AzureRmResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params
             Write-Host ($resultDeployment | Format-Table | Out-String)
             Write-Host ("Deployment state: " + $resultDeployment.ProvisioningState | Out-String)
-            $resultDeployment.ProvisioningState | Should Be "Succeeded"
+            $resultDeployment.ProvisioningState | Should -Be "Succeeded"
         }
 
         It "Search deployment" {
             $result = Get-AzureRmVM | Where-Object { $_.Name -like "$testsPrefix*" }
             Write-Host ($result | Format-Table | Out-String)
-            $result | Should Not Be $null
+            $result | Should -Not -Be $null
         }
 
         443, 22 | Foreach-Object {

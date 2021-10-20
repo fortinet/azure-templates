@@ -92,10 +92,10 @@ resource "azurerm_public_ip" "fazpip" {
 
 
 resource "azurerm_network_interface" "fazifc" {
-  name                          = "${var.PREFIX}-FAZ-IFC"
-  location                      = azurerm_resource_group.resourcegroup.location
-  resource_group_name           = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding          = true
+  name                 = "${var.PREFIX}-FAZ-IFC"
+  location             = azurerm_resource_group.resourcegroup.location
+  resource_group_name  = azurerm_resource_group.resourcegroup.name
+  enable_ip_forwarding = true
 
   ip_configuration {
     name                          = "interface1"
@@ -155,9 +155,9 @@ resource "azurerm_virtual_machine" "fazvm" {
   }
 
   tags = {
-    publisher   = "Fortinet",
-    template   = "FortiAnalyzer-Terraform",
-    provider    = "6EB3B02F-50E5-4A3E-8CB8-2E1292583FAZ"
+    publisher = "Fortinet",
+    template  = "FortiAnalyzer-Terraform",
+    provider  = "6EB3B02F-50E5-4A3E-8CB8-2E1292583FAZ"
   }
 }
 
@@ -165,14 +165,14 @@ data "template_file" "faz_custom_data" {
   template = file("${path.module}/customdata.tpl")
 
   vars = {
-    faz_vm_name         = "${var.PREFIX}-FAZ-A"
-    faz_license_file    = var.FAZ_BYOL_LICENSE_FILE
-    faz_username        = var.USERNAME
-    faz_ssh_public_key  = var.FAZ_SSH_PUBLIC_KEY_FILE
-    faz_ipaddr = var.faz_ipaddress_a["1"]
-    faz_mask   = var.subnetmask["1"]
-    faz_gw     = var.gateway_ipaddress["1"]
-    vnet_network        = var.vnet
+    faz_vm_name        = "${var.PREFIX}-FAZ-A"
+    faz_license_file   = var.FAZ_BYOL_LICENSE_FILE
+    faz_username       = var.USERNAME
+    faz_ssh_public_key = var.FAZ_SSH_PUBLIC_KEY_FILE
+    faz_ipaddr         = var.faz_ipaddress_a["1"]
+    faz_mask           = var.subnetmask["1"]
+    faz_gw             = var.gateway_ipaddress["1"]
+    vnet_network       = var.vnet
   }
 }
 

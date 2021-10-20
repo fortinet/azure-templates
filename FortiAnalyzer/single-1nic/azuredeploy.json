@@ -17,7 +17,7 @@
     "namePrefix": {
       "type": "string",
       "metadata": {
-        "description": "Name for FortiGate virtual appliances (A & B will be appended to the end of each respectively)"
+        "description": "Name for FortiAnalyzer virtual appliances (A & B will be appended to the end of each respectively)"
       }
     },
     "imageSku": {
@@ -34,18 +34,20 @@
       "type": "string",
       "defaultValue": "latest",
       "allowedValues": [
-        "6.2.0",
-        "6.2.1",
-        "6.2.2",
-        "6.2.3",
-        "6.2.5",
-        "6.4.0",
-        "6.4.1",
-        "6.4.2",
+        "6.4.6",
+        "6.4.7",
+        "7.0.1",
         "latest"
       ],
       "metadata": {
         "description": "FortiAnalyzer version"
+      }
+    },
+    "aditionalCustomData": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The ARM template provides a basic configuration. Additional configuration can be added here."
       }
     },
     "instanceType": {
@@ -86,10 +88,11 @@
       "defaultValue": "new",
       "allowedValues": [
         "new",
-        "existing"
+        "existing",
+        "none"
       ],
       "metadata": {
-        "description": "Choose between an existing, new or no public IP for the External Azure Load Balancer"
+        "description": "Choose between an existing, new or non public IP for the FortiAnalyzer VM"
       }
     },
     "publicIPName": {
@@ -163,11 +166,42 @@
         "description": "FortiAnalyzer Subnet Prefix"
       }
     },
+    "subnet1StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.137.4",
+      "metadata": {
+        "description": "Subnet 1 start address, 1 consecutive private IPs are required"
+      }
+    },
+    "diskType": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Standard_LRS", "Premium_LRS", "StandardSSD_LRS", "Premium_ZRS", "StandardSSD_ZRS", "Default"
+      ],
+      "metadata": {
+        "description": "Type of all of the disks, this determines the IOPS and redudancy"
+      }
+    },
     "dataDiskSize": {
       "type": "string",
       "defaultValue": "1024",
       "metadata": {
         "description": "Size of the logfile data disk"
+      }
+    },
+    "dataDiskCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Number of data disk"
+      }
+    },
+    "fortiAnalyzerLicenseBYOL": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FortiAnalyzer BYOL license content"
       }
     },
     "location": {
@@ -191,13 +225,19 @@
     "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), parameters('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
 
     "fazVmName": "[concat(parameters('namePrefix'),'-FAZ-A')]",
-    "fazCustomData": "[base64(concat('config system global\n set hostname ',  variables('fazVmName'), '\n end'))]",
+    "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
+    "customDataBody": "[concat('config system global\n set hostname ',  variables('fazVmName'), '\n end', parameters('aditionalCustomData'), '\n')]",
+    "customDataLicenseHeader": "--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"fgtlicense\"\n\n",
+    "customDataFooter": "\n--12345--\n",
+    "customDataCombined": "[concat(variables('customDataHeader'),variables('customDataBody'),variables('customDataLicenseHeader'), parameters('fortiAnalyzerLicenseBYOL'), variables('customDataFooter'))]",
+    "fazCustomData": "[base64(if(equals(parameters('fortiAnalyzerLicenseBYOL'),''),variables('customDataBody'),variables('customDataCombined')))]",
 
     "fazNic1Name": "[concat(variables('fazVmName'),'-Nic1')]",
     "fazNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fazNic1Name'))]",
 
     "publicIPName": "[if(equals(parameters('publicIPName'),''),concat(parameters('namePrefix'),'-FAZ-PIP'),parameters('publicIPName'))]",
     "publicIPId": "[if(equals(parameters('publicIPNewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPName')),if(equals(parameters('publicIPNewOrExisting'),'existing'),resourceId(parameters('publicIPResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIPName')),''))]",
+    "publicIPAddressId": { "id": "[variables('publicIPId')]" },
 
     "NSGName": "[concat(parameters('namePrefix'),'-',uniqueString(resourceGroup().id),'-NSG')]",
 
@@ -210,18 +250,18 @@
     "sn1IPArray1": "[string(int(variables('sn1IPArray')[1]))]",
     "sn1IPArray0": "[string(int(variables('sn1IPArray')[0]))]",
     "sn1GatewayIP": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',variables('sn1IPArray3'))]",
-    "sn1IPfaz": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',add(int(variables('sn1IPArray2nd')[0]),6))]"
-
+    "sn1IPStartAddress": "[split(parameters('subnet1StartAddress'),'.')]",
+    "sn1IPfaz": "[concat(variables('sn1IPArray0'),'.',variables('sn1IPArray1'),'.',variables('sn1IPArray2'),'.',int(variables('sn1IPStartAddress')[3]))]"
   },
   "resources": [
     {
-      "apiVersion": "2019-10-01",
-      "name": "pid-2dc4b447-552f-557f-b1cc-2faec6f9f133",
+      "apiVersion": "2020-10-01",
+      "name": "pid-21c3b606-4b14-4eca-ad0d-1d8537ebd14e-partnercenter",
       "type": "Microsoft.Resources/deployments",
       "properties":{
        "mode": "Incremental",
        "template": {
-         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deplymentTemplate.json#",
+         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
          "contentVersion": "1.0.0.0",
          "resources": []
        }
@@ -368,9 +408,7 @@
             "properties": {
               "privateIPAddress": "[variables('sn1IPfaz')]",
               "privateIPAllocationMethod": "Static",
-              "publicIPAddress": {
-                "id": "[variables('publicIPId')]"
-              },
+              "publicIPAddress": "[if(not(equals(parameters('publicIPNewOrExisting'), 'none')), variables('publicIPAddressId') , json('null'))]",
               "subnet": {
                 "id": "[variables('subnet1Id')]"
               }
@@ -419,13 +457,24 @@
             "version": "[parameters('imageVersion')]"
           },
           "osDisk": {
-            "createOption": "FromImage"
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "[if(not(equals(parameters('diskType'), 'Default')), parameters('diskType') , json('null'))]"
+            }
           },
-          "dataDisks": [
+          "copy": [
             {
-              "diskSizeGB": "[parameters('dataDiskSize')]",
-              "lun": 0,
-              "createOption": "Empty"
+              "name": "dataDisks",
+              "count": "[parameters('dataDiskCount')]",
+              "input": {
+                "name": "[concat(variables('fazVmName'),'-DataDisk-',copyIndex('dataDisks'))]",
+                "diskSizeGB": "[parameters('dataDiskSize')]",
+                "lun": "[copyIndex('dataDisks')]",
+                "createOption": "Empty",
+                "managedDisk": {
+                  "storageAccountType": "[if(not(equals(parameters('diskType'), 'Default')), parameters('diskType') , json('null'))]"
+                }
+              }
             }
           ]
         },
