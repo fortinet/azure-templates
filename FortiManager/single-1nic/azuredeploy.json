@@ -37,13 +37,15 @@
         "6.4.6",
         "6.4.7",
         "7.0.1",
+        "7.0.2",
+        "7.0.3",
         "latest"
       ],
       "metadata": {
         "description": "FortiManager version"
       }
     },
-    "aditionalCustomData": {
+    "additionalCustomData": {
       "type": "string",
       "defaultValue": "",
       "metadata": {

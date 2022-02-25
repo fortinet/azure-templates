@@ -37,13 +37,15 @@
         "6.4.6",
         "6.4.7",
         "7.0.1",
+        "7.0.2",
+        "7.0.3",
         "latest"
       ],
       "metadata": {
         "description": "FortiAnalyzer version"
       }
     },
-    "aditionalCustomData": {
+    "additionalCustomData": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -226,7 +228,7 @@
 
     "fazVmName": "[concat(parameters('namePrefix'),'-FAZ-A')]",
     "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
-    "customDataBody": "[concat('config system global\n set hostname ',  variables('fazVmName'), '\n end', parameters('aditionalCustomData'), '\n')]",
+    "customDataBody": "[concat('config system global\n set hostname ',  variables('fazVmName'), '\n end', parameters('additionalCustomData'), '\n')]",
     "customDataLicenseHeader": "--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"fgtlicense\"\n\n",
     "customDataFooter": "\n--12345--\n",
     "customDataCombined": "[concat(variables('customDataHeader'),variables('customDataBody'),variables('customDataLicenseHeader'), parameters('fortiAnalyzerLicenseBYOL'), variables('customDataFooter'))]",

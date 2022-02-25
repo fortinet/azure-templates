@@ -92,6 +92,14 @@
               "value": "7.0.1"
             },
             {
+              "label": "7.0.2",
+              "value": "7.0.2"
+            },
+            {
+              "label": "7.0.3",
+              "value": "7.0.3"
+            },
+            {
               "label": "latest",
               "value": "latest"
             }
@@ -351,7 +359,7 @@
                   "addressPrefixSize": "/24"
                 },
                 "constraints": {
-                  "minAddressPrefixSize": "/27"
+                  "minAddressPrefixSize": "/29"
                 },
                 "options": {
                   "hideExisting": false
@@ -548,7 +556,7 @@
       "subnet1Name": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet1.name]",
       "subnet1Prefix": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet1.addressPrefix]",
       "subnet1StartAddress": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet1.startAddress]",
-      "aditionalCustomData": "[steps('advanced').customdata.config]",
+      "additionalCustomData": "[steps('advanced').customdata.config]",
       "fortiManagerLicenseBYOL": "[steps('advanced').fazlicense.licensecontent]"
     }
   }
