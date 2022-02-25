@@ -1,6 +1,6 @@
-## Active/Active Load Balanced pair of standalone FortiGates for resilience and scale
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffortinet%2Fazure-templates%2Fmaster%2FFortiGate%2FActive-Active%20LoadBalancer%20HA-Ports%2FmainTemplate.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/></a>
+## DEPRECATED - Active/Active Load Balanced pair of standalone FortiGates for resilience and scale
+
+This is a deprecated template. The latest version can be found [here](/FortiGate/Active-Active-ELB-ILB/README.md).
 
 The following resources are defined:
 - VNet with three subnets

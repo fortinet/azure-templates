@@ -6,29 +6,41 @@ pool:
   demands: azureps
 
 steps:
-  - task: AzurePowerShell@5
-    displayName: 'Running tests'
-    inputs:
-      azureSubscription: 'AzureSubscription'
-      ScriptPath: 'FortiGate/Active-Passive-SDN/test/invokePester.ps1'
-      ScriptArguments: '-templatename FortiGate/Active-Passive-SDN'
-      azurePowerShellVersion: LatestVersion
-      pwsh: true
+- task: DownloadSecureFile@1
+  name: sshkey
+  displayName: 'Download SSH private key'
+  inputs:
+    secureFile: 'azure-devops-ssh'
 
-  - task: PublishTestResults@2
-    displayName: 'Publish ARM TTK results'
-    inputs:
-      testRunner: NUnit
-      testResultsFiles: '**/*-armttk.xml'
-      testRunTitle: 'ARM TTK verification'
-    condition: always()
+- task: DownloadSecureFile@1
+  name: sshkeypub
+  displayName: 'Download SSH public key'
+  inputs:
+    secureFile: 'azure-devops-ssh-pub'
 
-  - task: PublishTestResults@2
-    displayName: 'Publish Test Results **\TEST-*.xml'
-    inputs:
-      testRunner: NUnit
-      testResultsFiles: '**/TEST-*.xml'
-      testRunTitle: 'ARM template and deployment test'
+- task: AzurePowerShell@5
+  displayName: 'Running tests'
+  inputs:
+    azureSubscription: 'AzureSubscription'
+    ScriptPath: 'FortiGate/Active-Passive-SDN/test/invokePester.ps1'
+    ScriptArguments: '-templatename FortiGate/Active-Passive-SDN -sshkey $(sshkey.secureFilePath) -sshkeypub $(sshkeypub.secureFilePath)'
+    azurePowerShellVersion: LatestVersion
+    pwsh: true
+
+- task: PublishTestResults@2
+  displayName: 'Publish ARM TTK results'
+  inputs:
+    testRunner: NUnit
+    testResultsFiles: '**/*-armttk.xml'
+    testRunTitle: 'ARM TTK verification'
+  condition: always()
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results **\TEST-*.xml'
+  inputs:
+    testRunner: NUnit
+    testResultsFiles: '**/TEST-*.xml'
+    testRunTitle: 'ARM template and deployment test'
 
 trigger:
   branches:

@@ -4,7 +4,7 @@ After deployment, the below configuration has been automatically injected during
 
 ## FortiGate A
 
-<pre>
+<pre><code>
 config system sdn-connector
   edit AzureSDN
     set type azure
@@ -78,11 +78,11 @@ config system ha
   set unicast-hb enable
   set unicast-hb-peerip <b>172.16.136.134</b>
 end
-</pre>
+</code></pre>
 
 ## FortiGate B
 
-<pre>
+<pre><code>
 config system sdn-connector
   edit AzureSDN
     set type azure
@@ -156,5 +156,4 @@ config system ha
   set unicast-hb enable
   set unicast-hb-peerip <b>172.16.136.133</b>
 end
-
-</pre>
+</code></pre>

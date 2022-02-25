@@ -1,7 +1,6 @@
-## This template set is designed for A/P HA in Azure.
+## DEPRECATED - This template set is designed for A/P HA in Azure.
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffortinet%2Fazure-templates%2Fmaster%2FFortiGate%2FFortiGate-AP-HA%2FmainTemplate.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/></a>
+This is a deprecated template. The latest version can be found [here](/FortiGate/Active-Passive-ELB-ILB/README.md).
 
 The following are created:
 - VNet with five subnets.

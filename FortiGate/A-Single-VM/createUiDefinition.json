@@ -15,6 +15,16 @@
     ],
     "basics": [
       {
+        "name": "instancetypeinfo",
+        "type": "Microsoft.Common.InfoBox",
+        "visible": true,
+        "options": {
+          "icon": "Info",
+          "text": "FortiGate Deployment Type - Single VM",
+          "uri": "https://github.com/fortinet/azure-templates/tree/main/FortiGate/A-Single-VM"
+        }
+      },
+      {
         "name": "adminUsername",
         "type": "Microsoft.Common.TextBox",
         "label": "FortiGate administrative username",
@@ -141,8 +151,32 @@
               "value": "6.4.7"
             },
             {
+              "label": "6.4.8",
+              "value": "6.4.8"
+            },
+            {
               "label": "7.0.0",
               "value": "7.0.0"
+            },
+            {
+              "label": "7.0.1",
+              "value": "7.0.1"
+            },
+            {
+              "label": "7.0.2",
+              "value": "7.0.2"
+            },
+            {
+              "label": "7.0.3",
+              "value": "7.0.3"
+            },
+            {
+              "label": "7.0.4",
+              "value": "7.0.4"
+            },
+            {
+              "label": "7.0.5",
+              "value": "7.0.5"
             },
             {
               "label": "latest",
@@ -286,7 +320,7 @@
                   "addressPrefixSize": "/22"
                 },
                 "constraints": {
-                  "minAddressPrefixSize": "/27"
+                  "minAddressPrefixSize": "/29"
                 },
                 "options": {
                   "hideExisting": false
@@ -564,6 +598,44 @@
             ]
           },
           {
+            "name": "serialconsole",
+            "type": "Microsoft.Common.Section",
+            "label": "Serial Console",
+            "elements": [
+              {
+                "name": "enabled",
+                "type": "Microsoft.Common.OptionsGroup",
+                "label": "Enable Serial Console",
+                "defaultValue": "yes",
+                "toolTip": "Enables the serial console and creates a required storage account.",
+                "constraints": {
+                  "allowedValues": [
+                    {
+                      "label": "yes",
+                      "value": "yes"
+                    },
+                    {
+                      "label": "no",
+                      "value": "no"
+                    }
+                  ],
+                  "required": true
+                },
+                "visible": true
+              },
+              {
+                "name": "standardsku",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                  "icon": "Info",
+                  "text": "This requires a storage account which willl be created during deployment.",
+                  "uri": "https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/serial-console-overview"
+                }
+              }
+            ]
+          },
+          {
             "name": "fgtlicense",
             "type": "Microsoft.Common.Section",
             "label": "FortiGate License",
@@ -637,10 +709,11 @@
       "location": "[location()]",
       "instanceType": "[steps('instancetype').instancetypeselection]",
       "acceleratedNetworking": "[steps('networking').acceleratednetworksection.acceleratednetworking]",
-      "publicIPNewOrExisting": "[steps('publicip').publicip.newOrExistingOrNone]",
-      "publicIPName": "[steps('publicip').publicip.name]",
-      "publicIPResourceGroup": "[steps('publicip').publicip.resourceGroup]",
-      "publicIPAddressType": "[steps('publicip').publicip.publicIPAllocationMethod]",
+      "publicIP1NewOrExisting": "[steps('publicip').publicip.newOrExistingOrNone]",
+      "publicIP1Name": "[steps('publicip').publicip.name]",
+      "publicIP1ResourceGroup": "[steps('publicip').publicip.resourceGroup]",
+      "publicIP1AddressType": "[steps('publicip').publicip.publicIPAllocationMethod]",
+      "publicIP1SKU": "[steps('publicip').publicip.sku]",
       "vnetNewOrExisting": "[steps('networking').virtualnetworksection.virtualnetwork.newOrExisting]",
       "vnetName": "[steps('networking').virtualnetworksection.virtualnetwork.name]",
       "vnetResourceGroup": "[steps('networking').virtualnetworksection.virtualnetwork.resourceGroup]",
@@ -653,10 +726,11 @@
       "subnet2StartAddress": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet2.startAddress]",
       "subnet3Name": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet3.name]",
       "subnet3Prefix": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet3.addressPrefix]",
+      "serialConsole": "[steps('advanced').serialconsole.enabled]",
       "fortiManager": "[steps('advanced').fortimanager.enabled]",
       "fortiManagerIP": "[steps('advanced').fortimanager.fortimanagerip]",
       "fortiManagerSerial": "[steps('advanced').fortimanager.fortimanagerserial]",
-      "fortiGateAditionalCustomData": "[steps('advanced').customdata.config]",
+      "fortiGateAdditionalCustomData": "[steps('advanced').customdata.config]",
       "fortiGateLicenseBYOL": "[steps('advanced').fgtlicense.licensecontent]",
       "fortiGateLicenseFlexVM": "[steps('advanced').fgtlicense.licenseflexvmtoken]"
     }

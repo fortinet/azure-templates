@@ -4,7 +4,7 @@ Once, licensed and rebooted, the FortiGate Fabric Connector needs to be configur
 
 ## FortiGate A
 
-<pre>
+```text
 config system sdn-connector
   edit "AZConnector"
   set type azure
@@ -29,11 +29,11 @@ config system sdn-connector
   next
  end
 end
-</pre>
+```
 
 For FortiGate B:
 
-<pre>
+```text
 config system sdn-connector
   edit "AZConnector"
   set type azure
@@ -58,4 +58,4 @@ config system sdn-connector
     next
   end
 end
-</pre>
+```

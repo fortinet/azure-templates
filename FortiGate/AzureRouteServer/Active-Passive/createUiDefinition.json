@@ -97,48 +97,80 @@
 				"toolTip": "Only 6.x has the A/P HA feature currently",
 				"constraints": {
 					"required": false,
-					"allowedValues": [
-						{
-							"label": "6.2.0",
-							"value": "6.2.0"
-						},
-						{
-							"label": "6.2.2",
-							"value": "6.2.2"
-						},
-						{
-							"label": "6.2.4",
-							"value": "6.2.4"
-						},
-						{
-							"label": "6.2.5",
-							"value": "6.2.5"
-						},
-						{
-							"label": "6.4.0",
-							"value": "6.4.0"
-						},
-						{
-							"label": "6.4.2",
-							"value": "6.4.2"
-						},
-						{
-							"label": "6.4.3",
-							"value": "6.4.3"
-						},
-						{
-							"label": "6.4.5",
-							"value": "6.4.5"
-						},
-						{
-							"label": "6.4.6",
-							"value": "6.4.6"
-						},
-						{
-							"label": "latest",
-							"value": "latest"
-						}
-					]
+          "allowedValues": [
+            {
+              "label": "6.2.0",
+              "value": "6.2.0"
+            },
+            {
+              "label": "6.2.2",
+              "value": "6.2.2"
+            },
+            {
+              "label": "6.2.4",
+              "value": "6.2.4"
+            },
+            {
+              "label": "6.2.5",
+              "value": "6.2.5"
+            },
+            {
+              "label": "6.4.0",
+              "value": "6.4.0"
+            },
+            {
+              "label": "6.4.2",
+              "value": "6.4.2"
+            },
+            {
+              "label": "6.4.3",
+              "value": "6.4.3"
+            },
+            {
+              "label": "6.4.5",
+              "value": "6.4.5"
+            },
+            {
+              "label": "6.4.6",
+              "value": "6.4.6"
+            },
+            {
+              "label": "6.4.7",
+              "value": "6.4.7"
+            },
+            {
+              "label": "6.4.8",
+              "value": "6.4.8"
+            },
+            {
+              "label": "7.0.0",
+              "value": "7.0.0"
+            },
+            {
+              "label": "7.0.1",
+              "value": "7.0.1"
+            },
+            {
+              "label": "7.0.2",
+              "value": "7.0.2"
+            },
+            {
+              "label": "7.0.3",
+              "value": "7.0.3"
+            },
+            {
+              "label": "7.0.4",
+              "value": "7.0.4"
+            },
+            {
+              "label": "7.0.5",
+              "value": "7.0.5"
+            },
+            {
+              "label": "latest",
+              "value": "latest"
+            }
+          ]
 				},
 				"visible": true
 			}

@@ -17,22 +17,25 @@
         "fortiGateImageVersion": {
             "value": "latest"
         },
-        "fortiGateAditionalCustomData": {
+        "fortiGateAdditionalCustomData": {
             "value": ""
         },
         "instanceType": {
             "value": "Standard_F2s"
         },
+        "availabilityOptions": {
+            "value": "Availability Set"
+        },
         "acceleratedNetworking": {
             "value": "true"
         },
-        "publicIPNewOrExisting": {
+        "publicIP1NewOrExisting": {
             "value": "new"
         },
-        "publicIPName": {
-            "value": "FGTLBPublicIP"
+        "publicIP1Name": {
+            "value": ""
         },
-        "publicIPResourceGroup": {
+        "publicIP1ResourceGroup": {
             "value": ""
         },
         "vnetNewOrExisting": {
@@ -66,10 +69,13 @@
             "value": "172.16.136.68"
         },
         "subnet3Name": {
-            "value": "ProtectedSubnet"
+            "value": "ProtectedASubnet"
         },
         "subnet3Prefix": {
             "value": "172.16.137.0/24"
+        },
+        "serialConsole": {
+            "value": "yes"
         },
         "fortiManager": {
             "value": "no"
@@ -86,8 +92,14 @@
         "fortiGateLicenseBYOLB": {
             "value": ""
         },
+        "fortiGateLicenseFlexVMA": {
+            "value": ""
+        },
+        "fortiGateLicenseFlexVMB": {
+            "value": ""
+        },
         "location": {
-            "value": "[resourceGroup().location]"
+            "value": ""
         },
         "fortinetTags": {
             "value": {

@@ -15,8 +15,7 @@ param (
 
 BeforeAll {
     $templateName = "Active-Passive-SDN"
-    $sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName"
-    $scriptPath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName\test"
+    $sourcePath = "$env:GITHUB_WORKSPACE\FortiGate\$templateName"
     $templateFileName = "azuredeploy.json"
     $templateFileLocation = "$sourcePath\$templateFileName"
     $templateMetadataFileName = "metadata.json"
@@ -40,7 +39,7 @@ BeforeAll {
     $params = @{ 'adminUsername'=$testsAdminUsername
                  'adminPassword'=$testsResourceGroupName
                  'fortiGateNamePrefix'=$testsPrefix
-                 'fortiGateAditionalCustomData'=$config
+                 'fortiGateAdditionalCustomData'=$config
                  'publicIP2Name'=$publicIP2Name
                  'publicIP3Name'=$publicIP3Name
                }
@@ -64,6 +63,7 @@ Describe 'FGT A/P SDN' {
         It 'Converts from JSON and has the expected properties' {
             $expectedProperties = '$schema',
             'contentVersion',
+            'outputs',
             'parameters',
             'resources',
             'variables'
@@ -73,6 +73,7 @@ Describe 'FGT A/P SDN' {
 
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
+                                 'Microsoft.Storage/storageAccounts',
                                  'Microsoft.Compute/availabilitySets',
                                  'Microsoft.Network/routeTables',
                                  'Microsoft.Network/virtualNetworks',
@@ -98,7 +99,8 @@ Describe 'FGT A/P SDN' {
             $expectedTemplateParameters = 'acceleratedNetworking',
                                           'adminPassword',
                                           'adminUsername',
-                                          'fortiGateAditionalCustomData',
+                                          'availabilityOptions',
+                                          'fortiGateAdditionalCustomData',
                                           'fortiGateImageSKU',
                                           'fortiGateImageVersion',
                                           'fortiGateLicenseBYOLA',
@@ -112,7 +114,12 @@ Describe 'FGT A/P SDN' {
                                           'fortinetTags',
                                           'instanceType',
                                           'location',
-                                          'publicIP2AddressSKU',
+                                          'publicIP1AddressSku',
+                                          'publicIP1AddressType',
+                                          'publicIP1Name',
+                                          'publicIP1NewOrExisting',
+                                          'publicIP1ResourceGroup',
+                                          'publicIP2AddressSku',
                                           'publicIP2AddressType',
                                           'publicIP2Name',
                                           'publicIP2NewOrExisting',
@@ -122,11 +129,7 @@ Describe 'FGT A/P SDN' {
                                           'publicIP3Name',
                                           'publicIP3NewOrExisting',
                                           'publicIP3ResourceGroup',
-                                          'publicIPAddressSKU',
-                                          'publicIPAddressType',
-                                          'publicIPName',
-                                          'publicIPNewOrExisting',
-                                          'publicIPResourceGroup',
+                                          'serialConsole',
                                           'subnet1Name',
                                           'subnet1Prefix',
                                           'subnet1StartAddress',
@@ -154,10 +157,10 @@ Describe 'FGT A/P SDN' {
 
         It "Test Deployment" {
             New-AzResourceGroup -Name $testsResourceGroupName -Location "$testsResourceGroupLocation"
-            (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should -Not -BeGreaterThan 0
+            (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params).Count | Should -Not -BeGreaterThan 0
         }
         It "Deployment" {
-            $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params
+            $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params
             Write-Host ($resultDeployment | Format-Table | Out-String)
             Write-Host ("Deployment state: " + $resultDeployment.ProvisioningState | Out-String)
             $resultDeployment.ProvisioningState | Should -Be "Succeeded"
