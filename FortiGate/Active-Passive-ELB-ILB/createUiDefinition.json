@@ -581,14 +581,14 @@
               "icon": "Error",
               "text": "The FortiGate A management Public IP is configured using Basic SKU. Please return to previous blade and use Standard type public IPs to support Azure Standard Load Balancers"
             },
-            "visible": "[not(equals(steps('publicip').fgtamgmtpublicip.sku, 'Standard'))]"
+            "visible": "[not(or(equals(steps('publicip').fgtamgmtpublicip.newOrExistingOrNone,'none'),equals(steps('publicip').fgtamgmtpublicip.sku, 'Standard')))]"
           },
           {
             "name": "StandardIPConfirmation2",
             "type": "Microsoft.Common.InfoBox",
             "options": {
               "icon": "Info",
-              "text": "The FortiGate A management Public IP is Standard SKU. Proceed."
+              "text": "The FortiGate A management Public IP is Standard SKU or none selected. Proceed."
             },
             "visible": "[equals(steps('publicip').fgtamgmtpublicip.sku, 'Standard')]"
           },
@@ -599,14 +599,14 @@
               "icon": "Error",
               "text": "The FortiGate B management Public IP is configured using Basic SKU. Please return to previous blade and use Standard type public IPs to support Azure Standard Load Balancers"
             },
-            "visible": "[not(equals(steps('publicip').fgtbmgmtpublicip.sku, 'Standard'))]"
+            "visible": "[not(or(equals(steps('publicip').fgtbmgmtpublicip.newOrExistingOrNone,'none'),equals(steps('publicip').fgtbmgmtpublicip.sku, 'Standard')))]"
           },
           {
             "name": "StandardIPConfirmation3",
             "type": "Microsoft.Common.InfoBox",
             "options": {
               "icon": "Info",
-              "text": "The FortiGate B management Public IP is Standard SKU. Proceed."
+              "text": "The FortiGate B management Public IP is Standard SKU or none selected. Proceed."
             },
             "visible": "[equals(steps('publicip').fgtbmgmtpublicip.sku, 'Standard')]"
           }

@@ -491,7 +491,7 @@
     "fgbCustomDataCombined": "[concat(variables('customDataHeader'),variables('fgbCustomDataBody'),variables('customDataLicenseHeader'), parameters('fortiGateLicenseBYOLB'), variables('customDataFooter'))]",
     "fgaCustomData": "[base64(if(equals(parameters('fortiGateLicenseBYOLA'),''),variables('fgaCustomDataBody'),variables('fgaCustomDataCombined')))]",
     "fgbCustomData": "[base64(if(equals(parameters('fortiGateLicenseBYOLB'),''),variables('fgbCustomDataBody'),variables('fgbCustomDataCombined')))]",
-    "routeTableName": "FGTDefaultAPRouteTable",
+    "routeTableName": "[concat(parameters('fortiGateNamePrefix'),'-RouteTable-',parameters('subnet5Name'))]",
     "routeTableId": "[resourceId('Microsoft.Network/routeTables',variables('routeTableName'))]",
     "fgaNic1Name": "[concat(variables('fgaVmName'),'-Nic1')]",
     "fgaNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgaNic1Name'))]",
@@ -1000,7 +1000,7 @@
             "properties": {
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[variables('sn4IPfga')]",
-              "publicIPAddress": "[if(not(equals(parameters('publicIP1NewOrExisting'), 'none')), variables('publicIPAddress2Id') , json('null'))]",
+              "publicIPAddress": "[if(not(equals(parameters('publicIP2NewOrExisting'), 'none')), variables('publicIPAddress2Id') , json('null'))]",
               "subnet": {
                 "id": "[variables('subnet4Id')]"
               }
@@ -1033,7 +1033,7 @@
             "properties": {
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[variables('sn4IPfgb')]",
-              "publicIPAddress": "[if(not(equals(parameters('publicIP1NewOrExisting'), 'none')), variables('publicIPAddress3Id') , json('null'))]",
+              "publicIPAddress": "[if(not(equals(parameters('publicIP3NewOrExisting'), 'none')), variables('publicIPAddress3Id') , json('null'))]",
               "subnet": {
                 "id": "[variables('subnet4Id')]"
               }
@@ -1227,19 +1227,19 @@
   "outputs": {
     "fortiGatePublicIP": {
       "type": "string",
-      "value": "[if(and(not(equals(parameters('publicIP1NewOrExisting'), 'none')),equals(parameters('publicIP1AddressType'),'Standard')), reference(variables('publicIP1Id')).ipAddress, json('null'))]"
+      "value": "[if(and(not(equals(parameters('publicIP1NewOrExisting'), 'none')),equals(parameters('publicIP1AddressType'),'Standard')), reference(variables('publicIP1Id')).ipAddress, '')]"
     },
     "fortiGateFQDN": {
       "type": "string",
-      "value": "[if(not(equals(parameters('publicIP1NewOrExisting'), 'none')), reference(variables('publicIP1Id')).dnsSettings.fqdn, json('null'))]"
+      "value": "[if(not(equals(parameters('publicIP1NewOrExisting'), 'none')), reference(variables('publicIP1Id')).dnsSettings.fqdn, '')]"
     },
     "fortiGateAManagementPublicIP": {
       "type": "string",
-      "value": "[if(and(not(equals(parameters('publicIP2NewOrExisting'), 'none')),equals(parameters('publicIP2AddressType'),'Standard')), reference(variables('publicIP2Id')).ipAddress, json('null'))]"
+      "value": "[if(and(not(equals(parameters('publicIP2NewOrExisting'), 'none')),equals(parameters('publicIP2AddressType'),'Standard')), reference(variables('publicIP2Id')).ipAddress, '')]"
     },
     "fortiGateBManagementPublicIP": {
       "type": "string",
-      "value": "[if(and(not(equals(parameters('publicIP3NewOrExisting'), 'none')),equals(parameters('publicIP3AddressType'),'Standard')), reference(variables('publicIP3Id')).ipAddress, json('null'))]"
+      "value": "[if(and(not(equals(parameters('publicIP3NewOrExisting'), 'none')),equals(parameters('publicIP3AddressType'),'Standard')), reference(variables('publicIP3Id')).ipAddress, '')]"
     }
   }
 }

@@ -326,7 +326,7 @@
     "customDataFooter": "\n--12345--\n",
     "customDataCombined": "[concat(variables('customDataHeader'),variables('customDataBody'),variables('customDataLicenseHeader'), parameters('fortiGateLicenseBYOL'), variables('customDataFooter'))]",
     "fgtCustomData": "[base64(if(equals(parameters('fortiGateLicenseBYOL'),''),variables('customDataBody'),variables('customDataCombined')))]",
-    "routeTableProtectedName": "[concat(parameters('fortiGateNamePrefix'),'-RT-PROTECTED')]",
+    "routeTableProtectedName": "[concat(parameters('fortiGateNamePrefix'),'-RouteTable-',parameters('subnet3Name'))]",
     "routeTableProtectedId": "[resourceId('Microsoft.Network/routeTables',variables('routeTableProtectedName'))]",
     "fgtNic1Name": "[concat(variables('fgtVmName'),'-Nic1')]",
     "fgtNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgtNic1Name'))]",
