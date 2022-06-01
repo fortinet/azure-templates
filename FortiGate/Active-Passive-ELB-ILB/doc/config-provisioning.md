@@ -44,18 +44,18 @@ config system interface
   next
   edit port2
     set mode static
-    set ip <b>172.16.136.69/24</b>
+    set ip <b>172.16.136.69/26</b>
     set description internal
     set allowaccess probe-response
   next
   edit port3
     set mode static
-    set ip <b>172.16.136.133/24</b>
+    set ip <b>172.16.136.133/26</b>
     set description hasyncport
   next
   edit port4
     set mode static
-    set ip <b>172.16.136.197/24</b>
+    set ip <b>172.16.136.197/26</b>
     set description management
     set allowaccess ping https ssh ftm
   next
