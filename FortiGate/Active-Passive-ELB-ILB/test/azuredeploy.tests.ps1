@@ -15,8 +15,8 @@ param (
 
 BeforeAll {
     $templateName = "Active-Passive-ELB-ILB"
-    $sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName"
-    $scriptPath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName\test"
+    $sourcePath = "$env:GITHUB_WORKSPACE\FortiGate\$templateName"
+    $scriptPath = "$env:GITHUB_WORKSPACE\FortiGate\$templateName\test"
     $templateFileName = "azuredeploy.json"
     $templateFileLocation = "$sourcePath\$templateFileName"
     $templateParameterFileName = "azuredeploy.parameters.json"
@@ -35,13 +35,13 @@ BeforeAll {
     $config += "`" `n set password $testsResourceGroupName `n next `n end"
     $publicIP2Name = "$testsPrefix-FGT-A-MGMT-PIP"
     $publicIP3Name = "$testsPrefix-FGT-B-MGMT-PIP"
-    $params = @{ 'adminUsername'=$testsAdminUsername
-                 'adminPassword'=$testsResourceGroupName
-                 'fortiGateNamePrefix'=$testsPrefix
-                 'fortiGateAditionalCustomData'=$config
-                 'publicIP2Name'=$publicIP2Name
-                 'publicIP3Name'=$publicIP3Name
-               }
+    $params = @{ 'adminUsername'        = $testsAdminUsername
+        'adminPassword'                 = $testsResourceGroupName
+        'fortiGateNamePrefix'           = $testsPrefix
+        'fortiGateAdditionalCustomData' = $config
+        'publicIP2Name'                 = $publicIP2Name
+        'publicIP3Name'                 = $publicIP3Name
+    }
     $ports = @(443, 22)
 }
 
@@ -58,6 +58,7 @@ Describe 'FGT A/P LB' {
         It 'Converts from JSON and has the expected properties' {
             $expectedProperties = '$schema',
             'contentVersion',
+            'outputs',
             'parameters',
             'resources',
             'variables'
@@ -67,75 +68,77 @@ Describe 'FGT A/P LB' {
 
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
-                                 'Microsoft.Compute/availabilitySets',
-                                 'Microsoft.Network/routeTables',
-                                 'Microsoft.Network/virtualNetworks',
-                                 'Microsoft.Network/loadBalancers',
-                                 'Microsoft.Network/networkSecurityGroups',
-                                 'Microsoft.Network/publicIPAddresses',
-                                 'Microsoft.Network/publicIPAddresses',
-                                 'Microsoft.Network/publicIPAddresses',
-                                 'Microsoft.Network/loadBalancers',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Compute/virtualMachines',
-                                 'Microsoft.Compute/virtualMachines'
+            'Microsoft.Storage/storageAccounts',
+            'Microsoft.Compute/availabilitySets',
+            'Microsoft.Network/routeTables',
+            'Microsoft.Network/virtualNetworks',
+            'Microsoft.Network/loadBalancers',
+            'Microsoft.Network/networkSecurityGroups',
+            'Microsoft.Network/publicIPAddresses',
+            'Microsoft.Network/publicIPAddresses',
+            'Microsoft.Network/publicIPAddresses',
+            'Microsoft.Network/loadBalancers',
+            'Microsoft.Network/networkInterfaces',
+            'Microsoft.Network/networkInterfaces',
+            'Microsoft.Network/networkInterfaces',
+            'Microsoft.Network/networkInterfaces',
+            'Microsoft.Network/networkInterfaces',
+            'Microsoft.Network/networkInterfaces',
+            'Microsoft.Network/networkInterfaces',
+            'Microsoft.Network/networkInterfaces',
+            'Microsoft.Compute/virtualMachines',
+            'Microsoft.Compute/virtualMachines'
             $templateResources = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Resources.type
             $templateResources | Should -Be $expectedResources
         }
 
         It 'Contains the expected parameters' {
             $expectedTemplateParameters = 'acceleratedNetworking',
-                                          'adminPassword',
-                                          'adminUsername',
-                                          'fortiGateAditionalCustomData',
-                                          'fortiGateImageSKU',
-                                          'fortiGateImageVersion',
-                                          'fortiGateLicenseBYOLA',
-                                          'fortiGateLicenseBYOLB',
-                                          'fortiGateLicenseFlexVMA',
-                                          'fortiGateLicenseFlexVMB',
-                                          'fortiGateNamePrefix',
-                                          'fortiManager',
-                                          'fortiManagerIP',
-                                          'fortiManagerSerial',
-                                          'fortinetTags',
-                                          'instanceType',
-                                          'location',
-                                          'publicIP2Name',
-                                          'publicIP2NewOrExisting',
-                                          'publicIP2ResourceGroup',
-                                          'publicIP3Name',
-                                          'publicIP3NewOrExisting',
-                                          'publicIP3ResourceGroup',
-                                          'publicIPAddressType',
-                                          'publicIPName',
-                                          'publicIPNewOrExisting',
-                                          'publicIPResourceGroup',
-                                          'subnet1Name',
-                                          'subnet1Prefix',
-                                          'subnet1StartAddress',
-                                          'subnet2Name',
-                                          'subnet2Prefix',
-                                          'subnet2StartAddress',
-                                          'subnet3Name',
-                                          'subnet3Prefix',
-                                          'subnet3StartAddress',
-                                          'subnet4Name',
-                                          'subnet4Prefix',
-                                          'subnet4StartAddress',
-                                          'subnet5Name',
-                                          'subnet5Prefix',
-                                          'vnetAddressPrefix',
-                                          'vnetName',
-                                          'vnetNewOrExisting',
-                                          'vnetResourceGroup'
+            'adminPassword',
+            'adminUsername',
+            'availabilityOptions',
+            'fortiGateAdditionalCustomData',
+            'fortiGateImageSKU',
+            'fortiGateImageVersion',
+            'fortiGateLicenseBYOLA',
+            'fortiGateLicenseBYOLB',
+            'fortiGateLicenseFlexVMA',
+            'fortiGateLicenseFlexVMB',
+            'fortiGateNamePrefix',
+            'fortiManager',
+            'fortiManagerIP',
+            'fortiManagerSerial',
+            'fortinetTags',
+            'instanceType',
+            'location',
+            'publicIP1Name',
+            'publicIP1NewOrExisting',
+            'publicIP1ResourceGroup',
+            'publicIP2Name',
+            'publicIP2NewOrExisting',
+            'publicIP2ResourceGroup',
+            'publicIP3Name',
+            'publicIP3NewOrExisting',
+            'publicIP3ResourceGroup',
+            'serialConsole',
+            'subnet1Name',
+            'subnet1Prefix',
+            'subnet1StartAddress',
+            'subnet2Name',
+            'subnet2Prefix',
+            'subnet2StartAddress',
+            'subnet3Name',
+            'subnet3Prefix',
+            'subnet3StartAddress',
+            'subnet4Name',
+            'subnet4Prefix',
+            'subnet4StartAddress',
+            'subnet5Name',
+            'subnet5Prefix',
+            'vnetAddressPrefix',
+            'vnetName',
+            'vnetNewOrExisting',
+            'vnetResourceGroup'
             $templateParameters = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Parameters | Get-Member -MemberType NoteProperty | % Name | sort
             $templateParameters | Should -Be $expectedTemplateParameters
         }
@@ -145,10 +148,10 @@ Describe 'FGT A/P LB' {
 
         It "Test Deployment" {
             New-AzResourceGroup -Name $testsResourceGroupName -Location "$testsResourceGroupLocation"
-            (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params).Count | Should -Not -BeGreaterThan 0
+            (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params).Count | Should -Not -BeGreaterThan 0
         }
         It "Deployment" {
-            $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileName" -TemplateParameterObject $params
+            $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params
             Write-Host ($resultDeployment | Format-Table | Out-String)
             Write-Host ("Deployment state: " + $resultDeployment.ProvisioningState | Out-String)
             $resultDeployment.ProvisioningState | Should -Be "Succeeded"
@@ -163,8 +166,8 @@ Describe 'FGT A/P LB' {
     Context 'Deployment test' {
 
         BeforeAll {
-            $fgta = (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName).IpAddress
-            $fgtb = (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName).IpAddress
+            $fgta = (Get-AzPublicIpAddress -Name $publicIP2Name -ResourceGroupName $testsResourceGroupName).IpAddress
+            $fgtb = (Get-AzPublicIpAddress -Name $publicIP3Name -ResourceGroupName $testsResourceGroupName).IpAddress
             Write-Host ("FortiGate A public IP: " + $fgta)
             Write-Host ("FortiGate B public IP: " + $fgtb)
             chmod 400 $sshkey
@@ -180,14 +183,14 @@ Describe 'FGT A/P LB' {
             $OFS = "`n"
         }
         It "FGT A: Ports listening" {
-            ForEach( $port in $ports ) {
+            ForEach ( $port in $ports ) {
                 Write-Host ("Check port: $port" )
                 $portListening = (Test-Connection -TargetName $fgta -TCPPort $port -TimeoutSeconds 100)
                 $portListening | Should -Be $true
             }
         }
         It "FGT B: Ports listening" {
-            ForEach( $port in $ports ) {
+            ForEach ( $port in $ports ) {
                 Write-Host ("Check port: $port" )
                 $portListening = (Test-Connection -TargetName $fgtb -TCPPort $port -TimeoutSeconds 100)
                 $portListening | Should -Be $true

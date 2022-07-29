@@ -4,6 +4,6 @@
     "itemDisplayName": "Fortinet FortiGate Active Passive cluster using Azure API integration for failover",
     "description": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure and routing",
     "summary": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure and routing",
-    "githubUsername": "fortinet",
-    "dateUpdated":  "2022-02-25"
+    "githubUsername": "jvhoof",
+    "dateUpdated":  "2021-02-23"
 }

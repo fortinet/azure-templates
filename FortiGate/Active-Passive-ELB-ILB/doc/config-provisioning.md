@@ -56,7 +56,7 @@ config system interface
   edit port4
     set mode static
     set ip <b>172.16.136.197/26</b>
-    set description management
+    set description hammgmtport
     set allowaccess ping https ssh ftm
   next
 end
@@ -134,7 +134,7 @@ config system interface
   edit port4
     set mode static
     set ip <b>172.16.136.198/26</b>
-    set description management
+    set description hammgmtport
     set allowaccess ping https ssh ftm
   next
 end

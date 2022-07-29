@@ -109,7 +109,7 @@ config system sdn-connector
            next
        end
 end
-
+```
 - Secondary FortiGate
 ```
 config system sdn-connector
@@ -126,7 +126,7 @@ config system sdn-connector
            next
        end
 end
-
+```
 ## Limitations
 
 - Azure has certain limitations on outbound connections: https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-connections#limitations
