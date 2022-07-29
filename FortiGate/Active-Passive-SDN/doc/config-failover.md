@@ -6,10 +6,11 @@ Once, licensed and rebooted, the FortiGate Fabric Connector needs to be configur
 
 ```text
 config system sdn-connector
-  edit "AZConnector"
+  edit "AzureSDN"
   set type azure
   set ha-status enable
   set resource-group "fortigateapha"
+  set subscription-id 00000000-0000-0000-0000-000000000000
   config nic
     edit "FortiGate-A-NIC1"
       config ip
@@ -35,10 +36,11 @@ For FortiGate B:
 
 ```text
 config system sdn-connector
-  edit "AZConnector"
+  edit "AzureSDN"
   set type azure
   set ha-status enable
   set resource-group "fortigateapha"
+  set subscription-id 00000000-0000-0000-0000-000000000000
   config nic
     edit "FortiGate-B-NIC1"
     config ip

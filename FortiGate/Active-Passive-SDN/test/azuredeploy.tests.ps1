@@ -175,8 +175,8 @@ Describe 'FGT A/P SDN' {
     Context 'Deployment test' {
 
         BeforeAll {
-            $fgta = (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName).IpAddress
-            $fgtb = (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName).IpAddress
+            $fgta = (Get-AzPublicIpAddress -Name $publicIP2Name -ResourceGroupName $testsResourceGroupName).IpAddress
+            $fgtb = (Get-AzPublicIpAddress -Name $publicIP3Name -ResourceGroupName $testsResourceGroupName).IpAddress
             Write-Host ("FortiGate A public IP: " + $fgta)
             Write-Host ("FortiGate B public IP: " + $fgtb)
             chmod 400 $sshkey
