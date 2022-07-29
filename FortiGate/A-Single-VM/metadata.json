@@ -5,5 +5,5 @@
     "description": "This Azure quickstart template deploys a FortiGate-VM with the required network infrastructure and routing",
     "summary": "This Azure quickstart template deploys a FortiGate-VM with the required network infrastructure and routing",
     "githubUsername": "fortinet",
-    "dateUpdated":  "2022-02-25"
+    "dateUpdated":  "2021-01-21"
 }
