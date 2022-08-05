@@ -760,8 +760,8 @@
             "name": "EqualIPConfirmation3",
             "type": "Microsoft.Common.InfoBox",
             "options": {
-              "icon": "Warning",
-              "text": "It is avisable to have all public IPs of the same SKU. Please return to previous blade and adapt all public IP SKUs."
+              "icon": "Error",
+              "text": "All public IPs need to be of the same SKU. Please return to previous blade and adapt all public IP SKUs."
             },
             "visible": "[and(not(and(equals(steps('publicip').externalpublicip.sku, 'Basic'),equals(steps('publicip').fgtamgmtpublicip.sku, 'Basic'),equals(steps('publicip').fgtbmgmtpublicip.sku, 'Basic'))),not(and(equals(steps('publicip').externalpublicip.sku, 'Standard'),equals(steps('publicip').fgtamgmtpublicip.sku, 'Standard'),equals(steps('publicip').fgtbmgmtpublicip.sku, 'Standard'))))]"
           },
