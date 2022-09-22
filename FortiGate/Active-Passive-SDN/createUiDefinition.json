@@ -131,6 +131,10 @@
               "value": "6.4.0"
             },
             {
+              "label": "6.4.10",
+              "value": "6.4.10"
+            },
+            {
               "label": "6.4.2",
               "value": "6.4.2"
             },
@@ -189,6 +193,10 @@
             {
               "label": "7.2.0",
               "value": "7.2.0"
+            },
+            {
+              "label": "7.2.1",
+              "value": "7.2.1"
             },
             {
               "label": "latest",
@@ -395,6 +403,7 @@
                 "name": "fgtLicenseFlexVMCheck",
                 "type": "Microsoft.Common.CheckBox",
                 "label": "My organisation is using the Flex-VM subscription service.",
+                "toolTip": "Select this box to enter a Flex-VM token",
                 "visible": "[equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm')]"
               },
               {
@@ -730,7 +739,7 @@
               }
             },
             "options": {
-              "hideNone": true,
+              "hideNone": false,
               "hideDomainNameLabel": true
             },
             "visible": true

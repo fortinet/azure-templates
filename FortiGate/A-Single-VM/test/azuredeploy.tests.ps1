@@ -16,8 +16,8 @@ $VerbosePreference = "Continue"
 
 BeforeAll {
     $templateName = "A-Single-VM"
-    $sourcePath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName"
-    $scriptPath = "$env:BUILD_SOURCESDIRECTORY\FortiGate\$templateName\test"
+    $sourcePath = "$env:GITHUB_WORKSPACE\FortiGate\$templateName"
+    $scriptPath = "$env:GITHUB_WORKSPACE\FortiGate\$templateName\test"
     $templateFileName = "azuredeploy.json"
     $templateFileLocation = "$sourcePath\$templateFileName"
     $templateParameterFileName = "azuredeploy.parameters.json"
@@ -38,8 +38,8 @@ BeforeAll {
     $params = @{ 'adminUsername'=$testsAdminUsername
                  'adminPassword'=$testsResourceGroupName
                  'fortiGateNamePrefix'=$testsPrefix
-                 'fortiGateAditionalCustomData'=$config
-                 'publicIPName'=$publicIPName
+                 'fortiGateAdditionalCustomData'=$config
+                 'publicIP1Name'=$publicIPName
                }
     $ports = @(443, 22)
 }
@@ -57,6 +57,7 @@ Describe 'FGT Single VM' {
         It 'Converts from JSON and has the expected properties' {
             $expectedProperties = '$schema',
             'contentVersion',
+            'outputs',
             'parameters',
             'resources',
             'variables'
@@ -66,6 +67,8 @@ Describe 'FGT Single VM' {
 
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
+                                 'Microsoft.Storage/storageAccounts',
+                                 'Microsoft.Compute/availabilitySets',
                                  'Microsoft.Network/routeTables',
                                  'Microsoft.Network/virtualNetworks',
                                  'Microsoft.Network/networkSecurityGroups',
@@ -81,11 +84,15 @@ Describe 'FGT Single VM' {
             $expectedTemplateParameters = 'acceleratedNetworking',
                                           'adminPassword',
                                           'adminUsername',
-                                          'fortiGateAditionalCustomData',
+                                          'availabilityOptions',
+                                          'availabilityZoneNumber',
+                                          'existingAvailabilitySetName',
+                                          'fortiGateAdditionalCustomData',
                                           'fortiGateImageSKU',
                                           'fortiGateImageVersion',
                                           'fortiGateLicenseBYOL',
                                           'fortiGateLicenseFlexVM',
+                                          'fortiGateName',
                                           'fortiGateNamePrefix',
                                           'fortiManager',
                                           'fortiManagerIP',
@@ -93,10 +100,12 @@ Describe 'FGT Single VM' {
                                           'fortinetTags',
                                           'instanceType',
                                           'location',
-                                          'publicIPAddressType',
-                                          'publicIPName',
-                                          'publicIPNewOrExisting',
-                                          'publicIPResourceGroup',
+                                          'publicIP1AddressType',
+                                          'publicIP1Name',
+                                          'publicIP1NewOrExisting',
+                                          'publicIP1ResourceGroup',
+                                          'publicIP1SKU',
+                                          'serialConsole',
                                           'subnet1Name',
                                           'subnet1Prefix',
                                           'subnet1StartAddress',
