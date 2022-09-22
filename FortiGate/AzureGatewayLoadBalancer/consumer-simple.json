@@ -1,0 +1,313 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccountDomain": {
+      "type": "string",
+      "defaultValue": "core.windows.net",
+      "metadata": {
+        "description": "The domain of the storage account to be created."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Admin username of os profile"
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Admin password of os profile"
+      }
+    },
+    "imagePublisher": {
+      "type": "string",
+      "defaultValue": "canonical",
+      "metadata": {
+        "description": "Image Publisher"
+      }
+    },
+    "imageOffer": {
+      "type": "string",
+      "defaultValue": "0001-com-ubuntu-server-focal",
+      "metadata": {
+        "description": "Image Offer"
+      }
+    },
+    "imageSKU": {
+      "type": "string",
+      "defaultValue": "20_04-lts",
+      "metadata": {
+        "description": "Image SKU"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_A1_v2",
+      "metadata": {
+        "description": "Size of the VM"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "eastus2",
+      "metadata": {
+        "description": "Location to deploy all the resources in.ex. eastus2euap"
+      }
+    },
+    "subscription_id": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "provider_rg": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]"
+    }
+  },
+  "variables": {
+    "networkSecurityGroupName": "networkSecurityGroup",
+    "consumerLbName": "consumerLB",
+    "consumerVmName": "consumerVM",
+    "consumerPublicIPAddressName": "consumerPip",
+    "consumerVnetName": "consumerVNET",
+    "consumerSubnetName": "Subnet-1",
+    "consumerNicName": "ConsumerNic",
+    "consumerSubnetPrefix": "10.0.0.0/24",
+    "consumerAddressPrefix": "10.0.0.0/16",
+    "publicIPAddressType": "Static",
+    "consumerVnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('consumerVnetName'))]",
+    "consumerSubnetRef": "[concat(variables('consumerVnetID'),'/subnets/',variables('consumerSubnetName'))]",
+    "consumerlbID": "[resourceId('Microsoft.Network/loadBalancers',variables('consumerLbName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-03-30",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('networkSecurityGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "unblock_all_tcp_rule",
+            "properties": {
+              "description": "unblock_all_tcp_rule",
+              "protocol": "Tcp",
+              "sourcePortRange": "0-65535",
+              "destinationPortRange": "0-65535",
+              "sourceAddressPrefix": "0.0.0.0/0",
+              "destinationAddressPrefix": "0.0.0.0/0",
+              "access": "Allow",
+              "priority": 123,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "unblock_all_tcp_outrule",
+            "properties": {
+              "description": "unblock_all_tcp_outrule",
+              "protocol": "Tcp",
+              "sourcePortRange": "0-65535",
+              "destinationPortRange": "0-65535",
+              "sourceAddressPrefix": "0.0.0.0/0",
+              "destinationAddressPrefix": "0.0.0.0/0",
+              "access": "Allow",
+              "priority": 123,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "unblock_all_udp_ports",
+            "properties": {
+              "description": "Unblock_all_udp_ports",
+              "protocol": "Udp",
+              "sourcePortRange": "0-65535",
+              "destinationPortRange": "0-65535",
+              "sourceAddressPrefix": "0.0.0.0/0",
+              "destinationAddressPrefix": "0.0.0.0/0",
+              "access": "Allow",
+              "priority": 125,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2017-08-01",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('consumerPublicIPAddressName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAddressVersion": "IPv4",
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('consumerNicName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('consumerVnetName'))]",
+        "[concat('Microsoft.Network/loadBalancers/', variables('consumerLbName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('consumerSubnetRef')]"
+              },
+              "loadBalancerProbeStatus": "Up",
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[concat(variables('consumerLbID'), '/backendAddressPools/BackendPool1')]"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('consumerVnetName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('consumerAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('consumerSubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('consumerSubnetPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('consumerVmName')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('consumerNicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('consumerVmName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('imagePublisher')]",
+            "offer": "[parameters('imageOffer')]",
+            "sku": "[parameters('imageSKU')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('consumerNicName'))]",
+              "properties": {
+                "primary": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "2020-08-01",
+      "name": "[variables('consumerLbName')]",
+      "type": "Microsoft.Network/loadBalancers",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('consumerPublicIPAddressName'))]"
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "LoadBalancerFrontEnd",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('consumerPublicIPAddressName'))]"
+              },
+              "privateIPAddressVersion": "IPv4",
+              "gatewayLoadBalancer": {
+                "id": "[concat('/subscriptions/',parameters('subscription_id'), '/resourceGroups/', parameters('provider_rg'), '/providers/Microsoft.Network/loadBalancers/GWLB/frontendIPConfigurations/FEIpconfig1')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "BackendPool1"
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "LBRule",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('consumerLbID'),'/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(variables('consumerlbID'),'/backendAddressPools/BackendPool1')]"
+              },
+              "protocol": "tcp",
+              "enableTcpReset": true,
+              "frontendPort": 50000,
+              "backendPort": 80,
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('consumerLbName'), 'lb-probe')]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "properties": {
+              "protocol": "Tcp",
+              "port": 80,
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            },
+            "name": "lb-probe"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "adminPassword": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "fortiGateNamePrefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "fortiGateImageSKU": {
+            "value": "fortinet_fg-vm"
+        },
+        "fortiGateImageVersion": {
+            "value": "latest"
+        },
+        "fortiGateAdditionalCustomData": {
+            "value": ""
+        },
+        "instanceType": {
+            "value": "Standard_F2s"
+        },
+        "availabilityOptions": {
+            "value": "Availability Set"
+        },
+        "acceleratedNetworking": {
+            "value": "true"
+        },
+        "publicIP1NewOrExisting": {
+            "value": "new"
+        },
+        "publicIP1Name": {
+            "value": ""
+        },
+        "publicIP1ResourceGroup": {
+            "value": ""
+        },
+        "publicIP2NewOrExisting": {
+            "value": "new"
+        },
+        "publicIP2Name": {
+            "value": ""
+        },
+        "publicIP2ResourceGroup": {
+            "value": ""
+        },
+        "vnetNewOrExisting": {
+            "value": "new"
+        },
+        "vnetName": {
+            "value": ""
+        },
+        "vnetResourceGroup": {
+            "value": ""
+        },
+        "vnetAddressPrefix": {
+            "value": "172.16.136.0/22"
+        },
+        "subnet1Name": {
+            "value": "ProviderSubnet"
+        },
+        "subnet1Prefix": {
+            "value": "172.16.136.0/26"
+        },
+        "subnet1StartAddress": {
+            "value": "172.16.136.4"
+        },
+        "subnet2Name": {
+            "value": "ManagementSubnet"
+        },
+        "subnet2Prefix": {
+            "value": "172.16.136.64/26"
+        },
+        "subnet2StartAddress": {
+            "value": "172.16.136.68"
+        },
+        "serialConsole": {
+            "value": "yes"
+        },
+        "fortiManager": {
+            "value": "no"
+        },
+        "fortiManagerIP": {
+            "value": ""
+        },
+        "fortiManagerSerial": {
+            "value": ""
+        },
+        "fortiGateLicenseBYOLA": {
+            "value": ""
+        },
+        "fortiGateLicenseBYOLB": {
+            "value": ""
+        },
+        "fortiGateLicenseFlexVMA": {
+            "value": ""
+        },
+        "fortiGateLicenseFlexVMB": {
+            "value": ""
+        },
+        "location": {
+            "value": ""
+        },
+        "fortinetTags": {
+            "value": {
+                "publisher": "Fortinet",
+                "template": "AzureGatewayLoadBalancer",
+                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831AGWLB"
+            }
+        }
+    }
+}
