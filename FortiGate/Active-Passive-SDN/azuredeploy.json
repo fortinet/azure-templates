@@ -41,6 +41,7 @@
         "6.2.5",
         "6.4.0",
         "6.4.10",
+        "6.4.11",
         "6.4.2",
         "6.4.3",
         "6.4.5",
@@ -55,8 +56,12 @@
         "7.0.4",
         "7.0.5",
         "7.0.6",
+        "7.0.8",
+        "7.0.9",
         "7.2.0",
         "7.2.1",
+        "7.2.2",
+        "7.2.3",
         "latest"
       ],
       "metadata": {
@@ -538,8 +543,6 @@
     "fgaNic4Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgaNic4Name'))]",
     "fgbNic4Name": "[concat(variables('fgbVmName'),'-Nic4')]",
     "fgbNic4Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgbNic4Name'))]",
-    "serialConsoleStorageAccountName": "[concat('console', uniquestring(resourceGroup().id))]",
-    "serialConsoleStorageAccountType": "Standard_LRS",
     "serialConsoleEnabled": "[if(equals(parameters('serialConsole'),'yes'),'true','false')]",
     "publicIP1Name": "[if(equals(parameters('publicIP1Name'),''),concat(parameters('fortiGateNamePrefix'),'-FGT-PIP'),parameters('publicIP1Name'))]",
     "publicIP1Id": "[if(equals(parameters('publicIP1NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP1Name')),resourceId(parameters('publicIP1ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP1Name')))]",
@@ -605,6 +608,7 @@
     "sn4IPfga": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',int(variables('sn4IPStartAddress')[3]))]",
     "sn4IPfgb": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',add(int(variables('sn4IPStartAddress')[3]),1))]",
     "useAZ": "[and(not(empty(pickZones('Microsoft.Compute', 'virtualMachines', parameters('location')))), equals(parameters('availabilityOptions'), 'Availability Zones'))]",
+    "pipZones": "[if(variables('useAZ'), pickZones('Microsoft.Network', 'publicIPAddresses', parameters('location'), 3), json('null'))]",
     "zone1": [
       "1"
     ],
@@ -627,18 +631,7 @@
       }
     },
     {
-      "condition": "[equals(parameters('serialConsole'), 'yes')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "name": "[variables('serialConsoleStorageAccountName')]",
-      "apiVersion": "2021-02-01",
-      "location": "[parameters('location')]",
-      "kind": "Storage",
-      "sku": {
-        "name": "[variables('serialConsoleStorageAccountType')]"
-      }
-    },
-    {
-      "apiVersion": "2021-03-01",
+      "apiVersion": "2021-07-01",
       "type": "Microsoft.Compute/availabilitySets",
       "condition": "[not(variables('useAZ'))]",
       "name": "[variables('availabilitySetName')]",
@@ -655,13 +648,13 @@
       }
     },
     {
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/routeTables",
       "name": "[variables('routeTableName')]",
-      "apiVersion": "2020-11-01",
+      "location": "[parameters('location')]",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
-      "location": "[parameters('location')]",
       "properties": {
         "routes": [
           {
@@ -678,7 +671,7 @@
     {
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "name": "[variables('vnetName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -728,7 +721,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -770,8 +763,8 @@
     },
     {
       "condition": "[equals(parameters('publicIP1NewOrExisting'), 'new')]",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2020-11-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -780,6 +773,7 @@
       "sku": {
         "name": "[parameters('publicIP1AddressSku')]"
       },
+      "zones": "[variables('pipZones')]",
       "properties": {
         "publicIPAllocationMethod": "[parameters('publicIP1AddressType')]",
         "dnsSettings": {
@@ -790,7 +784,7 @@
     {
       "condition": "[equals(parameters('publicIP2NewOrExisting'), 'new')]",
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -799,6 +793,7 @@
       "sku": {
         "name": "[parameters('publicIP2AddressSku')]"
       },
+      "zones": "[variables('pipZones')]",
       "properties": {
         "publicIPAllocationMethod": "[parameters('publicIP2AddressType')]"
       }
@@ -806,7 +801,7 @@
     {
       "condition": "[equals(parameters('publicIP3NewOrExisting'), 'new')]",
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -815,12 +810,13 @@
       "sku": {
         "name": "[parameters('publicIP3AddressSKU')]"
       },
+      "zones": "[variables('pipZones')]",
       "properties": {
         "publicIPAllocationMethod": "[parameters('publicIP3AddressType')]"
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -853,7 +849,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -886,7 +882,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -918,7 +914,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -951,7 +947,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -983,7 +979,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -1016,7 +1012,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -1049,7 +1045,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
@@ -1164,8 +1160,7 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled": "[variables('serialConsoleEnabled')]",
-            "storageUri": "[if(equals(parameters('serialConsole'), 'yes'), reference(variables('serialConsoleStorageAccountName'), '2021-08-01').primaryEndpoints['blob'], json('null'))]"
+            "enabled": "[variables('serialConsoleEnabled')]"
           }
         }
       }
@@ -1252,8 +1247,7 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled": "[variables('serialConsoleEnabled')]",
-            "storageUri": "[if(equals(parameters('serialConsole'), 'yes'), reference(variables('serialConsoleStorageAccountName'), '2021-08-01').primaryEndpoints['blob'], json('null'))]"
+            "enabled": "[variables('serialConsoleEnabled')]"
           }
         }
       }

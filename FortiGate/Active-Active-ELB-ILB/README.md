@@ -115,6 +115,24 @@ config system cluster-sync
 end
 ```
 
+In version 7.2.1 and above the syntax has changed as reported [here](https://docs.fortinet.com/document/fortigate/7.2.1/fortios-release-notes/517622/changes-in-cli).
+```text
+config system ha
+    set session-pickup enable
+    set session-pickup-connectionless enable
+    set session-pickup-nat enable
+    set session-pickup-expectation enable
+    set override disable
+end
+
+config system standalone-cluster
+    edit 0
+        set peerip 10.0.1.x
+        set syncvd "root"
+    next
+end
+```
+
 * Where x in 10.0.1.x is the IP of port 1 of the opposite FortiGate. With the default values this would be either 5 or 6.
 
 ### Configuration synchronization

@@ -66,7 +66,6 @@ Describe 'FGT A/A' {
 
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
-                                 'Microsoft.Storage/storageAccounts',
                                  'Microsoft.Compute/availabilitySets',
                                  'Microsoft.Network/virtualNetworks',
                                  'Microsoft.Network/loadBalancers',

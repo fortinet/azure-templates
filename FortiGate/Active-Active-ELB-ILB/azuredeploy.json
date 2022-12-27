@@ -41,6 +41,7 @@
         "6.2.5",
         "6.4.0",
         "6.4.10",
+        "6.4.11",
         "6.4.2",
         "6.4.3",
         "6.4.5",
@@ -55,8 +56,12 @@
         "7.0.4",
         "7.0.5",
         "7.0.6",
+        "7.0.8",
+        "7.0.9",
         "7.2.0",
         "7.2.1",
+        "7.2.2",
+        "7.2.3",
         "latest"
       ],
       "metadata": {
@@ -87,6 +92,7 @@
         "Standard_F8s_v2",
         "Standard_F16s_v2",
         "Standard_F32s_v2",
+        "Standard_DS1_v2",
         "Standard_DS2_v2",
         "Standard_DS3_v2",
         "Standard_DS4_v2",
@@ -390,8 +396,6 @@
     "fgbNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgbNic1Name'))]",
     "fgbNic2Name": "[concat(variables('fgbVmName'),'-Nic2')]",
     "fgbNic2Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgbNic2Name'))]",
-    "serialConsoleStorageAccountName": "[concat('console', uniquestring(resourceGroup().id))]",
-    "serialConsoleStorageAccountType": "Standard_LRS",
     "serialConsoleEnabled": "[if(equals(parameters('serialConsole'),'yes'),'true','false')]",
     "publicIP1Name": "[if(equals(parameters('publicIP1Name'),''),concat(parameters('fortiGateNamePrefix'),'-FGT-PIP'),parameters('publicIP1Name'))]",
     "publicIP1Id": "[if(equals(parameters('publicIP1NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP1Name')),resourceId(parameters('publicIP1ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP1Name')))]",
@@ -447,6 +451,7 @@
     "externalLBProbeName": "lbprobe",
     "externalLBProbeId": "[resourceId('Microsoft.Network/loadBalancers/probes',variables('externalLBName'),variables('externalLBProbeName'))]",
     "useAZ": "[and(not(empty(pickZones('Microsoft.Compute', 'virtualMachines', parameters('location')))), equals(parameters('availabilityOptions'), 'Availability Zones'))]",
+    "pipZones": "[if(variables('useAZ'), pickZones('Microsoft.Network', 'publicIPAddresses', parameters('location'), 3), json('null'))]",
     "zone1": [
       "1"
     ],
@@ -456,7 +461,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2021-04-01",
       "name": "[concat(parameters('fortiGateNamePrefix'), '-fortinetdeployment-', uniquestring(resourceGroup().id))]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -466,17 +471,6 @@
           "contentVersion": "1.0.0.0",
           "resources": []
         }
-      }
-    },
-    {
-      "condition": "[equals(parameters('serialConsole'), 'yes')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "name": "[variables('serialConsoleStorageAccountName')]",
-      "apiVersion": "2021-02-01",
-      "location": "[parameters('location')]",
-      "kind": "Storage",
-      "sku": {
-        "name": "[variables('serialConsoleStorageAccountType')]"
       }
     },
     {
@@ -499,7 +493,7 @@
     {
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "name": "[variables('vnetName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -537,7 +531,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/loadBalancers",
       "name": "[variables('internalLBName')]",
       "location": "[parameters('location')]",
@@ -603,7 +597,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/routeTables",
       "name": "[variables('routeTable3Name')]",
       "location": "[parameters('location')]",
@@ -624,7 +618,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('nsgName')]",
       "location": "[parameters('location')]",
@@ -666,7 +660,7 @@
     },
     {
       "condition": "[equals(parameters('publicIP1NewOrExisting'), 'new')]",
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIP1Name')]",
       "location": "[parameters('location')]",
@@ -676,6 +670,7 @@
       "sku": {
         "name": "Standard"
       },
+      "zones": "[variables('pipZones')]",
       "properties": {
         "publicIPAllocationMethod": "static",
         "dnsSettings": {
@@ -684,7 +679,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/loadBalancers",
       "name": "[variables('externalLBName')]",
       "location": "[parameters('location')]",
@@ -817,7 +812,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgaNic1Name')]",
       "location": "[parameters('location')]",
@@ -863,7 +858,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgbNic1Name')]",
       "location": "[parameters('location')]",
@@ -910,7 +905,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgaNic2Name')]",
       "location": "[parameters('location')]",
@@ -948,7 +943,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgbNic2Name')]",
       "location": "[parameters('location')]",
@@ -1054,8 +1049,7 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled": "[variables('serialConsoleEnabled')]",
-            "storageUri": "[if(equals(parameters('serialConsole'), 'yes'), reference(variables('serialConsoleStorageAccountName'), '2021-08-01').primaryEndpoints['blob'], json('null'))]"
+            "enabled": "[variables('serialConsoleEnabled')]"
           }
         }
       }
@@ -1128,8 +1122,7 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled": "[variables('serialConsoleEnabled')]",
-            "storageUri": "[if(equals(parameters('serialConsole'), 'yes'), reference(variables('serialConsoleStorageAccountName'), '2021-08-01').primaryEndpoints['blob'], json('null'))]"
+            "enabled": "[variables('serialConsoleEnabled')]"
           }
         }
       }

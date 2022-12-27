@@ -48,6 +48,7 @@
         "6.2.5",
         "6.4.0",
         "6.4.10",
+        "6.4.11",
         "6.4.2",
         "6.4.3",
         "6.4.5",
@@ -62,8 +63,12 @@
         "7.0.4",
         "7.0.5",
         "7.0.6",
+        "7.0.8",
+        "7.0.9",
         "7.2.0",
         "7.2.1",
+        "7.2.2",
+        "7.2.3",
         "latest"
       ],
       "metadata": {
@@ -396,6 +401,7 @@
     },
     "useAS": "[equals(parameters('availabilityOptions'), 'Availability set')]",
     "useAZ": "[and(not(empty(pickZones('Microsoft.Compute', 'virtualMachines', parameters('location')))), equals(parameters('availabilityOptions'), 'Availability zone'))]",
+    "pipZones": "[if(variables('useAZ'), pickZones('Microsoft.Network', 'publicIPAddresses', parameters('location'), 3), json('null'))]",
     "zone1": "[if(equals(parameters('availabilityZoneNumber'),''),pickZones('Microsoft.Compute', 'virtualMachines', parameters('location')),array(parameters('availabilityZoneNumber')))]",
     "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('fortiGateNamePrefix'),'-VNET'),parameters('vnetName'))]",
     "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
@@ -415,8 +421,6 @@
     "fgtNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgtNic1Name'))]",
     "fgtNic2Name": "[concat(variables('fgtVmName'),'-Nic2')]",
     "fgtNic2Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgtNic2Name'))]",
-    "serialConsoleStorageAccountName": "[concat('console', uniquestring(resourceGroup().id))]",
-    "serialConsoleStorageAccountType": "Standard_LRS",
     "serialConsoleEnabled": "[if(equals(parameters('serialConsole'),'yes'),'true','false')]",
     "publicIP1Name": "[if(equals(parameters('publicIP1Name'),''),concat(parameters('fortiGateNamePrefix'),'-FGT-PIP'),parameters('publicIP1Name'))]",
     "publicIP1Id": "[if(equals(parameters('publicIP1NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP1Name')),resourceId(parameters('publicIP1ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP1Name')))]",
@@ -463,17 +467,6 @@
       }
     },
     {
-      "condition": "[equals(parameters('serialConsole'), 'yes')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "name": "[variables('serialConsoleStorageAccountName')]",
-      "apiVersion": "2021-02-01",
-      "location": "[parameters('location')]",
-      "kind": "Storage",
-      "sku": {
-        "name": "[variables('serialConsoleStorageAccountType')]"
-      }
-    },
-    {
       "apiVersion": "2021-03-01",
       "type": "Microsoft.Compute/availabilitySets",
       "condition": "[and(variables('useAS'),equals(parameters('existingAvailabilitySetName'),''))]",
@@ -491,6 +484,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
       "type": "Microsoft.Network/routeTables",
       "name": "[variables('routeTableProtectedName')]",
       "apiVersion": "2020-11-01",
@@ -619,6 +613,7 @@
       "sku": {
         "name": "[parameters('publicIP1SKU')]"
       },
+      "zones": "[variables('pipZones')]",
       "properties": {
         "publicIPAllocationMethod": "[parameters('publicIP1AddressType')]",
         "dnsSettings": {
@@ -759,8 +754,7 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled": "[variables('serialConsoleEnabled')]",
-            "storageUri": "[if(equals(parameters('serialConsole'), 'yes'), reference(variables('serialConsoleStorageAccountName'), '2021-08-01').primaryEndpoints['blob'], json('null'))]"
+            "enabled": "[variables('serialConsoleEnabled')]"
           }
         }
       }
