@@ -24,7 +24,7 @@ set -e
 #
 # FortiGate License type PAYG or BYOL
 # Default = PAYG
-# FGT_IMAGE_SKU PAYG/ONDEMAND = fortinet_fg-vm_payg_20190624
+# FGT_IMAGE_SKU PAYG/ONDEMAND = fortinet_fg-vm_payg_2022
 # FGT_IMAGE_SKU BYOL = fortinet_fg-vm
 #
 # FortiGate version

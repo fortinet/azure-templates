@@ -96,7 +96,16 @@ config system ha
     set unicast-hb-peerip ${fgt_ha_peerip}
 end
 %{ endif }
+%{ if fgt_license_flexvm != "" }
+--===============0086047718136476635==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="license"
 
+LICENSE-TOKEN:${fgt_license_flexvm}
+
+%{ endif }
 %{ if fgt_license_file != "" }
 --===============0086047718136476635==
 Content-Type: text/plain; charset="us-ascii"

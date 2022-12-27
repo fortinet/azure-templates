@@ -65,7 +65,7 @@ Often S-NAT is not desired because it's necessary to retain the original source 
 
 If you do prefer to use FGSP for session synchronization. It can be enable during deployment by uncommenting the section in the customdata.tpl file or adding this recommended configuration to both FortiGate VMs.
 
-```
+```text
 config system ha
     set session-pickup enable
     set session-pickup-connectionless enable
@@ -81,35 +81,42 @@ config system cluster-sync
     next
 end
 ```
-* Where x in 172.16.136.x is the IP of port 1 of the opposite FortiGate. With the default values this would be either 5 or 6.
+
+- Where x in 172.16.136.x is the IP of port 1 of the opposite FortiGate. With the default values this would be either 5 or 6.
 
 ### Configuration synchronization
+
 The FortiGate VMs are in this Active/Active setup independent units. They don't use FGCP as a protocol to sync the configuration like in the Active/Passive setup. To enable configuration sync between both unit the sync from the autoscaling setup can be used. This will sync all configuration except for the specific configuration item proper to the specific VM like hostname, routing and others. To enable the configuration sync the config below can be used on both
 
 FortiGate A
-```
+
+```text
 config system auto-scale
     set status enable
-    set role master
+    set role primary
     set sync-interface "port2"
     set psksecret "a big secret"
 end
 ```
 
 FortiGate B
-```
+
+```text
 config system auto-scale
     set status enable
+    set role secondary
     set sync-interface "port2"
-    set master-ip 172.16.136.69
+    set primary-ip 172.16.136.69
     set psksecret "a big secret"
 end
 ```
 
 ## Support
+
 Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.
 For direct issues, please refer to the [Issues](https://github.com/fortinet/azure-templates/issues) tab of this GitHub project.
 For other questions related to this project, contact [github@fortinet.com](mailto:github@fortinet.com).
 
 ## License
+
 [License](LICENSE) © Fortinet Technologies. All rights reserved.

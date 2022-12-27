@@ -67,6 +67,33 @@ config system admin
     next
 end
 %{ endif }
+# API key can be set during cloud-init. The key needs to be exactly 30 chars long.
+#config system api-user
+#    edit restapi
+#         set api-key 123456789012345678901234567890
+#         set accprofile "super_admin"
+#         config trusthost
+#             edit 1
+#                 set ipv4-trusthost x.y.z.w 255.255.255.255
+#             next
+#        end
+#    next
+#end
+#
+# Example config to provision an API user which can be used with the FortiGate Terraform Provider
+# The API key is either an encrypted version. An unencrypted key can provided (exact 30 char long)
+#config system api-user
+#    edit restapi
+#         set api-key Abcdefghijklmnopqrtsuvwxyz1234
+#         set accprofile "super_admin"
+#         config trusthost
+#             edit 1
+#                 set ipv4-trusthost w.x.y.z a.b.c.d
+#             next
+#        end
+#    next
+#end
+#
 # Uncomment for FGSP to allow assymetric traffic
 # Verify the README
 #config system ha
@@ -76,15 +103,31 @@ end
 #    set session-pickup-nat enable
 #    set override disable
 #end
+# < 7.2.1
 #config system cluster-sync
 #    edit 0
 #        set peerip ${fgt_ha_peerip}
+#        set syncvd "root"
 #    next
 #end
-%{ if fgt_license_flexvm != "" }
-exec vm-license ${fgt_license_flexvm}
-%{ endif }
+# > 7.2.1 - https://docs.fortinet.com/document/fortigate/7.2.1/fortios-release-notes/517622/changes-in-cli
+#config system standalone-cluster
+#    edit 0
+#        set peerip ${fgt_ha_peerip}
+#        set syncvd "root"
+#    next
+#end
 
+%{ if fgt_license_flexvm != "" }
+--===============0086047718136476635==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="license"
+
+LICENSE-TOKEN:${fgt_license_flexvm}
+
+%{ endif }
 %{ if fgt_license_file != "" }
 --===============0086047718136476635==
 Content-Type: text/plain; charset="us-ascii"

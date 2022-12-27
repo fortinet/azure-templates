@@ -25,8 +25,8 @@ variable "PASSWORD" {
 ##############################################################################################################
 
 variable "FGT_IMAGE_SKU" {
-  description = "Azure Marketplace default image sku hourly (PAYG 'fortinet_fg-vm_payg_20190624') or byol (Bring your own license 'fortinet_fg-vm')"
-  default     = "fortinet_fg-vm_payg_20190624"
+  description = "Azure Marketplace default image sku hourly (PAYG 'fortinet_fg-vm_payg_2022') or byol (Bring your own license 'fortinet_fg-vm')"
+  default     = "fortinet_fg-vm_payg_2022"
 }
 
 variable "FGT_VERSION" {
@@ -39,6 +39,14 @@ variable "FGT_BYOL_LICENSE_FILE_A" {
 }
 
 variable "FGT_BYOL_LICENSE_FILE_B" {
+  default = ""
+}
+
+variable "FGT_BYOL_FLEXVM_LICENSE_FILE_A" {
+  default = ""
+}
+
+variable "FGT_BYOL_FLEXVM_LICENSE_FILE_B" {
   default = ""
 }
 
@@ -66,7 +74,7 @@ variable "FGT_CONFIG_HA" {
 ##############################################################################################################
 
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 1.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -78,6 +86,17 @@ terraform {
 provider "azurerm" {
   features {}
 }
+
+##############################################################################################################
+# Accept the Terms license for the FortiGate Marketplace image
+# This is a one-time agreement that needs to be accepted per subscription
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/marketplace_agreement
+##############################################################################################################
+#resource "azurerm_marketplace_agreement" "fortinet" {
+#  publisher = "fortinet"
+#  offer     = "fortinet_fortigate-vm_v5"
+#  plan      = var.FGT_IMAGE_SKU
+#}
 
 ##############################################################################################################
 # Static variables
