@@ -949,7 +949,7 @@
       "adminUsername": "[basics('adminUsername')]",
       "adminPassword": "[basics('adminPassword')]",
       "location": "[location()]",
-      "instanceType": "[steps('instance').instancetypeselection]",
+      "instanceType": "[steps('instance').instancetype.selection]",
       "availabilityOptions": "[steps('instance').availabilityOptions.availabilityOptions]",
       "fortiGateLicenseBYOLA": "[steps('instance').fgtLicense.fgtAcontent]",
       "fortiGateLicenseBYOLB": "[steps('instance').fgtLicense.fgtBcontent]",
