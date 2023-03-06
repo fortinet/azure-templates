@@ -74,8 +74,8 @@ Describe 'FGT A/P SDN' {
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
                                  'Microsoft.Compute/availabilitySets',
-                                 'Microsoft.Network/routeTables',
                                  'Microsoft.Network/virtualNetworks',
+                                 'Microsoft.Network/routeTables',
                                  'Microsoft.Network/networkSecurityGroups',
                                  'Microsoft.Network/publicIPAddresses',
                                  'Microsoft.Network/publicIPAddresses',
