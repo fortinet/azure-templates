@@ -20,8 +20,8 @@
         "visible": true,
         "options": {
           "icon": "Info",
-          "text": "FortiGate Deployment Type - Single VM",
-          "uri": "https://github.com/fortinet/azure-templates/tree/main/FortiGate/A-Single-VM"
+          "text": "ZTNA Application Gateway Deployment Type - Single VM with ZTNA configuration",
+          "uri": "https://github.com/fortinet/azure-templates/tree/main/FortiGate/ZTNA"
         }
       },
       {
@@ -29,7 +29,7 @@
         "type": "Microsoft.Common.TextBox",
         "label": "FortiGate administrative username",
         "defaultValue": "",
-        "toolTip": "Username for the FortiGate virtual appliance. Most not be root, administrator or admin",
+        "toolTip": "Username for the ZTNA Application Gateway virtual appliance. Most not be root, administrator or admin",
         "constraints": {
           "required": true,
           "validations": [
@@ -111,124 +111,12 @@
           "required": false,
           "allowedValues": [
             {
-              "label": "6.2.0",
-              "value": "6.2.0"
-            },
-            {
-              "label": "6.2.2",
-              "value": "6.2.2"
-            },
-            {
-              "label": "6.2.4",
-              "value": "6.2.4"
-            },
-            {
-              "label": "6.2.5",
-              "value": "6.2.5"
-            },
-            {
-              "label": "6.4.0",
-              "value": "6.4.0"
-            },
-            {
-              "label": "6.4.10",
-              "value": "6.4.10"
-            },
-            {
-              "label": "6.4.11",
-              "value": "6.4.11"
-            },
-            {
-              "label": "6.4.12",
-              "value": "6.4.12"
-            },
-            {
-              "label": "6.4.2",
-              "value": "6.4.2"
-            },
-            {
-              "label": "6.4.3",
-              "value": "6.4.3"
-            },
-            {
-              "label": "6.4.5",
-              "value": "6.4.5"
-            },
-            {
-              "label": "6.4.6",
-              "value": "6.4.6"
-            },
-            {
-              "label": "6.4.7",
-              "value": "6.4.7"
-            },
-            {
-              "label": "6.4.8",
-              "value": "6.4.8"
-            },
-            {
-              "label": "6.4.9",
-              "value": "6.4.9"
-            },
-            {
-              "label": "7.0.0",
-              "value": "7.0.0"
-            },
-            {
-              "label": "7.0.1",
-              "value": "7.0.1"
-            },
-            {
-              "label": "7.0.10",
-              "value": "7.0.10"
-            },
-            {
-              "label": "7.0.2",
-              "value": "7.0.2"
-            },
-            {
-              "label": "7.0.3",
-              "value": "7.0.3"
-            },
-            {
-              "label": "7.0.4",
-              "value": "7.0.4"
-            },
-            {
-              "label": "7.0.5",
-              "value": "7.0.5"
-            },
-            {
-              "label": "7.0.6",
-              "value": "7.0.6"
-            },
-            {
               "label": "7.0.8",
               "value": "7.0.8"
             },
             {
-              "label": "7.0.9",
-              "value": "7.0.9"
-            },
-            {
-              "label": "7.2.0",
-              "value": "7.2.0"
-            },
-            {
-              "label": "7.2.1",
-              "value": "7.2.1"
-            },
-            {
               "label": "7.2.2",
               "value": "7.2.2"
-            },
-            {
-              "label": "7.2.3",
-              "value": "7.2.3"
-            },
-            {
-              "label": "7.2.4",
-              "value": "7.2.4"
             },
             {
               "label": "latest",
@@ -258,7 +146,7 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "For this FortiGate deployment, it is recommended to use the general purpose or compute optimized virtual machines. A selection of supported instances sizes is listed in our documentation.",
+                  "text": "For this ZTNA Application Gateway deployment, it is recommended to use the general purpose or compute optimized virtual machines. A selection of supported instances sizes is listed in our documentation.",
                   "link": {
                     "label": "Learn more",
                     "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/562841/instance-type-support"
@@ -269,7 +157,7 @@
                 "name": "selection",
                 "type": "Microsoft.Compute.SizeSelector",
                 "label": "Size",
-                "toolTip": "Select the instance size of your FortiGate VM solution. Minimum 4 NICs are required.",
+                "toolTip": "Select the instance size of your ZTNA Application Gateway solution. Minimum 4 NICs are required.",
                 "recommendedSizes": [
                   "Standard_F2s",
                   "Standard_F4s",
@@ -417,114 +305,6 @@
             ]
           },
           {
-            "name": "availabilityOptions",
-            "type": "Microsoft.Common.Section",
-            "label": "Availability Options",
-            "elements": [
-              {
-                "name": "availabilityOptionsHeader",
-                "type": "Microsoft.Common.TextBlock",
-                "visible": true,
-                "options": {
-                  "text": "Deploy FortiGate VMs in an availability set or availability zone.",
-                  "link": {
-                    "label": "Learn more",
-                    "uri": "https://github.com/fortinet/azure-templates/tree/main/FortiGate#sla"
-                  }
-                }
-              },
-              {
-                "name": "availabilityOptions",
-                "type": "Microsoft.Common.DropDown",
-                "label": "Availability Option",
-                "defaultValue": "No infrastructure redundancy required",
-                "toolTip": "Deploy FortiGate VMs in a new or existing availability set or or a specific availability zone.",
-                "constraints": {
-                  "required": false,
-                  "allowedValues": [
-                    {
-                      "label": "No infrastructure redundancy required",
-                      "value": "None"
-                    },
-                    {
-                      "label": "Availability set",
-                      "value": "Availability set"
-                    },
-                    {
-                      "label": "Availability zone",
-                      "value": "Availability zone"
-                    }
-                  ]
-                },
-                "visible": true
-              },
-              {
-                "name": "availabilitySetNew",
-                "type": "Microsoft.Common.CheckBox",
-                "label": "Create a new availability set?",
-                "toolTip": "Check this box if you want to create a new availability set and add the FortiGate VM to it.",
-                "visible": "[equals(steps('instance').availabilityOptions.availabilityOptions,'Availability set')]"
-              },
-              {
-                "name": "availabilitySetSelector",
-                "type": "Microsoft.Solutions.ResourceSelector",
-                "label": "Select the availability set for your FortiGate",
-                "toolTip": "Select your existing availability set you want to add this FortiGate VM to",
-                "resourceType": "Microsoft.Compute/availabilitySets",
-                "options": {
-                  "filter": {
-                    "subscription": "onBasics",
-                    "location": "onBasics"
-                  }
-                },
-                "visible": "[and(not(steps('instance').availabilityOptions.availabilitySetNew),equals(steps('instance').availabilityOptions.availabilityOptions,'Availability set'))]"
-              },
-              {
-                "name": "availabilitySetInfo",
-                "type": "Microsoft.Common.InfoBox",
-                "options": {
-                  "icon": "Info",
-                  "text": "The FortiGate VM and availability set are required to exist in the same resource group."
-                },
-                "visible": "[and(not(steps('instance').availabilityOptions.availabilitySetNew),equals(steps('instance').availabilityOptions.availabilityOptions,'Availability set'))]"
-              },
-              {
-                "name": "availabilityZoneSelector",
-                "type": "Microsoft.Common.DropDown",
-                "label": "Select the availability zone for your FortiGate VM",
-                "toolTip": "Select the availability zone for your FortiGate VM",
-                "defaultValue": "Zone 2",
-                "constraints": {
-                  "allowedValues": [
-                    {
-                      "label": "Zone 1",
-                      "value": "1"
-                    },
-                    {
-                      "label": "Zone 2",
-                      "value": "2"
-                    },
-                    {
-                      "label": "Zone 3",
-                      "value": "3"
-                    }
-                  ]
-                },
-                "visible": "[equals(steps('instance').availabilityOptions.availabilityOptions,'Availability zone')]"
-              },
-              {
-                "name": "availabilityOptionsFooter",
-                "type": "Microsoft.Common.InfoBox",
-                "visible": true,
-                "options": {
-                  "icon": "Info",
-                  "text": "If availability zone deployment is selected but the location does not support availability zone an availability set will be deployed. If availability zone deployment is selected and availability zone are available in the location, FortiGate A will be placed in Zone 1, FortiGate B will be placed in Zone 2",
-                  "uri": "https://docs.microsoft.com/en-us/azure/availability-zones/az-overview"
-                }
-              }
-            ]
-          },
-          {
             "name": "fgtLicense",
             "type": "Microsoft.Common.Section",
             "label": "FortiGate License",
@@ -564,7 +344,7 @@
               {
                 "name": "fgtflexvm",
                 "type": "Microsoft.Common.TextBox",
-                "label": "FortiGate Flex-VM",
+                "label": "FortiGate Flex-VM License",
                 "defaultValue": "",
                 "toolTip": "FortiGate Flex-VM license token",
                 "constraints": {
@@ -604,7 +384,7 @@
               {
                 "name": "fgtvmname",
                 "type": "Microsoft.Common.TextBox",
-                "label": "Name of the FortiGate VM",
+                "label": "Name of the ZTNA Application Gateway",
                 "defaultValue": "[if(equals(basics('fortiGateNamePrefix'),''),'FortiGate-VM',concat(basics('fortiGateNamePrefix'),'-FGT'))]",
                 "toolTip": "Provide the name of the FortiGate VM. This is not required as a field.",
                 "constraints": {
@@ -647,7 +427,7 @@
                   "subnets": "Subnets"
                 },
                 "toolTip": {
-                  "virtualNetwork": "Virtual Network for deployment of the FortiGate VM solution",
+                  "virtualNetwork": "Virtual Network for deployment of the ZTNA Application Gateway solution",
                   "subnets": "Standard deployment is to have an external and internal subnet"
                 },
                 "defaultValue": {
@@ -684,18 +464,6 @@
                       "minAddressCount": 1,
                       "requireContiguousAddresses": true
                     }
-                  },
-                  "subnet3": {
-                    "label": "Protected subnet",
-                    "defaultValue": {
-                      "name": "ProtectedSubnet",
-                      "addressPrefixSize": "/24"
-                    },
-                    "constraints": {
-                      "minAddressPrefixSize": "/29",
-                      "minAddressCount": 0,
-                      "requireContiguousAddresses": true
-                    }
                   }
                 },
                 "visible": true
@@ -706,7 +474,7 @@
                 "visible": true,
                 "options": {
                   "icon": "Info",
-                  "text": "The external subnet will have a public IP attached to the FortiGate network interface. The internal subnet is a transit subnet containing only the FortiGate interfaces for traffic to and from the internal networks. Internal systems should be installed in a protected subnet with user defined route configuration.",
+                  "text": "The external subnet will have a public IP attached to the ZTNA Application Gateway network interface. The internal subnet is a transit subnet containing only the ZTNA Application Gateway interfaces for traffic to and from the internal networks. Internal systems should be installed in a protected subnet with user defined route configuration.",
                   "uri": "https://github.com/fortinet/azure-templates/tree/main/FortiGate/A-Single-VM"
                 }
               }
@@ -722,7 +490,7 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "Enables SR-IOV support allowing direct acces from the NIC in the Azure infrastructure to the FortiGate VM.",
+                  "text": "Enables SR-IOV support allowing direct acces from the NIC in the Azure infrastructure to the ZTNA Application Gateway.",
                   "link": {
                     "label": "Learn more",
                     "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/651644/enabling-accelerated-networking-on-the-fortigate-vm"
@@ -765,6 +533,205 @@
         ]
       },
       {
+        "name": "ztna",
+        "label": "ZTNA",
+        "subLabel": {
+          "preValidation": "Configure ZTNA parameters",
+          "postValidation": "Done"
+        },
+        "elements": [
+          {
+            "name": "forticlientemscloud",
+            "type": "Microsoft.Common.Section",
+            "label": "FortiClient EMS",
+            "elements": [
+              {
+                "name": "info",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "This ZTNA Application Gateway needs to connect an EMS server. FortiClient Enterprise Management Server (FortiClient EMS) is a security management solution that enables scalable and centralized management of multiple endpoints (computers). Either a cloud-based FortiClient Cloud or a FortiClient EMS server instance need to be reachable by this ZTNA Application Gateway.",
+                  "link": {
+                    "label": "Learn more",
+                    "uri": "https://docs.fortinet.com/document/forticlient/7.0.7/ems-administration-guide/24450/introduction"
+                  }
+                }
+              },
+              {
+                "name": "enabled",
+                "type": "Microsoft.Common.OptionsGroup",
+                "label": "FortiClient Cloud",
+                "defaultValue": "yes",
+                "toolTip": "FortiClient Cloud is a cloud-based SaaS EMS hosted by Fortinet",
+                "constraints": {
+                  "allowedValues": [
+                    {
+                      "label": "yes",
+                      "value": "yes"
+                    },
+                    {
+                      "label": "no",
+                      "value": "no"
+                    }
+                  ],
+                  "required": true
+                },
+                "visible": true
+              },
+              {
+                "name": "emsserverip",
+                "type": "Microsoft.Common.TextBox",
+                "label": "FortiClient EMS Server IP",
+                "defaultValue": "",
+                "toolTip": "Server IP reachable by this ZTNA Application Gateway",
+                "constraints": {
+                  "required": false,
+                  "validations": [
+                    {
+                      "regex": "^[a-z0-9A-Z.-]{1,128}$",
+                      "message": "Only alphanumeric, hyphen and dot characters are allowed, and the value must be 1-30 characters long"
+                    }
+                  ]
+                },
+                "visible": "[equals(steps('ztna').forticlientemscloud.enabled, 'no')]"
+              },
+              {
+                "name": "emsserverport",
+                "type": "Microsoft.Common.TextBox",
+                "label": "FortiClient EMS Server Port",
+                "defaultValue": "",
+                "toolTip": "Server Port reachable by this ZTNA Application Gateway",
+                "constraints": {
+                  "required": false,
+                  "validations": [
+                    {
+                      "regex": "^[0-9]{1,30}$",
+                      "message": "Only numeric characters are allowed."
+                    }
+                  ]
+                },
+                "visible": "[equals(steps('ztna').forticlientemscloud.enabled, 'no')]"
+              }
+            ]
+          },
+          {
+            "name": "userlocaldb",
+            "type": "Microsoft.Common.Section",
+            "label": "User Credentials",
+            "elements": [
+              {
+                "name": "info",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "Credentials for a user to access a ZTNA application using a local db",
+                  "link": {
+                    "label": "Learn more",
+                    "uri": "https://docs.fortinet.com/document/fortigate/7.2.3/administration-guide/544195/ssl-vpn-with-local-user-password-policy"
+                  }
+                }
+              },
+              {
+                "name": "username",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Username (local db)",
+                "defaultValue": "",
+                "toolTip": "Username for ZTNA client to connect",
+                "constraints": {
+                  "required": true,
+                  "validations": [
+                    {
+                      "regex": "^[a-z0-9A-Z]{1,30}$",
+                      "message": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long"
+                    },
+                    {
+                      "isValid": "[not(contains(toLower(basics('adminUsername')),'root'))]",
+                      "message": "Usernames must not include reserved words"
+                    },
+                    {
+                      "isValid": "[not(contains(toLower(basics('adminUsername')),'admin'))]",
+                      "message": "Usernames must not include reserved words"
+                    }
+                  ]
+                },
+                "visible": true
+              },
+              {
+                "name": "password",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                  "password": "Password",
+                  "confirmPassword": "Confirm password"
+                },
+                "toolTip": "Password for ZTNA client to connect",
+                "constraints": {
+                  "required": true,
+                  "regex": "^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\\d\\W])|(?=.*\\W)(?=.*\\d))|(?=.*\\W)(?=.*[A-Z])(?=.*\\d)).{12,}$",
+                  "validationMessage": "The password must be between 12 characters or longer, and contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters excluding '\\' or '-'."
+                },
+                "options": {
+                  "hideConfirmation": false
+                },
+                "visible": true
+              }
+            ]
+          },
+          {
+            "name": "applicationserver",
+            "type": "Microsoft.Common.Section",
+            "label": "Application Server",
+            "elements": [
+              {
+                "name": "info",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "Application Server",
+                  "link": {
+                    "label": "Learn more",
+                    "uri": "https://docs.fortinet.com/document/fortigate/7.2.3/administration-guide/194961/basic-ztna-configuration"
+                  }
+                }
+              },
+              {
+                "name": "backendwebserver",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Application Server",
+                "defaultValue": "",
+                "toolTip": "Application Server accessible via ZTNA",
+                "constraints": {
+                  "required": true,
+                  "validations": [
+                    {
+                      "regex": "^[a-z0-9A-Z -.:\n]{1,100}$",
+                      "message": "Only 1-100 alphanumeric characters, hyphens, spaces, periods, and colons are allowed."
+                    }
+                  ]
+                },
+                "visible": true
+              },
+              {
+                "name": "ztnaHTTPSAccessPort",
+                "type": "Microsoft.Common.TextBox",
+                "label": "ZTNA HTTPS Access Port",
+                "defaultValue": "9443",
+                "toolTip": "ZTNA HTTPS Access Port",
+                "constraints": {
+                  "required": true,
+                  "validations": [
+                    {
+                      "regex": "^[0-9]{1,7}$",
+                      "message": "Only numeric characters are allowed."
+                    }
+                  ]
+                },
+                "visible": true
+              }
+            ]
+          }
+        ]
+      },
+      {
         "name": "publicip",
         "label": "Public IP",
         "subLabel": {
@@ -777,7 +744,7 @@
             "type": "Microsoft.Common.TextBlock",
             "visible": true,
             "options": {
-              "text": "The public IP will be used for public services hosted on the FortiGate such as IPSEC termination, management of the FortiGate from external or services behind the Fortigate such as a webserver."
+              "text": "The public IP will be used for public services hosted on the ZTNA Application Gateway such as ZTNA tunnels, management of the ZTNA Application Gateway from external or services behind the Fortigate such as a webserver."
             }
           },
           {
@@ -788,7 +755,7 @@
               "domainNameLabel": "Domain name label"
             },
             "toolTip": {
-              "publicIpAddress": "Public IP attached to FortiGate VM",
+              "publicIpAddress": "Public IP attached to ZTNA Application Gateway",
               "domainNameLabel": "DNS name linked to this public IP"
             },
             "defaultValue": {
@@ -844,7 +811,7 @@
                 "type": "Microsoft.Common.OptionsGroup",
                 "label": "Connect to FortiManager",
                 "defaultValue": "no",
-                "toolTip": "FortiManager needs to be reachable from port 1 or port 2 of the FortiGate",
+                "toolTip": "FortiManager needs to be reachable from port 1 or port 2 of the ZTNA Application Gateway",
                 "constraints": {
                   "allowedValues": [
                     {
@@ -933,6 +900,30 @@
             ]
           },
           {
+            "name": "fortigateadminport",
+            "type": "Microsoft.Common.Section",
+            "label": "FortiGate",
+            "elements": [
+              {
+                "name": "value",
+                "type": "Microsoft.Common.TextBox",
+                "label": "ZTNA Application Gateway Admin Port",
+                "defaultValue": "8443",
+                "toolTip": "FortiGate HTTPS admin access port (e.g. 8443)",
+                "constraints": {
+                  "required": true,
+                  "validations": [
+                    {
+                      "regex": "^[0-9]{1,7}$",
+                      "message": "Only numeric characters are allowed."
+                    }
+                  ]
+                },
+                "visible": true
+              }
+            ]
+          },
+          {
             "name": "serialconsole",
             "type": "Microsoft.Common.Section",
             "label": "Serial Console",
@@ -982,9 +973,6 @@
       "adminPassword": "[basics('adminPassword')]",
       "location": "[location()]",
       "instanceType": "[steps('instance').instancetype.selection]",
-      "availabilityOptions": "[steps('instance').availabilityOptions.availabilityOptions]",
-      "existingAvailabilitySetName": "[steps('instance').availabilityOptions.availabilitySetSelector.name]",
-      "availabilityZoneNumber": "[steps('instance').availabilityOptions.availabilityZoneSelector]",
       "fortiGateLicenseBYOL": "[steps('instance').fgtLicense.fgtcontent]",
       "fortiGateLicenseFlexVM": "[steps('instance').fgtLicense.fgtflexvm]",
       "acceleratedNetworking": "[steps('networking').acceleratednetworksection.acceleratednetworking]",
@@ -1003,13 +991,19 @@
       "subnet2Name": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet2.name]",
       "subnet2Prefix": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet2.addressPrefix]",
       "subnet2StartAddress": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet2.startAddress]",
-      "subnet3Name": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet3.name]",
-      "subnet3Prefix": "[steps('networking').virtualnetworksection.virtualnetwork.subnets.subnet3.addressPrefix]",
       "serialConsole": "[steps('advanced').serialconsole.enabled]",
       "fortiManager": "[steps('advanced').fortimanager.enabled]",
       "fortiManagerIP": "[steps('advanced').fortimanager.fortimanagerip]",
       "fortiManagerSerial": "[steps('advanced').fortimanager.fortimanagerserial]",
-      "fortiGateAdditionalCustomData": "[steps('advanced').customdata.config]"
+      "fortiGateAdditionalCustomData": "[steps('advanced').customdata.config]",
+      "fortiGateAdminPort": "[steps('advanced').fortigateadminport.value]",
+      "emsCloud": "[steps('ztna').forticlientemscloud.enabled]",
+      "emsServerIP": "[steps('ztna').forticlientemscloud.emsserverip]",
+      "emsServerPort": "[steps('ztna').forticlientemscloud.emsserverport]",
+      "ztnaUsername": "[steps('ztna').userlocaldb.username]",
+      "ztnaPassword": "[steps('ztna').userlocaldb.password]",
+      "ztnaHTTPSAccessPort": "[steps('ztna').applicationserver.ztnaHTTPSAccessPort]",
+      "backendWebServer": "[steps('ztna').applicationserver.backendwebserver]"
     }
   }
 }

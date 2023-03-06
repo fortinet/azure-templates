@@ -2,8 +2,8 @@
     "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
     "type": "QuickStart",
     "itemDisplayName": "Fortinet FortiGate Active Active cluster using the Azure Standard Load Balancer",
-    "description": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure, routing and load balancers",
-    "summary": "This Azure quickstart template deploys 2 FortiGate VM's with the required network infrastructure, routing and load balancers",
+    "description": "This Azure template deploys 2 FortiGate VM's with the required network infrastructure, routing and load balancers",
+    "summary": "This Azure template deploys 2 FortiGate VM's with the required network infrastructure, routing and load balancers",
     "githubUsername": "fortinet",
-    "dateUpdated":  "2021-01-21"
+    "dateUpdated":  "2023-01-02"
 }

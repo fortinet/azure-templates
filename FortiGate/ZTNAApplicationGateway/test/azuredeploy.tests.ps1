@@ -12,9 +12,10 @@ param (
     [string]$sshkey,
     [string]$sshkeypub
 )
+$VerbosePreference = "Continue"
 
 BeforeAll {
-    $templateName = "Active-Active-ELB-ILB"
+    $templateName = "ZTNAApplicationGateway"
     $sourcePath = "$env:GITHUB_WORKSPACE\FortiGate\$templateName"
     $scriptPath = "$env:GITHUB_WORKSPACE\FortiGate\$templateName\test"
     $templateFileName = "azuredeploy.json"
@@ -24,7 +25,7 @@ BeforeAll {
 
     # Basic Variables
     $testsRandom = Get-Random 10001
-    $testsPrefix = "FORTIQA"
+    $testsPrefix = "FORTIQA-$testsRandom"
     $testsResourceGroupName = "FORTIQA-$testsRandom-$templateName"
     $testsAdminUsername = "azureuser"
     $testsResourceGroupLocation = "westeurope"
@@ -33,17 +34,20 @@ BeforeAll {
     $config = "config system global `n set gui-theme mariner `n end `n config system admin `n edit devops `n set accprofile super_admin `n set ssh-public-key1 `""
     $config += Get-Content $sshkeypub
     $config += "`" `n set password $testsResourceGroupName `n next `n end"
-    $publicIP1Name = "$testsPrefix-FGT-PIP"
+    $publicIPName = "$testsPrefix-FGT-PIP"
     $params = @{ 'adminUsername'=$testsAdminUsername
                  'adminPassword'=$testsResourceGroupName
                  'fortiGateNamePrefix'=$testsPrefix
                  'fortiGateAdditionalCustomData'=$config
-                 'publicIP1Name'=$publicIP1Name
+                 'publicIP1Name'=$publicIPName
+                 'backendWebServer'="1.1.1.1"
+                 'ztnaUsername'=$testsAdminUsername
+                 'ztnaPassword'=$testsResourceGroupName
                }
-    $ports = @(40030, 50030, 40031, 50031)
+    $ports = @(8443, 22)
 }
 
-Describe 'FGT A/A' {
+Describe 'FGT Single VM' {
     Context 'Validation' {
         It 'Has a JSON template' {
             $templateFileLocation | Should -Exist
@@ -66,19 +70,8 @@ Describe 'FGT A/A' {
 
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
-                                 'Microsoft.Compute/availabilitySets',
                                  'Microsoft.Network/virtualNetworks',
-                                 'Microsoft.Network/loadBalancers',
-                                 'Microsoft.Network/routeTables',
-                                 'Microsoft.Network/networkSecurityGroups',
-                                 'Microsoft.Network/publicIPAddresses',
-                                 'Microsoft.Network/loadBalancers',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Network/networkInterfaces',
-                                 'Microsoft.Compute/virtualMachines',
-                                 'Microsoft.Compute/virtualMachines'
+                                 'Microsoft.Resources/deployments'
             $templateResources = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Resources.type
             $templateResources | Should -Be $expectedResources
         }
@@ -87,14 +80,17 @@ Describe 'FGT A/A' {
             $expectedTemplateParameters = 'acceleratedNetworking',
                                           'adminPassword',
                                           'adminUsername',
-                                          'availabilityOptions',
+                                          'backendWebServer',
+                                          'emsCloud',
+                                          'emsServerIP',
+                                          'emsServerPort',
                                           'fortiGateAdditionalCustomData',
+                                          'fortiGateAdminPort',
                                           'fortiGateImageSKU',
                                           'fortiGateImageVersion',
-                                          'fortiGateLicenseBYOLA',
-                                          'fortiGateLicenseBYOLB',
-                                          'fortiGateLicenseFlexVMA',
-                                          'fortiGateLicenseFlexVMB',
+                                          'fortiGateLicenseBYOL',
+                                          'fortiGateLicenseFlexVM',
+                                          'fortiGateName',
                                           'fortiGateNamePrefix',
                                           'fortiManager',
                                           'fortiManagerIP',
@@ -102,9 +98,11 @@ Describe 'FGT A/A' {
                                           'fortinetTags',
                                           'instanceType',
                                           'location',
+                                          'publicIP1AddressType',
                                           'publicIP1Name',
                                           'publicIP1NewOrExisting',
                                           'publicIP1ResourceGroup',
+                                          'publicIP1SKU',
                                           'serialConsole',
                                           'subnet1Name',
                                           'subnet1Prefix',
@@ -112,13 +110,14 @@ Describe 'FGT A/A' {
                                           'subnet2Name',
                                           'subnet2Prefix',
                                           'subnet2StartAddress',
-                                          'subnet3Name',
-                                          'subnet3Prefix',
                                           'vnetAddressPrefix',
                                           'vnetName',
                                           'vnetNewOrExisting',
-                                          'vnetResourceGroup'
-            $templateParameters = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Parameters | Get-Member -MemberType NoteProperty | % Name | sort
+                                          'vnetResourceGroup',
+                                          'ztnaHTTPSAccessPort',
+                                          'ztnaPassword',
+                                          'ztnaUserName'                                          
+            $templateParameters = (get-content $templateFileLocation | ConvertFrom-Json -ErrorAction SilentlyContinue).Parameters | Get-Member -MemberType NoteProperty | % Name | Sort-Object
             $templateParameters | Should -Be $expectedTemplateParameters
         }
 
@@ -126,11 +125,13 @@ Describe 'FGT A/A' {
 
     Context 'Deployment' {
 
-        It "Test deployment" {
+        It "Test Deployment" {
             New-AzResourceGroup -Name $testsResourceGroupName -Location "$testsResourceGroupLocation"
             (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params).Count | Should -Not -BeGreaterThan 0
         }
         It "Deployment" {
+            Write-Host ( "Deployment name: $testsResourceGroupName" )
+
             $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params
             Write-Host ($resultDeployment | Format-Table | Out-String)
             Write-Host ("Deployment state: " + $resultDeployment.ProvisioningState | Out-String)
@@ -146,7 +147,7 @@ Describe 'FGT A/A' {
     Context 'Deployment test' {
 
         BeforeAll {
-            $fgt = (Get-AzPublicIpAddress -Name $publicIP1Name -ResourceGroupName $testsResourceGroupName).IpAddress
+            $fgt = (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName).IpAddress
             Write-Host ("FortiGate public IP: " + $fgt)
             $verify_commands = @'
             config system console
@@ -164,17 +165,11 @@ Describe 'FGT A/A' {
             ForEach( $port in $ports ) {
                 Write-Host ("Check port: $port" )
                 $portListening = (Test-Connection -TargetName $fgt -TCPPort $port -TimeoutSeconds 100)
-                $portListening | Should -Be $true
+                $portListening | Should -BeTrue
             }
         }
-        It "FGT A: Verify configuration" {
-            $result = $verify_commands | ssh -p 50030 -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
-            $LASTEXITCODE | Should -Be "0"
-            Write-Host ("FGT CLI info: " + $result) -Separator `n
-            $result | Should -Not -BeLike "*Command fail*"
-        }
-        It "FGT B: Verify configuration" {
-            $result = $verify_commands | ssh -p 50031 -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
+        It "FGT: Verify FortiGate configuration" {
+            $result = $verify_commands | ssh -v -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
             $LASTEXITCODE | Should -Be "0"
             Write-Host ("FGT CLI info: " + $result) -Separator `n
             $result | Should -Not -BeLike "*Command fail*"
@@ -183,6 +178,7 @@ Describe 'FGT A/A' {
 
     Context 'Cleanup' {
         It "Cleanup of deployment" {
+            Write-Host ("ERROR: Cleanup disabled" )
             Remove-AzResourceGroup -Name $testsResourceGroupName -Force
         }
     }

@@ -1,0 +1,514 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the FortiGate VM"
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the FortiGate VM"
+      }
+    },
+    "fortiGateNamePrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Naming prefix for all deployed resources. The FortiGate VM will have the suffix '-FGT'. For example if the prefix is 'ACME-01' the FortiGate will be named 'ACME-01-FGT'"
+      }
+    },
+    "fortiGateName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Custom naming for the deployed FortiGate resources. This will override the automatic generation based on the prefix for the FortiGate name."
+      }
+    },
+    "fortiGateImageSKU": {
+      "type": "string",
+      "defaultValue": "fortinet_fg-vm",
+      "allowedValues": [
+        "fortinet_fg-vm",
+        "fortinet_fg-vm_payg_2022"
+      ],
+      "metadata": {
+        "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately"
+      }
+    },
+    "fortiGateImageVersion": {
+      "type": "string",
+      "defaultValue": "latest",
+      "allowedValues": [
+        "7.0.8",
+        "7.2.2",
+        "latest"
+      ],
+      "metadata": {
+        "description": "Select the image version"
+      }
+    },
+    "fortiGateAdditionalCustomData": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The ARM template provides a basic configuration. Additional configuration can be added here."
+      }
+    },
+    "instanceType": {
+      "type": "string",
+      "defaultValue": "Standard_F2s",
+      "allowedValues": [
+        "Standard_F2s",
+        "Standard_F4s",
+        "Standard_F8s",
+        "Standard_F16s",
+        "Standard_F2",
+        "Standard_F4",
+        "Standard_F8",
+        "Standard_F16",
+        "Standard_F2s_v2",
+        "Standard_F4s_v2",
+        "Standard_F8s_v2",
+        "Standard_F16s_v2",
+        "Standard_F32s_v2",
+        "Standard_DS1_v2",
+        "Standard_DS2_v2",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_D2s_v3",
+        "Standard_D4s_v3",
+        "Standard_D8s_v3",
+        "Standard_D16s_v3",
+        "Standard_D32s_v3",
+        "Standard_D2_v4",
+        "Standard_D4_v4",
+        "Standard_D8_v4",
+        "Standard_D16_v4",
+        "Standard_D32_v4",
+        "Standard_D2s_v4",
+        "Standard_D4s_v4",
+        "Standard_D8s_v4",
+        "Standard_D16s_v4",
+        "Standard_D32s_v4",
+        "Standard_D2a_v4",
+        "Standard_D4a_v4",
+        "Standard_D8a_v4",
+        "Standard_D16a_v4",
+        "Standard_D32a_v4",
+        "Standard_D2as_v4",
+        "Standard_D4as_v4",
+        "Standard_D8as_v4",
+        "Standard_D16as_v4",
+        "Standard_D32as_v4",
+        "Standard_D2_v5",
+        "Standard_D4_v5",
+        "Standard_D8_v5",
+        "Standard_D16_v5",
+        "Standard_D32_v5",
+        "Standard_D2s_v5",
+        "Standard_D4s_v5",
+        "Standard_D8s_v5",
+        "Standard_D16s_v5",
+        "Standard_D32s_v5",
+        "Standard_D2as_v5",
+        "Standard_D4as_v5",
+        "Standard_D8as_v5",
+        "Standard_D16as_v5",
+        "Standard_D32as_v5",
+        "Standard_D2ads_v5",
+        "Standard_D4ads_v5",
+        "Standard_D8ads_v5",
+        "Standard_D16ads_v5",
+        "Standard_D32ads_v5"
+      ],
+      "metadata": {
+        "description": "Virtual Machine size selection - must be F4 or other instance that supports 4 NICs"
+      }
+    },
+    "acceleratedNetworking": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "false",
+        "true"
+      ],
+      "metadata": {
+        "description": "Accelerated Networking enables direct connection between the VM and network card. Only available on 2 CPU F/Fs and 4 CPU D/Dsv2, D/Dsv3, E/Esv3, Fsv2, Lsv2, Ms/Mms and Ms/Mmsv2"
+      }
+    },
+    "publicIP1NewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing",
+        "none"
+      ],
+      "metadata": {
+        "description": "Choose between an existing or new public IP address linked to the external interface of the FortiGate VM"
+      }
+    },
+    "publicIP1Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of Public IP address, if no name is provided the default name will be the Resource Group Name as the Prefix and '-FGT-PIP' as the suffix"
+      }
+    },
+    "publicIP1ResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Public IP Resource Group, this value is required if an existing Public IP is selected"
+      }
+    },
+    "publicIP1AddressType": {
+      "type": "string",
+      "defaultValue": "Static",
+      "allowedValues": [
+        "Dynamic",
+        "Static"
+      ],
+      "metadata": {
+        "description": "Type of public IP address"
+      }
+    },
+    "publicIP1SKU": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Type of public IP address"
+      }
+    },
+    "vnetNewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing vnet"
+      }
+    },
+    "vnetName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure virtual network, required if utilizing an existing VNET. If no name is provided the default name will be the Resource Group Name as the Prefix and '-VNET' as the suffix"
+      }
+    },
+    "vnetResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource Group containing the existing virtual network, leave blank if a new VNET is being utilize"
+      }
+    },
+    "vnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.0/22",
+      "metadata": {
+        "description": "Virtual Network Address prefix"
+      }
+    },
+    "subnet1Name": {
+      "type": "string",
+      "defaultValue": "ExternalSubnet",
+      "metadata": {
+        "description": "Subnet 1 Name"
+      }
+    },
+    "subnet1Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.0/26",
+      "metadata": {
+        "description": "Subnet 1 Prefix"
+      }
+    },
+    "subnet1StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.136.4",
+      "metadata": {
+        "description": "Subnet 1 start address, 1 consecutive private IPs are required"
+      }
+    },
+    "subnet2Name": {
+      "type": "string",
+      "defaultValue": "InternalSubnet",
+      "metadata": {
+        "description": "Subnet 2 Subnet"
+      }
+    },
+    "subnet2Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.64/26",
+      "metadata": {
+        "description": "Subnet 2 Prefix"
+      }
+    },
+    "subnet2StartAddress": {
+      "type": "string",
+      "defaultValue": "172.16.136.68",
+      "metadata": {
+        "description": "Subnet 2 start address, 1 consecutive private IPs are required"
+      }
+    },
+    "serialConsole": {
+      "type": "string",
+      "defaultValue": "yes",
+      "allowedValues": [
+        "yes",
+        "no"
+      ],
+      "metadata": {
+        "description": "Enable Serial Console"
+      }
+    },
+    "fortiManager": {
+      "type": "string",
+      "defaultValue": "no",
+      "allowedValues": [
+        "yes",
+        "no"
+      ],
+      "metadata": {
+        "description": "Connect to FortiManager"
+      }
+    },
+    "fortiManagerIP": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FortiManager IP or DNS name to connect to on port TCP/541"
+      }
+    },
+    "fortiManagerSerial": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FortiManager serial number to add the deployed FortiGate into the FortiManager"
+      }
+    },
+    "fortiGateLicenseBYOL": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FortiGate BYOL license content"
+      }
+    },
+    "fortiGateLicenseFlexVM": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FortiGate BYOL Flex-VM license token"
+      }
+    },
+    "fortiGateAdminPort": {
+      "type": "string",
+      "defaultValue": "8443",
+      "metadata": {
+        "description": "FortiGate HTTPS admin access port"
+      }
+    },
+    "ztnaHTTPSAccessPort": {
+      "type": "string",
+      "defaultValue": "9443",
+      "metadata": {
+        "description": "ZTNA HTTPS access port"
+      }
+    },
+    "backendWebServer": {
+      "type": "string",
+      "metadata": {
+        "description": "ZTNA accessible Backend WebServer"
+      }
+    },
+    "ztnaUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for ZTNA client to connect"
+      }
+    },
+    "ztnaPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for ZTNA client to connect"
+      }
+    },
+    "emsCloud": {
+      "type": "string",
+      "defaultValue": "yes",
+      "allowedValues": [
+        "yes",
+        "no"
+      ],
+      "metadata": {
+        "description": "Connect to FortiClient Cloud (yes) or FortiClient EMS (no)"
+      }
+    },
+    "emsServerIP": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FortiClient EMS server name reachable by this gateway"
+      }
+    },
+    "emsServerPort": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FortiClient EMS server port reachable by this gateway"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "fortinetTags": {
+      "type": "object",
+      "defaultValue": {
+        "publisher": "Fortinet ZTNA demo",
+        "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831VM"
+      }
+    }
+  },
+  "variables": {
+    "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('fortiGateNamePrefix'),'-VNET'),parameters('vnetName'))]",
+    "vnetResourceGroup": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceGroup().name,parameters('vnetResourceGroup'))]",
+    "customDataSystemGlobal": "[concat('config system global\nset admin-sport ', parameters('fortiGateAdminPort'), '\nend\n')]",
+    "customDataDashboard": "config system admin\n edit admin\n config gui-dashboard\n edit 0\n set name \"FortiView ZTNA Servers\"\n set vdom root\n set layout-type standalone\n set csf disable\n config widget\n edit 1\n set type fortiview\n set width 1\n set height 1\n set csf-device all\n set fortiview-type ztnaServer\n set fortiview-sort-by bytes\n set fortiview-timeframe 5min\n set fortiview-visualization table\n next\n end\n next\n end\n next\n end\n config system settings\n set gui-implicit-policy disable\n set gui-dos-policy disable\n set gui-dynamic-routing disable\n set gui-threat-weight disable\n set gui-file-filter disable\n set gui-application-control disable\n set gui-endpoint-control disable\n set gui-vpn disable\n set gui-wireless-controller disable\n set gui-traffic-shaping disable\n set gui-webfilter disable\n set gui-dnsfilter disable\n set allow-subnet-overlap enable\n end\n", 
+    "customDataFirewallAddress": "[concat('config firewall address\nedit webserver1\nset subnet ', parameters('backendWebServer'), ' 255.255.255.255\nnext\nend\n')]",
+    "customDataFirewallAddressGroup": "[concat('config firewall addrgrp\nedit \"WebServer\"\nset member \"webserver1\"\nnext\nend\n')]",
+    "customDataUserLocal": "[concat('config user local\nedit ', parameters('ztnaUsername'), '\nset type password\nset passwd ', parameters('ztnaPassword'), '\nnext\nend\n')]",
+    "customDataUserGroup": "[concat('config user group\nedit \"sslvpn_group\"\nset member ', parameters('ztnaUsername'), '\nnext\nend\n')]",
+    "customDataFirewallVip": "[concat('config firewall vip\nedit \"ZTNAServer\"\nset type access-proxy\nset extip ', parameters('subnet1StartAddress'), '\nset extintf \"port1\"\nset server-type https\nset extport ', parameters('ztnaHTTPSAccessPort'), '\nset ssl-certificate \"Fortinet_SSL\"\nnext\nend\n')]",
+    "customDataFirewallAccessProxy": "[concat('config firewall access-proxy\nedit \"ZTNAServer\"\nset client-cert disable\nset vip \"ZTNAServer\"\nconfig api-gateway\nedit 1\nconfig realservers\nedit 1\nset ip ', parameters('backendWebServer'), '\nnext\nend\nnext\nend\nnext\nend\n')]",
+    "customDataFirewallProxyPolicy": "[concat('config firewall proxy-policy\nedit 1\nset name \"ZTNA Web Server\"\nset proxy access-proxy\nset access-proxy \"ZTNAServer\"\nset srcintf \"port1\"\nset srcaddr \"all\"\nset dstaddr \"WebServer\"\nset action accept\nset schedule \"always\"\nset logtraffic all\nset groups \"sslvpn_group\"\nnext\nend\n')]",
+    "customDataAuthentication": "[concat('config authentication scheme\nedit \"ZTNA\"\nset method basic\nset user-database \"local-user-db\"\nnext\nend\nconfig authentication rule\nedit \"ZTNA\"\nset srcintf \"port1\"\nset srcaddr \"all\"\nset ip-based disable\nset active-auth-method \"ZTNA\"\nnext\nend\n')]",
+    "customDataEMSCloud": "[concat('config endpoint-control fctems\nedit \"1\"\nset name ems-cloud\n set status enable\n set fortinetone-cloud-authentication enable\nnext\nend\n')]",
+    "customDataEMS": "[concat('config endpoint-control fctems\nedit \"1\"\nset name ems-local\n set status enable\n set server ', parameters('emsServerIP'), '\nset https-port ', parameters('emsServerPort'), '\nnext\nend\n')]",
+    "customDataCombined": "[concat(variables('customDataSystemGlobal'),variables('customDataDashboard'),variables('customDataFirewallAddress'),variables('customDataFirewallAddressGroup'),variables('customDataUserLocal'),variables('customDataUserGroup'),variables('customDataFirewallAddress'), variables('customDataFirewallVip'),variables('customDataFirewallAccessProxy'),variables('customDataFirewallProxyPolicy'),variables('customDataAuthentication'),if(equals(parameters('emsCloud'),'yes'),variables('customDataEMSCloud'),variables('customDataEMS')),parameters('fortiGateAdditionalCustomData'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2021-04-01",
+      "name": "[concat(parameters('fortiGateNamePrefix'), '-fortinetdeployment-', uniquestring(resourceGroup().id))]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('vnetName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnetAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('subnet1Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnet1Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('subnet2Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnet2Prefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "FGT-ZTNA-deployment",
+      "dependsOn": [
+        "[variables('vnetName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/fortinet/azure-templates/main/FortiGate/A-Single-VM/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": { "value": "[parameters('adminUsername')]" },
+          "adminPassword": { "value": "[parameters('adminPassword')]" },
+          "fortiGateNamePrefix": { "value": "[concat(parameters('fortiGateNamePrefix'))]" },
+          "fortiGateName": { "value": "[concat(parameters('fortiGateName'))]" },
+          "fortiGateImageSKU": { "value": "[parameters('fortiGateImageSKU')]" },
+          "fortiGateImageVersion": { "value": "[parameters('fortiGateImageVersion')]" },
+          "fortiGateAdditionalCustomData": { "value": "[variables('customDataCombined')]" },
+          "instanceType": { "value": "[parameters('instanceType')]" },
+          "acceleratedNetworking": { "value": "[parameters('acceleratedNetworking')]" },
+          "publicIp1NewOrExisting": { "value": "[parameters('publicIp1NewOrExisting')]" },
+          "publicIp1Name": { "value": "[parameters('publicIp1Name')]" },
+          "publicIp1ResourceGroup": { "value": "[parameters('publicIp1ResourceGroup')]" },
+          "publicIp1AddressType": { "value": "[parameters('publicIp1AddressType')]" },
+          "publicIp1SKU": { "value": "[parameters('publicIp1SKU')]" },
+          "vnetNewOrExisting": { "value": "existing" },
+          "vnetName": { "value": "[variables('vnetName')]" },
+          "vnetResourceGroup": { "value": "[variables('vnetResourceGroup')]" },
+          "vnetAddressPrefix": { "value": "[parameters('vnetAddressPrefix')]" },
+          "subnet1Name": { "value": "[parameters('subnet1Name')]" },
+          "subnet1Prefix": { "value": "[parameters('subnet1Prefix')]" },
+          "subnet1StartAddress": { "value": "[parameters('subnet1StartAddress')]" },
+          "subnet2Name": { "value": "[parameters('subnet2Name')]" },
+          "subnet2Prefix": { "value": "[parameters('subnet2Prefix')]" },
+          "subnet2StartAddress": { "value": "[parameters('subnet2StartAddress')]" },
+          "serialConsole": { "value": "[parameters('serialConsole')]" },
+          "fortiManager": { "value": "[parameters('fortiManager')]" },
+          "fortiManagerIP": { "value": "[parameters('fortiManagerIP')]" },
+          "fortiManagerSerial": { "value": "[parameters('fortiManagerSerial')]" },
+          "fortiGateLicenseBYOL": { "value": "[parameters('fortiGateLicenseBYOL')]" },
+          "fortiGateLicenseFlexVM": { "value": "[parameters('fortiGateLicenseFlexVM')]" },
+          "location": { "value": "[parameters('location')]" },
+          "fortinetTags": { "value": "[parameters('fortinetTags')]" }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "AdminUsername": {
+      "type": "string",
+      "value": "[parameters('adminUsername')]"
+    },
+    "ZTNAUsername": {
+      "type": "string",
+      "value": "[parameters('ZTNAUsername')]"
+    },
+    "ZTNAApplicationLoginURL": {
+      "type": "string",
+      "value": "[uri(concat('https://',reference('FGT-ZTNA-deployment').outputs.fortiGateFQDN.value, ':', parameters('ztnaHTTPSAccessPort'), '/'),'')]"
+    },
+    "ZTNALoginURL": {
+      "type": "string",
+      "value": "[uri(concat('https://',reference('FGT-ZTNA-deployment').outputs.fortiGateFQDN.value, ':', parameters('fortiGateAdminPort'), '/'),'')]"
+    }
+  }
+}

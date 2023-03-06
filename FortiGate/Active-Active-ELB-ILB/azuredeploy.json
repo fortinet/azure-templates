@@ -42,6 +42,7 @@
         "6.4.0",
         "6.4.10",
         "6.4.11",
+        "6.4.12",
         "6.4.2",
         "6.4.3",
         "6.4.5",
@@ -51,6 +52,7 @@
         "6.4.9",
         "7.0.0",
         "7.0.1",
+        "7.0.10",
         "7.0.2",
         "7.0.3",
         "7.0.4",
@@ -62,6 +64,7 @@
         "7.2.1",
         "7.2.2",
         "7.2.3",
+        "7.2.4",
         "latest"
       ],
       "metadata": {
@@ -474,10 +477,10 @@
       }
     },
     {
-      "apiVersion": "2021-07-01",
-      "type": "Microsoft.Compute/availabilitySets",
       "condition": "[not(variables('useAZ'))]",
+      "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('availabilitySetName')]",
+      "apiVersion": "2022-08-01",
       "location": "[parameters('location')]",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
@@ -492,9 +495,9 @@
     },
     {
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
+      "name": "[variables('vnetName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2022-05-01",
-      "name": "[variables('vnetName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[variables('routeTable3Id')]"
@@ -531,75 +534,9 @@
       }
     },
     {
-      "apiVersion": "2022-05-01",
-      "type": "Microsoft.Network/loadBalancers",
-      "name": "[variables('internalLBName')]",
-      "location": "[parameters('location')]",
-      "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
-      },
-      "sku": {
-        "name": "Standard"
-      },
-      "dependsOn": [
-        "[variables('vnetName')]"
-      ],
-      "properties": {
-        "frontendIPConfigurations": [
-          {
-            "name": "[variables('internalLBFEName')]",
-            "properties": {
-              "privateIPAddress": "[variables('sn2IPlb')]",
-              "privateIPAllocationMethod": "Static",
-              "subnet": {
-                "id": "[variables('subnet2Id')]"
-              }
-            }
-          }
-        ],
-        "backendAddressPools": [
-          {
-            "name": "[variables('internalLBBEName')]"
-          }
-        ],
-        "loadBalancingRules": [
-          {
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[variables('internalLBFEId')]"
-              },
-              "backendAddressPool": {
-                "id": "[variables('internalLBBEId')]"
-              },
-              "probe": {
-                "id": "[variables('internalLBProbeId')]"
-              },
-              "protocol": "all",
-              "frontendPort": 0,
-              "backendPort": 0,
-              "enableFloatingIP": true,
-              "idleTimeoutInMinutes": 5
-            },
-            "name": "lbruleFEall"
-          }
-        ],
-        "probes": [
-          {
-            "properties": {
-              "protocol": "Tcp",
-              "port": 8008,
-              "intervalInSeconds": 5,
-              "numberOfProbes": 2
-            },
-            "name": "lbprobe"
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/routeTables",
       "name": "[variables('routeTable3Name')]",
+      "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
@@ -618,9 +555,9 @@
       }
     },
     {
-      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('nsgName')]",
+      "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
@@ -660,9 +597,9 @@
     },
     {
       "condition": "[equals(parameters('publicIP1NewOrExisting'), 'new')]",
-      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIP1Name')]",
+      "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
@@ -679,9 +616,9 @@
       }
     },
     {
-      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/loadBalancers",
       "name": "[variables('externalLBName')]",
+      "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
@@ -812,9 +749,75 @@
       }
     },
     {
+      "type": "Microsoft.Network/loadBalancers",
+      "name": "[variables('internalLBName')]",
       "apiVersion": "2022-05-01",
+      "location": "[parameters('location')]",
+      "tags": {
+        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+      },
+      "sku": {
+        "name": "Standard"
+      },
+      "dependsOn": [
+        "[variables('vnetName')]"
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "[variables('internalLBFEName')]",
+            "properties": {
+              "privateIPAddress": "[variables('sn2IPlb')]",
+              "privateIPAllocationMethod": "Static",
+              "subnet": {
+                "id": "[variables('subnet2Id')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[variables('internalLBBEName')]"
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('internalLBFEId')]"
+              },
+              "backendAddressPool": {
+                "id": "[variables('internalLBBEId')]"
+              },
+              "probe": {
+                "id": "[variables('internalLBProbeId')]"
+              },
+              "protocol": "all",
+              "frontendPort": 0,
+              "backendPort": 0,
+              "enableFloatingIP": true,
+              "idleTimeoutInMinutes": 5
+            },
+            "name": "lbruleFEall"
+          }
+        ],
+        "probes": [
+          {
+            "properties": {
+              "protocol": "Tcp",
+              "port": 8008,
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            },
+            "name": "lbprobe"
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgaNic1Name')]",
+      "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
@@ -858,13 +861,13 @@
       }
     },
     {
-      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgbNic1Name')]",
-      "location": "[parameters('location')]",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[variables('externalLBId')]",
         "[variables('fgaNic1Id')]",
@@ -905,13 +908,13 @@
       }
     },
     {
-      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgaNic2Name')]",
-      "location": "[parameters('location')]",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[variables('internalLBId')]",
         "[variables('vnetName')]",
@@ -943,13 +946,13 @@
       }
     },
     {
-      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgbNic2Name')]",
-      "location": "[parameters('location')]",
+      "apiVersion": "2022-05-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[variables('internalLBId')]",
         "[variables('vnetName')]",
@@ -982,13 +985,13 @@
       }
     },
     {
-      "apiVersion": "2021-07-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgaVmName')]",
-      "location": "[parameters('location')]",
+      "apiVersion": "2022-08-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
+      "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
       },
@@ -1055,13 +1058,13 @@
       }
     },
     {
-      "apiVersion": "2021-07-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgbVmName')]",
-      "location": "[parameters('location')]",
+      "apiVersion": "2022-08-01",
       "tags": {
         "provider": "[toUpper(parameters('fortinetTags').provider)]"
       },
+      "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
       },
