@@ -31,8 +31,7 @@
       "type": "string",
       "defaultValue": "fortinet_fg-vm",
       "allowedValues": [
-        "fortinet_fg-vm",
-        "fortinet_fg-vm_payg_2022"
+        "fortinet_fg-vm"
       ],
       "metadata": {
         "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately"
@@ -40,11 +39,9 @@
     },
     "fortiGateImageVersion": {
       "type": "string",
-      "defaultValue": "latest",
+      "defaultValue": "7.2.4",
       "allowedValues": [
-        "7.0.8",
-        "7.2.2",
-        "latest"
+        "7.2.4"
       ],
       "metadata": {
         "description": "Select the image version"
@@ -392,10 +389,10 @@
     "customDataFirewallAddress": "[concat('config firewall address\nedit webserver1\nset subnet ', parameters('backendWebServer'), ' 255.255.255.255\nnext\nend\n')]",
     "customDataFirewallAddressGroup": "[concat('config firewall addrgrp\nedit \"WebServer\"\nset member \"webserver1\"\nnext\nend\n')]",
     "customDataUserLocal": "[concat('config user local\nedit ', parameters('ztnaUsername'), '\nset type password\nset passwd ', parameters('ztnaPassword'), '\nnext\nend\n')]",
-    "customDataUserGroup": "[concat('config user group\nedit \"sslvpn_group\"\nset member ', parameters('ztnaUsername'), '\nnext\nend\n')]",
+    "customDataUserGroup": "[concat('config user group\nedit \"ztna_group\"\nset member ', parameters('ztnaUsername'), '\nnext\nend\n')]",
     "customDataFirewallVip": "[concat('config firewall vip\nedit \"ZTNAServer\"\nset type access-proxy\nset extip ', parameters('subnet1StartAddress'), '\nset extintf \"port1\"\nset server-type https\nset extport ', parameters('ztnaHTTPSAccessPort'), '\nset ssl-certificate \"Fortinet_SSL\"\nnext\nend\n')]",
     "customDataFirewallAccessProxy": "[concat('config firewall access-proxy\nedit \"ZTNAServer\"\nset client-cert disable\nset vip \"ZTNAServer\"\nconfig api-gateway\nedit 1\nconfig realservers\nedit 1\nset ip ', parameters('backendWebServer'), '\nnext\nend\nnext\nend\nnext\nend\n')]",
-    "customDataFirewallProxyPolicy": "[concat('config firewall proxy-policy\nedit 1\nset name \"ZTNA Web Server\"\nset proxy access-proxy\nset access-proxy \"ZTNAServer\"\nset srcintf \"port1\"\nset srcaddr \"all\"\nset dstaddr \"WebServer\"\nset action accept\nset schedule \"always\"\nset logtraffic all\nset groups \"sslvpn_group\"\nnext\nend\n')]",
+    "customDataFirewallProxyPolicy": "[concat('config firewall proxy-policy\nedit 1\nset name \"ZTNA Web Server\"\nset proxy access-proxy\nset access-proxy \"ZTNAServer\"\nset srcintf \"port1\"\nset srcaddr \"all\"\nset dstaddr \"WebServer\"\nset action accept\nset schedule \"always\"\nset logtraffic all\nset groups \"ztna_group\"\nnext\nend\n')]",
     "customDataAuthentication": "[concat('config authentication scheme\nedit \"ZTNA\"\nset method basic\nset user-database \"local-user-db\"\nnext\nend\nconfig authentication rule\nedit \"ZTNA\"\nset srcintf \"port1\"\nset srcaddr \"all\"\nset ip-based disable\nset active-auth-method \"ZTNA\"\nnext\nend\n')]",
     "customDataEMSCloud": "[concat('config endpoint-control fctems\nedit \"1\"\nset name ems-cloud\n set status enable\n set fortinetone-cloud-authentication enable\nnext\nend\n')]",
     "customDataEMS": "[concat('config endpoint-control fctems\nedit \"1\"\nset name ems-local\n set status enable\n set server ', parameters('emsServerIP'), '\nset https-port ', parameters('emsServerPort'), '\nnext\nend\n')]",
@@ -404,7 +401,7 @@
   "resources": [
     {
       "apiVersion": "2021-04-01",
-      "name": "[concat(parameters('fortiGateNamePrefix'), '-fortinetdeployment-', uniquestring(resourceGroup().id))]",
+      "name": "pid-78f62ebc-9614-47cd-8b62-16543326c3ea-partnercenter",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",

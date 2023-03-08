@@ -27,7 +27,7 @@
       {
         "name": "adminUsername",
         "type": "Microsoft.Common.TextBox",
-        "label": "FortiGate administrative username",
+        "label": "ZTNA Gateway Administrative Username",
         "defaultValue": "",
         "toolTip": "Username for the ZTNA Application Gateway virtual appliance. Most not be root, administrator or admin",
         "constraints": {
@@ -53,8 +53,8 @@
         "name": "adminPassword",
         "type": "Microsoft.Common.PasswordBox",
         "label": {
-          "password": "FortiGate password",
-          "confirmPassword": "Confirm password"
+          "password": "ZTNA Gateway Password",
+          "confirmPassword": "Confirm Password"
         },
         "toolTip": "Password for the Virtual Machine",
         "constraints": {
@@ -70,7 +70,7 @@
       {
         "name": "fortiGateNamePrefix",
         "type": "Microsoft.Common.TextBox",
-        "label": "Fortigate Name Prefix",
+        "label": "ZTNA Gateway Name Prefix",
         "defaultValue": "",
         "toolTip": "Naming prefix for all deployed resources",
         "constraints": {
@@ -83,7 +83,7 @@
       {
         "name": "fortiGateImageSKU",
         "type": "Microsoft.Common.DropDown",
-        "label": "Fortigate Image SKU",
+        "label": "ZTNA Gateway (FortiGate) Image SKU",
         "defaultValue": "Bring Your Own License",
         "toolTip": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)",
         "constraints": {
@@ -92,10 +92,6 @@
             {
               "label": "Bring Your Own License",
               "value": "fortinet_fg-vm"
-            },
-            {
-              "label": "Pay As You Go",
-              "value": "fortinet_fg-vm_payg_2022"
             }
           ]
         },
@@ -104,23 +100,15 @@
       {
         "name": "fortiGateImageVersion",
         "type": "Microsoft.Common.DropDown",
-        "label": "Fortigate Image Version",
-        "defaultValue": "latest",
+        "label": "ZTNA Gateway (FortiGate) Image Version",
+        "defaultValue": "7.2.4",
         "toolTip": "Only 6.x has the A/P HA feature currently",
         "constraints": {
           "required": false,
           "allowedValues": [
             {
-              "label": "7.0.8",
-              "value": "7.0.8"
-            },
-            {
-              "label": "7.2.2",
-              "value": "7.2.2"
-            },
-            {
-              "label": "latest",
-              "value": "latest"
+              "label": "7.2.4",
+              "value": "7.2.4"
             }
           ]
         },
@@ -132,7 +120,7 @@
         "name": "instance",
         "label": "Instance",
         "subLabel": {
-          "preValidation": "Select instance type",
+          "preValidation": "Select Instance Type",
           "postValidation": "Done"
         },
         "elements": [
@@ -307,7 +295,7 @@
           {
             "name": "fgtLicense",
             "type": "Microsoft.Common.Section",
-            "label": "FortiGate License",
+            "label": "ZTNA Gateway (FortiGate) License",
             "elements": [
               {
                 "name": "fgtLicenseBYOLInfo",
@@ -402,7 +390,7 @@
         "name": "networking",
         "label": "Networking",
         "subLabel": {
-          "preValidation": "Configure internal networking",
+          "preValidation": "Configure Internal Networking",
           "postValidation": "Done"
         },
         "elements": [
@@ -423,7 +411,7 @@
                 "name": "virtualnetwork",
                 "type": "Microsoft.Network.VirtualNetworkCombo",
                 "label": {
-                  "virtualNetwork": "Virtual network",
+                  "virtualNetwork": "Virtual Network",
                   "subnets": "Subnets"
                 },
                 "toolTip": {
@@ -454,7 +442,7 @@
                     }
                   },
                   "subnet2": {
-                    "label": "Internal subnet",
+                    "label": "Internal Subnet",
                     "defaultValue": {
                       "name": "InternalSubnet",
                       "addressPrefixSize": "/26"
@@ -483,7 +471,7 @@
           {
             "name": "acceleratednetworksection",
             "type": "Microsoft.Common.Section",
-            "label": "Accelerated networking",
+            "label": "Accelerated Networking",
             "elements": [
               {
                 "name": "acceleratednetworkingtext",
@@ -536,7 +524,7 @@
         "name": "ztna",
         "label": "ZTNA",
         "subLabel": {
-          "preValidation": "Configure ZTNA parameters",
+          "preValidation": "Configure ZTNA Parameters",
           "postValidation": "Done"
         },
         "elements": [
@@ -561,7 +549,7 @@
                 "name": "enabled",
                 "type": "Microsoft.Common.OptionsGroup",
                 "label": "FortiClient Cloud",
-                "defaultValue": "yes",
+                "defaultValue": "no",
                 "toolTip": "FortiClient Cloud is a cloud-based SaaS EMS hosted by Fortinet",
                 "constraints": {
                   "allowedValues": [
