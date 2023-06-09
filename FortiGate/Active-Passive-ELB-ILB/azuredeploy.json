@@ -120,7 +120,8 @@
         "Standard_D32as_v5",
         "Standard_D8ads_v5",
         "Standard_D16ads_v5",
-        "Standard_D32ads_v5"
+        "Standard_D32ads_v5",
+        "Standard_D4s_v3"
       ],
       "metadata": {
         "description": "Virtual Machine size selection - must be F4 or other instance that supports 4 NICs"
