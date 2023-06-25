@@ -69,7 +69,7 @@ The ARM template deploys different resources and it is required to have the acce
   - PAYG
 `az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm_payg_2022`
 
-## FortiGate configuration
+## Configuration
 
 The FortiGate VMs need a specific configuration to match the deployed environment. This configuration can be injected during provisioning or afterwards via the different options including GUI, CLI, FortiManager or REST API.
 
