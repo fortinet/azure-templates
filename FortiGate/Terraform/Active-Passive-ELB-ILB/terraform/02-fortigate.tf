@@ -277,28 +277,28 @@ resource "azurerm_linux_virtual_machine" "fgtavm" {
   admin_password                  = var.PASSWORD
   disable_password_authentication = false
   custom_data = base64encode(templatefile("${path.module}/customdata.tpl", {
-    fgt_vm_name         = "${var.PREFIX}-FGT-A"
-    fgt_license_file    = var.FGT_BYOL_LICENSE_FILE_A
-    fgt_license_flexvm  = var.FGT_BYOL_FLEXVM_LICENSE_FILE_A
-    fgt_username        = var.USERNAME
-    fgt_ssh_public_key  = var.FGT_SSH_PUBLIC_KEY_FILE
-    fgt_config_ha       = var.FGT_CONFIG_HA
-    fgt_external_ipaddr = var.fgt_ipaddress_a["1"]
-    fgt_external_mask   = var.subnetmask["1"]
-    fgt_external_gw     = var.gateway_ipaddress["1"]
-    fgt_internal_ipaddr = var.fgt_ipaddress_a["2"]
-    fgt_internal_mask   = var.subnetmask["2"]
-    fgt_internal_gw     = var.gateway_ipaddress["2"]
-    fgt_hasync_ipaddr   = var.fgt_ipaddress_a["3"]
-    fgt_hasync_mask     = var.subnetmask["3"]
-    fgt_hasync_gw       = var.gateway_ipaddress["3"]
-    fgt_mgmt_ipaddr     = var.fgt_ipaddress_a["4"]
-    fgt_mgmt_mask       = var.subnetmask["4"]
-    fgt_mgmt_gw         = var.gateway_ipaddress["4"]
-    fgt_ha_peerip       = var.fgt_ipaddress_b["3"]
-    fgt_ha_priority     = "255"
-    fgt_protected_net   = var.subnet["5"]
-    vnet_network        = var.vnet
+    fgt_vm_name           = "${var.PREFIX}-FGT-A"
+    fgt_license_file      = var.FGT_BYOL_LICENSE_FILE_A
+    fgt_license_fortiflex = var.FGT_BYOL_FORTIFLEX_LICENSE_TOKEN_A
+    fgt_username          = var.USERNAME
+    fgt_ssh_public_key    = var.FGT_SSH_PUBLIC_KEY_FILE
+    fgt_config_ha         = var.FGT_CONFIG_HA
+    fgt_external_ipaddr   = var.fgt_ipaddress_a["1"]
+    fgt_external_mask     = var.subnetmask["1"]
+    fgt_external_gw       = var.gateway_ipaddress["1"]
+    fgt_internal_ipaddr   = var.fgt_ipaddress_a["2"]
+    fgt_internal_mask     = var.subnetmask["2"]
+    fgt_internal_gw       = var.gateway_ipaddress["2"]
+    fgt_hasync_ipaddr     = var.fgt_ipaddress_a["3"]
+    fgt_hasync_mask       = var.subnetmask["3"]
+    fgt_hasync_gw         = var.gateway_ipaddress["3"]
+    fgt_mgmt_ipaddr       = var.fgt_ipaddress_a["4"]
+    fgt_mgmt_mask         = var.subnetmask["4"]
+    fgt_mgmt_gw           = var.gateway_ipaddress["4"]
+    fgt_ha_peerip         = var.fgt_ipaddress_b["3"]
+    fgt_ha_priority       = "255"
+    fgt_protected_net     = var.subnet["5"]
+    vnet_network          = var.vnet
   }))
 
   boot_diagnostics {
@@ -307,21 +307,21 @@ resource "azurerm_linux_virtual_machine" "fgtavm" {
   tags = var.fortinet_tags
 }
 
-resource "azurerm_managed_disk" "fgtavm-datadisk" {
-  name                 = "${var.PREFIX}-FGT-A-DATADISK"
-  location             = azurerm_resource_group.resourcegroup.location
-  resource_group_name  = azurerm_resource_group.resourcegroup.name
-  storage_account_type = "Standard_LRS"
-  create_option        = "Empty"
-  disk_size_gb         = 50
-}
-
-resource "azurerm_virtual_machine_data_disk_attachment" "fgtavm-datadisk-attach" {
-  managed_disk_id    = azurerm_managed_disk.fgtavm-datadisk.id
-  virtual_machine_id = azurerm_linux_virtual_machine.fgtavm.id
-  lun                = 0
-  caching            = "ReadWrite"
-}
+#resource "azurerm_managed_disk" "fgtavm-datadisk" {
+#  name                 = "${var.PREFIX}-FGT-A-DATADISK"
+#  location             = azurerm_resource_group.resourcegroup.location
+#  resource_group_name  = azurerm_resource_group.resourcegroup.name
+#  storage_account_type = "Standard_LRS"
+#  create_option        = "Empty"
+#  disk_size_gb         = 50
+#}
+#
+#resource "azurerm_virtual_machine_data_disk_attachment" "fgtavm-datadisk-attach" {
+#  managed_disk_id    = azurerm_managed_disk.fgtavm-datadisk.id
+#  virtual_machine_id = azurerm_linux_virtual_machine.fgtavm.id
+#  lun                = 0
+#  caching            = "ReadWrite"
+#}
 
 resource "azurerm_network_interface" "fgtbifcext" {
   name                          = "${var.PREFIX}-FGT-B-Nic1-EXT"
@@ -460,28 +460,28 @@ resource "azurerm_linux_virtual_machine" "fgtbvm" {
   admin_password                  = var.PASSWORD
   disable_password_authentication = false
   custom_data = base64encode(templatefile("${path.module}/customdata.tpl", {
-    fgt_vm_name         = "${var.PREFIX}-FGT-B"
-    fgt_license_file    = var.FGT_BYOL_LICENSE_FILE_B
-    fgt_license_flexvm  = var.FGT_BYOL_FLEXVM_LICENSE_FILE_B
-    fgt_username        = var.USERNAME
-    fgt_ssh_public_key  = var.FGT_SSH_PUBLIC_KEY_FILE
-    fgt_config_ha       = var.FGT_CONFIG_HA
-    fgt_external_ipaddr = var.fgt_ipaddress_b["1"]
-    fgt_external_mask   = var.subnetmask["1"]
-    fgt_external_gw     = var.gateway_ipaddress["1"]
-    fgt_internal_ipaddr = var.fgt_ipaddress_b["2"]
-    fgt_internal_mask   = var.subnetmask["2"]
-    fgt_internal_gw     = var.gateway_ipaddress["2"]
-    fgt_hasync_ipaddr   = var.fgt_ipaddress_b["3"]
-    fgt_hasync_mask     = var.subnetmask["3"]
-    fgt_hasync_gw       = var.gateway_ipaddress["3"]
-    fgt_mgmt_ipaddr     = var.fgt_ipaddress_b["4"]
-    fgt_mgmt_mask       = var.subnetmask["4"]
-    fgt_mgmt_gw         = var.gateway_ipaddress["4"]
-    fgt_ha_peerip       = var.fgt_ipaddress_a["3"]
-    fgt_ha_priority     = "255"
-    fgt_protected_net   = var.subnet["5"]
-    vnet_network        = var.vnet
+    fgt_vm_name           = "${var.PREFIX}-FGT-B"
+    fgt_license_file      = var.FGT_BYOL_LICENSE_FILE_B
+    fgt_license_fortiflex = var.FGT_BYOL_FORTIFLEX_LICENSE_TOKEN_B
+    fgt_username          = var.USERNAME
+    fgt_ssh_public_key    = var.FGT_SSH_PUBLIC_KEY_FILE
+    fgt_config_ha         = var.FGT_CONFIG_HA
+    fgt_external_ipaddr   = var.fgt_ipaddress_b["1"]
+    fgt_external_mask     = var.subnetmask["1"]
+    fgt_external_gw       = var.gateway_ipaddress["1"]
+    fgt_internal_ipaddr   = var.fgt_ipaddress_b["2"]
+    fgt_internal_mask     = var.subnetmask["2"]
+    fgt_internal_gw       = var.gateway_ipaddress["2"]
+    fgt_hasync_ipaddr     = var.fgt_ipaddress_b["3"]
+    fgt_hasync_mask       = var.subnetmask["3"]
+    fgt_hasync_gw         = var.gateway_ipaddress["3"]
+    fgt_mgmt_ipaddr       = var.fgt_ipaddress_b["4"]
+    fgt_mgmt_mask         = var.subnetmask["4"]
+    fgt_mgmt_gw           = var.gateway_ipaddress["4"]
+    fgt_ha_peerip         = var.fgt_ipaddress_a["3"]
+    fgt_ha_priority       = "1"
+    fgt_protected_net     = var.subnet["5"]
+    vnet_network          = var.vnet
   }))
 
   boot_diagnostics {
@@ -490,21 +490,21 @@ resource "azurerm_linux_virtual_machine" "fgtbvm" {
   tags = var.fortinet_tags
 }
 
-resource "azurerm_managed_disk" "fgtbvm-datadisk" {
-  name                 = "${var.PREFIX}-FGT-B-DATADISK"
-  location             = azurerm_resource_group.resourcegroup.location
-  resource_group_name  = azurerm_resource_group.resourcegroup.name
-  storage_account_type = "Standard_LRS"
-  create_option        = "Empty"
-  disk_size_gb         = 50
-}
-
-resource "azurerm_virtual_machine_data_disk_attachment" "fgtbvm-datadisk-attach" {
-  managed_disk_id    = azurerm_managed_disk.fgtbvm-datadisk.id
-  virtual_machine_id = azurerm_linux_virtual_machine.fgtbvm.id
-  lun                = 0
-  caching            = "ReadWrite"
-}
+#resource "azurerm_managed_disk" "fgtbvm-datadisk" {
+#  name                 = "${var.PREFIX}-FGT-B-DATADISK"
+#  location             = azurerm_resource_group.resourcegroup.location
+#  resource_group_name  = azurerm_resource_group.resourcegroup.name
+#  storage_account_type = "Standard_LRS"
+#  create_option        = "Empty"
+#  disk_size_gb         = 50
+#}
+#
+#resource "azurerm_virtual_machine_data_disk_attachment" "fgtbvm-datadisk-attach" {
+#  managed_disk_id    = azurerm_managed_disk.fgtbvm-datadisk.id
+#  virtual_machine_id = azurerm_linux_virtual_machine.fgtbvm.id
+#  lun                = 0
+#  caching            = "ReadWrite"
+#}
 
 data "azurerm_public_ip" "fgtamgmtpip" {
   name                = azurerm_public_ip.fgtamgmtpip.name
@@ -534,4 +534,8 @@ data "azurerm_public_ip" "elbpip" {
 
 output "elb_public_ip_address" {
   value = data.azurerm_public_ip.elbpip.ip_address
+}
+
+output "test" {
+  value = var.FGT_BYOL_FORTIFLEX_LICENSE_TOKEN_A
 }

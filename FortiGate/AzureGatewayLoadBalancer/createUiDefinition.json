@@ -75,7 +75,7 @@
         "toolTip": "Naming prefix for all deployed resources. The FortiGate VMs will have the suffix '-FGT-A' and '-FGT-B'. For example if the prefix is 'ACME-01' the FortiGates will be named 'ACME-01-FGT-A' and 'ACME-01-FGT-B'",
         "constraints": {
           "required": true,
-          "regex": "^[A-Za-z0-9]{1,15}$",
+          "regex": "^[A-Za-z0-9-]{1,15}$",
           "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1 to 15 characters."
         },
         "visible": true
@@ -105,7 +105,7 @@
         "name": "fortiGateImageVersion",
         "type": "Microsoft.Common.DropDown",
         "label": "FortiGate Image Version",
-        "defaultValue": "latest",
+        "defaultValue": "7.2.5",
         "toolTip": "Select the FortiGate image version",
         "constraints": {
           "required": false,
@@ -129,6 +129,18 @@
             {
               "label": "6.4.0",
               "value": "6.4.0"
+            },
+            {
+              "label": "6.4.10",
+              "value": "6.4.10"
+            },
+            {
+              "label": "6.4.11",
+              "value": "6.4.11"
+            },
+            {
+              "label": "6.4.12",
+              "value": "6.4.12"
             },
             {
               "label": "6.4.2",
@@ -167,6 +179,18 @@
               "value": "7.0.1"
             },
             {
+              "label": "7.0.10",
+              "value": "7.0.10"
+            },
+            {
+              "label": "7.0.11",
+              "value": "7.0.11"
+            },
+            {
+              "label": "7.0.12",
+              "value": "7.0.12"
+            },
+            {
               "label": "7.0.2",
               "value": "7.0.2"
             },
@@ -187,12 +211,40 @@
               "value": "7.0.6"
             },
             {
+              "label": "7.0.8",
+              "value": "7.0.8"
+            },
+            {
+              "label": "7.0.9",
+              "value": "7.0.9"
+            },
+            {
               "label": "7.2.0",
               "value": "7.2.0"
             },
             {
               "label": "7.2.1",
               "value": "7.2.1"
+            },
+            {
+              "label": "7.2.2",
+              "value": "7.2.2"
+            },
+            {
+              "label": "7.2.3",
+              "value": "7.2.3"
+            },
+            {
+              "label": "7.2.4",
+              "value": "7.2.4"
+            },
+            {
+              "label": "7.2.5",
+              "value": "7.2.5"
+            },
+            {
+              "label": "7.4.0",
+              "value": "7.4.0"
             },
             {
               "label": "latest",
@@ -442,10 +494,10 @@
                 }
               },
               {
-                "name": "fgtLicenseFlexVMCheck",
+                "name": "fgtLicenseFortiFlexCheck",
                 "type": "Microsoft.Common.CheckBox",
-                "label": "My organisation is using the Flex-VM subscription service.",
-                "toolTip": "My organisation is using the Flex-VM subscription service.",
+                "label": "My organisation is using the FortiFlex subscription service.",
+                "toolTip": "My organisation is using the FortiFlex subscription service.",
                 "visible": "[equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm')]"
               },
               {
@@ -463,7 +515,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),not(steps('instance').fgtLicense.fgtLicenseFlexVMCheck))]"
+                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgtBcontent",
@@ -480,33 +532,33 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),not(steps('instance').fgtLicense.fgtLicenseFlexVMCheck))]"
+                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
-                "name": "fgtAflexvm",
+                "name": "fgtAfortiflex",
                 "type": "Microsoft.Common.TextBox",
-                "label": "FortiGate A Flex-VM",
+                "label": "FortiGate A FortiFlex",
                 "defaultValue": "",
-                "toolTip": "FortiGate A Flex-VM license token",
+                "toolTip": "FortiGate A FortiFlex license token",
                 "constraints": {
                   "required": false,
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[steps('instance').fgtLicense.fgtLicenseFlexVMCheck]"
+                "visible": "[steps('instance').fgtLicense.fgtLicenseFortiFlexCheck]"
               },
               {
-                "name": "fgtBflexvm",
+                "name": "fgtBfortiflex",
                 "type": "Microsoft.Common.TextBox",
-                "label": "FortiGate B Flex-VM",
+                "label": "FortiGate B FortiFlex",
                 "defaultValue": "",
-                "toolTip": "FortiGate B Flex-VM license token",
+                "toolTip": "FortiGate B FortiFlex license token",
                 "constraints": {
                   "required": false,
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[steps('instance').fgtLicense.fgtLicenseFlexVMCheck]"
+                "visible": "[steps('instance').fgtLicense.fgtLicenseFortiFlexCheck]"
               },
               {
                 "name": "fgtLicensePAYGInfo",
@@ -843,7 +895,7 @@
                 "toolTip": "Provide the IP address or DNS name of the FortiManager reachable over port TCP/541",
                 "constraints": {
                   "required": false,
-                  "regex": "^[A-Za-z0-9.]{1,64}$",
+                  "regex": "^[A-Za-z0-9.-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and dots are allowed, and the value must be 1 to 64 characters."
                 },
                 "visible": true
@@ -959,8 +1011,8 @@
       "availabilityOptions": "[steps('instance').availabilityOptions.availabilityOptions]",
       "fortiGateLicenseBYOLA": "[steps('instance').fgtLicense.fgtAcontent]",
       "fortiGateLicenseBYOLB": "[steps('instance').fgtLicense.fgtBcontent]",
-      "fortiGateLicenseFlexVMA": "[steps('instance').fgtLicense.fgtAflexvm]",
-      "fortiGateLicenseFlexVMB": "[steps('instance').fgtLicense.fgtBflexvm]",
+      "fortiGateLicenseFortiFlexA": "[steps('instance').fgtLicense.fgtAfortiflex]",
+      "fortiGateLicenseFortiFlexB": "[steps('instance').fgtLicense.fgtBfortiflex]",
       "acceleratedNetworking": "[steps('networking').acceleratednetworksection.acceleratednetworking]",
       "publicIP1NewOrExisting": "[steps('publicip').fgtamgmtpublicip.newOrExistingOrNone]",
       "publicIP2NewOrExisting": "[steps('publicip').fgtbmgmtpublicip.newOrExistingOrNone]",

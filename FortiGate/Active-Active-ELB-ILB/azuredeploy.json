@@ -33,7 +33,7 @@
     },
     "fortiGateImageVersion": {
       "type": "string",
-      "defaultValue": "latest",
+      "defaultValue": "7.2.5",
       "allowedValues": [
         "6.2.0",
         "6.2.2",
@@ -53,6 +53,8 @@
         "7.0.0",
         "7.0.1",
         "7.0.10",
+        "7.0.11",
+        "7.0.12",
         "7.0.2",
         "7.0.3",
         "7.0.4",
@@ -65,6 +67,8 @@
         "7.2.2",
         "7.2.3",
         "7.2.4",
+        "7.2.5",
+        "7.4.0",
         "latest"
       ],
       "metadata": {
@@ -144,7 +148,37 @@
         "Standard_D4ads_v5",
         "Standard_D8ads_v5",
         "Standard_D16ads_v5",
-        "Standard_D32ads_v5"
+        "Standard_D32ads_v5",
+        "Standard_D2ps_v5",
+        "Standard_D4ps_v5",
+        "Standard_D8ps_v5",
+        "Standard_D16ps_v5",
+        "Standard_D32ps_v5",
+        "Standard_D2pds_v5",
+        "Standard_D4pds_v5",
+        "Standard_D8pds_v5",
+        "Standard_D16pds_v5",
+        "Standard_D32pds_v5",
+        "Standard_D2pls_v5",
+        "Standard_D4pls_v5",
+        "Standard_D8pls_v5",
+        "Standard_D16pls_v5",
+        "Standard_D32pls_v5",
+        "Standard_D2plds_v5",
+        "Standard_D4plds_v5",
+        "Standard_D8plds_v5",
+        "Standard_D16plds_v5",
+        "Standard_D32plds_v5",
+        "Standard_E2ps_v5",
+        "Standard_E4ps_v5",
+        "Standard_E8ps_v5",
+        "Standard_E16ps_v5",
+        "Standard_E32ps_v5",
+        "Standard_E2pds_v5",
+        "Standard_E4pds_v5",
+        "Standard_E8pds_v5",
+        "Standard_E16pds_v5",
+        "Standard_E32pds_v5"
       ],
       "metadata": {
         "description": "Virtual Machine size selection"
@@ -335,18 +369,25 @@
         "description": "Secondary FortiGate BYOL license content"
       }
     },
-    "fortiGateLicenseFlexVMA": {
+    "fortiGateLicenseFortiFlexA": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Primary FortiGate BYOL Flex-VM license token"
+        "description": "Primary FortiGate BYOL FortiFlex license token"
       }
     },
-    "fortiGateLicenseFlexVMB": {
+    "fortiGateLicenseFortiFlexB": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Secondary FortiGate BYOL Flex-VM license token"
+        "description": "Secondary FortiGate BYOL FortiFlex license token"
+      }
+    },
+    "customImageReference": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "By default, the deployment will use Azure Marketplace images. In specific cases, using BYOL custom FortiGate images can be deployed. This requires a reference "
       }
     },
     "location": {
@@ -383,12 +424,12 @@
     "fgbCustomDataBody": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\n edit 1\n set gateway ', variables('sn1GatewayIP'), '\n set device port1\n next\n edit 2\n set dst ', parameters('vnetAddressPrefix'), '\n set gateway ', variables('sn2GatewayIP'), '\n set device port2\n next\n edit 3\nset dst 168.63.129.16 255.255.255.255\nset device port2\n set gateway ', variables ('sn2GatewayIP'), '\n next\nedit 4\nset dst 168.63.129.16 255.255.255.255\nset device port1\n set gateway ', variables ('sn1GatewayIP'), '\n next\n end\n config system probe-response\n set mode http-probe\n end\n config system interface\n edit port1\n set mode static\n set ip ', variables('sn1IPfgb'), '/', variables('sn1CIDRmask'), '\n set description external\n set allowaccess ping ssh https probe-response\n next\n edit port2\n set mode static\n set ip ', variables('sn2IPfgb'), '/', variables('sn2CIDRmask'), '\n set description internal\n set allowaccess ping ssh https probe-response\n next\n end\n', variables('fmgCustomData'), parameters('fortiGateAdditionalCustomData'), '\n')]",
     "customDataLicenseHeader": "--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"license\"\n\n",
     "customDataFooter": "\n--12345--\n",
-    "fgaCustomDataFlexVM": "[if(equals(parameters('fortiGateLicenseFlexVMA'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFlexVMA'), '\n'))]",
-    "fgbCustomDataFlexVM": "[if(equals(parameters('fortiGateLicenseFlexVMB'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFlexVMB'), '\n'))]",
-    "fgaCustomDataCombined": "[concat(variables('customDataHeader'),variables('fgaCustomDataBody'),variables('customDataLicenseHeader'), variables('fgaCustomDataFlexVM'), parameters('fortiGateLicenseBYOLA'), variables('customDataFooter'))]",
-    "fgbCustomDataCombined": "[concat(variables('customDataHeader'),variables('fgbCustomDataBody'),variables('customDataLicenseHeader'), variables('fgbCustomDataFlexVM'), parameters('fortiGateLicenseBYOLB'), variables('customDataFooter'))]",
-    "fgaCustomData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLA'),''),equals(parameters('fortiGateLicenseFlexVMA'),'')),variables('fgaCustomDataBody'),variables('fgaCustomDataCombined')))]",
-    "fgbCustomData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLB'),''),equals(parameters('fortiGateLicenseFlexVMB'),'')),variables('fgbCustomDataBody'),variables('fgbCustomDataCombined')))]",
+    "fgaCustomDataFortiFlex": "[if(equals(parameters('fortiGateLicenseFortiFlexA'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFortiFlexA'), '\n'))]",
+    "fgbCustomDataFortiFlex": "[if(equals(parameters('fortiGateLicenseFortiFlexB'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFortiFlexB'), '\n'))]",
+    "fgaCustomDataCombined": "[concat(variables('customDataHeader'),variables('fgaCustomDataBody'),variables('customDataLicenseHeader'), variables('fgaCustomDataFortiFlex'), parameters('fortiGateLicenseBYOLA'), variables('customDataFooter'))]",
+    "fgbCustomDataCombined": "[concat(variables('customDataHeader'),variables('fgbCustomDataBody'),variables('customDataLicenseHeader'), variables('fgbCustomDataFortiFlex'), parameters('fortiGateLicenseBYOLB'), variables('customDataFooter'))]",
+    "fgaCustomData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLA'),''),equals(parameters('fortiGateLicenseFortiFlexA'),'')),variables('fgaCustomDataBody'),variables('fgaCustomDataCombined')))]",
+    "fgbCustomData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLB'),''),equals(parameters('fortiGateLicenseFortiFlexB'),'')),variables('fgbCustomDataBody'),variables('fgbCustomDataCombined')))]",
     "routeTable3Name": "[concat(parameters('fortiGateNamePrefix'),'-RouteTable-',parameters('subnet3Name'))]",
     "routeTable3Id": "[resourceId('Microsoft.Network/routeTables',variables('routeTable3Name'))]",
     "fgaNic1Name": "[concat(variables('fgaVmName'),'-Nic1')]",
@@ -460,7 +501,26 @@
     ],
     "zone2": [
       "2"
-    ]
+    ],
+    "zones": [
+      "1",
+      "2",
+      "3"
+    ],
+    "imageReferenceMarketplace": {
+      "publisher": "[variables('imagePublisher')]",
+      "offer": "[variables('imageOffer')]",
+      "sku": "[parameters('fortiGateImageSKU')]",
+      "version": "[parameters('FortigateImageVersion')]"
+    },
+    "imageReferenceCustomImage": {
+      "id": "[parameters('customImageReference')]"
+    },
+    "virtualMachinePlan": {
+      "name": "[parameters('fortiGateImageSKU')]",
+      "publisher": "[variables('imagePublisher')]",
+      "product": "[variables('imageOffer')]"
+    }
   },
   "resources": [
     {
@@ -772,7 +832,8 @@
               "subnet": {
                 "id": "[variables('subnet2Id')]"
               }
-            }
+            },
+            "zones": "[if(variables('useAZ'), variables('zones'), json('null'))]"
           }
         ],
         "backendAddressPools": [
@@ -996,11 +1057,7 @@
         "type": "SystemAssigned"
       },
       "zones": "[if(variables('useAZ'), variables('zone1'), json('null'))]",
-      "plan": {
-        "name": "[parameters('fortiGateImageSKU')]",
-        "publisher": "[variables('imagePublisher')]",
-        "product": "[variables('imageOffer')]"
-      },
+      "plan": "[if(and(equals(parameters('fortiGateImageSKU'),'fortinet_fg-vm'),not(equals(parameters('customImageReference'),''))), json('null'), variables('virtualMachinePlan'))]",
       "dependsOn": [
         "[variables('fgaNic1Id')]",
         "[variables('fgaNic2Id')]"
@@ -1017,12 +1074,7 @@
           "customData": "[variables('fgaCustomData')]"
         },
         "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[parameters('fortiGateImageSKU')]",
-            "version": "[parameters('fortiGateImageVersion')]"
-          },
+          "imageReference": "[if(and(equals(parameters('fortiGateImageSKU'),'fortinet_fg-vm'),not(equals(parameters('customImageReference'),''))), variables('imageReferenceCustomImage'), variables('imageReferenceMarketplace'))]",
           "osDisk": {
             "createOption": "FromImage"
           },
@@ -1069,11 +1121,7 @@
         "type": "SystemAssigned"
       },
       "zones": "[if(variables('useAZ'), variables('zone2'), json('null'))]",
-      "plan": {
-        "name": "[parameters('fortiGateImageSKU')]",
-        "publisher": "[variables('imagePublisher')]",
-        "product": "[variables('imageOffer')]"
-      },
+      "plan": "[if(and(equals(parameters('fortiGateImageSKU'),'fortinet_fg-vm'),not(equals(parameters('customImageReference'),''))), json('null'), variables('virtualMachinePlan'))]",
       "dependsOn": [
         "[variables('fgbNic1Id')]",
         "[variables('fgbNic2Id')]"
@@ -1090,12 +1138,7 @@
           "customData": "[variables('fgbCustomData')]"
         },
         "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[parameters('fortiGateImageSKU')]",
-            "version": "[parameters('fortiGateImageVersion')]"
-          },
+          "imageReference": "[if(and(equals(parameters('fortiGateImageSKU'),'fortinet_fg-vm'),not(equals(parameters('customImageReference'),''))), variables('imageReferenceCustomImage'), variables('imageReferenceMarketplace'))]",
           "osDisk": {
             "createOption": "FromImage"
           },

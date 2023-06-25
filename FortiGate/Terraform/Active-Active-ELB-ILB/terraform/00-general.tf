@@ -42,11 +42,11 @@ variable "FGT_BYOL_LICENSE_FILE_B" {
   default = ""
 }
 
-variable "FGT_BYOL_FLEXVM_LICENSE_FILE_A" {
+variable "FGT_BYOL_FORTIFLEX_LICENSE_TOKEN_A" {
   default = ""
 }
 
-variable "FGT_BYOL_FLEXVM_LICENSE_FILE_B" {
+variable "FGT_BYOL_FORTIFLEX_LICENSE_TOKEN_B" {
   default = ""
 }
 

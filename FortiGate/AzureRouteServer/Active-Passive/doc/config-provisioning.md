@@ -4,7 +4,7 @@ After deployment, the below configuration has been automatically injected during
 
 ## FortiGate A
 
-<pre>
+<pre><code>
 config system sdn-connector
   edit AzureSDN
     set type azure
@@ -96,9 +96,11 @@ config router bgp
         next
     end
 end
-</pre>
+</code></pre>
 
-<pre>
+## FortiGate B
+
+<pre><code>
 config system sdn-connector
   edit AzureSDN
     set type azure
@@ -150,7 +152,7 @@ config system interface
   edit port4
     set mode static
     set ip <b>172.16.136.197/27</b>
-    set description management
+    set description hammgmtport
     set allowaccess ping https ssh ftm
   next
 end
@@ -195,5 +197,4 @@ config router bgp
         next
     end
 end
-
-</pre>
+</code></pre>

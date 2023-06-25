@@ -33,13 +33,16 @@
     },
     "fortiGateImageVersion": {
       "type": "string",
-      "defaultValue": "latest",
+      "defaultValue": "7.2.5",
       "allowedValues": [
         "6.2.0",
         "6.2.2",
         "6.2.4",
         "6.2.5",
         "6.4.0",
+        "6.4.10",
+        "6.4.11",
+        "6.4.12",
         "6.4.2",
         "6.4.3",
         "6.4.5",
@@ -49,13 +52,23 @@
         "6.4.9",
         "7.0.0",
         "7.0.1",
+        "7.0.10",
+        "7.0.11",
+        "7.0.12",
         "7.0.2",
         "7.0.3",
         "7.0.4",
         "7.0.5",
         "7.0.6",
+        "7.0.8",
+        "7.0.9",
         "7.2.0",
         "7.2.1",
+        "7.2.2",
+        "7.2.3",
+        "7.2.4",
+        "7.2.5",
+        "7.4.0",
         "latest"
       ],
       "metadata": {
@@ -336,18 +349,18 @@
         "description": "Secondary FortiGate BYOL license content"
       }
     },
-    "fortiGateLicenseFlexVMA": {
+    "fortiGateLicenseFortiFlexA": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Primary FortiGate BYOL Flex-VM license token"
+        "description": "Primary FortiGate BYOL FortiFlex license token"
       }
     },
-    "fortiGateLicenseFlexVMB": {
+    "fortiGateLicenseFortiFlexB": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Secondary FortiGate BYOL Flex-VM license token"
+        "description": "Secondary FortiGate BYOL FortiFlex license token"
       }
     },
     "location": {
@@ -388,10 +401,9 @@
     "customDataAddresses": "[concat('config firewall address\n edit AzureProbeSourceIP\n set allow-routing enable\n set subnet ', variables('azureLBprobeSourceIP'),'\n set comment Azure_PIP_used_for_internal_platform_resources\n next\n end\n')]",
     "customDataFmg": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),variables('customDataSDNConnector'))]",
     "customDataFWPolicy": "config firewall policy \n edit 1\n set name int-ext_vxlan \n set srcintf extvxlan intvxlan\n set dstintf extvxlan intvxlan \n set srcaddr all\n set dstaddr all \n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set utm-status enable\n set ssl-ssh-profile certificate-inspection \n set ips-sensor default \n next\n end\n",
-    "customDataFgAFlexVM": "[if(equals(parameters('fortiGateLicenseFlexVMA'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFlexVMA'), '\n'))]",
-    "customDataFgBFlexVM": "[if(equals(parameters('fortiGateLicenseFlexVMB'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFlexVMB'), '\n'))]",
-    "customDataMTUPatch": "config system automation-trigger \n edit MTU \n set trigger-type scheduled \n set trigger-frequency hourly \n next \n end \n config system automation-action \n edit VXLANMTU \n set action-type cli-script \n set script \"fnsysctl ifconfig port1 mtu 1570 up\" \n set accprofile super_admin \n next \n end \n config system automation-stitch \n edit SetMTU \n set trigger MTU \n config actions \n edit 1 \n set action VXLANMTU \n set required enable \n next \n end \n next \n end \n",
-
+    "customDataFgAFortiFlex": "[if(equals(parameters('fortiGateLicenseFortiFlexA'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFortiFlexA'), '\n'))]",
+    "customDataFgBFortiFlex": "[if(equals(parameters('fortiGateLicenseFortiFlexB'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFortiFlexB'), '\n'))]",
+    "customDataMTUPatch": "config system automation-trigger \n edit MTU \n set trigger-type scheduled \n set trigger-frequency hourly \n next \n edit MTU2 \n set event-type event-log \n set logid 32009 \n next \n end \n config system automation-action \n edit VXLANMTU \n set action-type cli-script \n set script \"fnsysctl ifconfig port1 mtu 1570 up\" \n set accprofile super_admin \n next \n end \n config system automation-stitch \n edit SetMTU\n set trigger MTU\n config actions\n edit 1\n set action VXLANMTU\n set required enable\n next\n end\n next\n edit SetMTU2\n set trigger MTU2\n config actions\n edit 1\n set action VXLANMTU\n set required enable\n next\n end\n next\n end",
     "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
     "customDataLicenseHeader": "--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"license\"\n\n",
     "customDataFooter": "\n--12345--\n",
@@ -461,7 +473,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2021-04-01",
       "name": "[concat(parameters('fortiGateNamePrefix'), '-fortinetdeployment-', uniquestring(resourceGroup().id))]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -485,7 +497,7 @@
       }
     },
     {
-      "apiVersion": "2021-07-01",
+      "apiVersion": "2022-08-01",
       "type": "Microsoft.Compute/availabilitySets",
       "condition": "[not(variables('useAZ'))]",
       "name": "[variables('availabilitySetName')]",
@@ -504,7 +516,7 @@
     {
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "name": "[variables('vnetName')]",
       "location": "[parameters('location')]",
       "properties": {
@@ -530,7 +542,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/loadBalancers",
       "name": "[variables('providerLBName')]",
       "location": "[parameters('location')]",
@@ -611,7 +623,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('nsgName')]",
       "location": "[parameters('location')]",
@@ -667,7 +679,7 @@
     },
     {
       "condition": "[equals(parameters('publicIP1NewOrExisting'), 'new')]",
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIP1Name')]",
       "location": "[parameters('location')]",
@@ -686,7 +698,7 @@
     },
     {
       "condition": "[equals(parameters('publicIP2NewOrExisting'), 'new')]",
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIP2Name')]",
       "location": "[parameters('location')]",
@@ -704,7 +716,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgaNic1Name')]",
       "location": "[parameters('location')]",
@@ -737,7 +749,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgbNic1Name')]",
       "location": "[parameters('location')]",
@@ -771,7 +783,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgaNic2Name')]",
       "location": "[parameters('location')]",
@@ -802,7 +814,7 @@
       }
     },
     {
-      "apiVersion": "2020-11-01",
+      "apiVersion": "2022-05-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgbNic2Name')]",
       "location": "[parameters('location')]",
@@ -834,7 +846,7 @@
       }
     },
     {
-      "apiVersion": "2021-07-01",
+      "apiVersion": "2022-08-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgaVmName')]",
       "location": "[parameters('location')]",
@@ -863,7 +875,7 @@
           "computerName": "[variables('fgaVmName')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
-          "customData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLA'),''),equals(parameters('fortiGateLicenseFlexVMA'),'')),concat('config system vxlan\n edit extvxlan\n set interface port1\n set vni 801\n set dstport 2001\n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n edit intvxlan\n set interface port1\n set vni 800 \n set dstport 2000 \n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n end\n',variables('customDataFgABody')),concat(variables('customDataHeader'),'config system vxlan\n edit extvxlan\n set interface port1\n set vni 801\n set dstport 2001\n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n edit intvxlan\n set interface port1\n set vni 800 \n set dstport 2000 \n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n end\n',variables('customDataFgABody'),variables('customDataLicenseHeader'), variables('customDataFgAFlexVM'), parameters('fortiGateLicenseBYOLA'),variables('customDataFooter'))))]"
+          "customData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLA'),''),equals(parameters('fortiGateLicenseFortiFlexA'),'')),concat('config system vxlan\n edit extvxlan\n set interface port1\n set vni 801\n set dstport 2001\n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n edit intvxlan\n set interface port1\n set vni 800 \n set dstport 2000 \n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n end\n',variables('customDataFgABody')),concat(variables('customDataHeader'),'config system vxlan\n edit extvxlan\n set interface port1\n set vni 801\n set dstport 2001\n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n edit intvxlan\n set interface port1\n set vni 800 \n set dstport 2000 \n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n end\n',variables('customDataFgABody'),variables('customDataLicenseHeader'), variables('customDataFgAFortiFlex'), parameters('fortiGateLicenseBYOLA'),variables('customDataFooter'))))]"
         },
         "storageProfile": {
           "imageReference": {
@@ -908,7 +920,7 @@
       }
     },
     {
-      "apiVersion": "2021-07-01",
+      "apiVersion": "2022-08-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgbVmName')]",
       "location": "[parameters('location')]",
@@ -937,7 +949,7 @@
           "computerName": "[variables('fgbVmName')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
-          "customData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLB'),''),equals(parameters('fortiGateLicenseFlexVMB'),'')),concat('config system vxlan\n edit extvxlan\n set interface port1\n set vni 801\n set dstport 2001\n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n edit intvxlan\n set interface port1\n set vni 800 \n set dstport 2000 \n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n end\n',variables('customDataFgBBody')),concat(variables('customDataHeader'),'config system vxlan\n edit extvxlan\n set interface port1\n set vni 801\n set dstport 2001\n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n edit intvxlan\n set interface port1\n set vni 800 \n set dstport 2000 \n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n end\n',variables('customDataFgBBody'),variables('customDataLicenseHeader'), variables('customDataFgBFlexVM'), parameters('fortiGateLicenseBYOLB'),variables('customDataFooter'))))]"
+          "customData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLB'),''),equals(parameters('fortiGateLicenseFortiFlexB'),'')),concat('config system vxlan\n edit extvxlan\n set interface port1\n set vni 801\n set dstport 2001\n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n edit intvxlan\n set interface port1\n set vni 800 \n set dstport 2000 \n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n end\n',variables('customDataFgBBody')),concat(variables('customDataHeader'),'config system vxlan\n edit extvxlan\n set interface port1\n set vni 801\n set dstport 2001\n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n edit intvxlan\n set interface port1\n set vni 800 \n set dstport 2000 \n set remote-ip ', reference(variables('providerLbID')).frontendIPConfigurations[0].properties.privateIPAddress, '\n next\n end\n',variables('customDataFgBBody'),variables('customDataLicenseHeader'), variables('customDataFgBFortiFlex'), parameters('fortiGateLicenseBYOLB'),variables('customDataFooter'))))]"
         },
         "storageProfile": {
           "imageReference": {

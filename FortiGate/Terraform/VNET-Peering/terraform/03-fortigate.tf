@@ -78,14 +78,12 @@ resource "azurerm_lb_backend_address_pool" "elbbackend" {
 }
 
 resource "azurerm_lb_probe" "elbprobe" {
-  resource_group_name = azurerm_resource_group.resourcegroup.name
-  loadbalancer_id     = azurerm_lb.elb.id
-  name                = "lbprobe"
-  port                = 8008
+  loadbalancer_id = azurerm_lb.elb.id
+  name            = "lbprobe"
+  port            = 8008
 }
 
 resource "azurerm_lb_rule" "lbruletcp" {
-  resource_group_name            = azurerm_resource_group.resourcegroup.name
   loadbalancer_id                = azurerm_lb.elb.id
   name                           = "PublicLBRule-FE1-http"
   protocol                       = "Tcp"
@@ -93,12 +91,11 @@ resource "azurerm_lb_rule" "lbruletcp" {
   backend_port                   = 80
   frontend_ip_configuration_name = "${var.PREFIX}-ELB-PIP"
   probe_id                       = azurerm_lb_probe.elbprobe.id
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.elbbackend.id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.elbbackend.id]
   enable_floating_ip             = true
 }
 
 resource "azurerm_lb_rule" "lbruleudp" {
-  resource_group_name            = azurerm_resource_group.resourcegroup.name
   loadbalancer_id                = azurerm_lb.elb.id
   name                           = "PublicLBRule-FE1-udp10551"
   protocol                       = "Udp"
@@ -106,12 +103,11 @@ resource "azurerm_lb_rule" "lbruleudp" {
   backend_port                   = 10551
   frontend_ip_configuration_name = "${var.PREFIX}-ELB-PIP"
   probe_id                       = azurerm_lb_probe.elbprobe.id
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.elbbackend.id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.elbbackend.id]
   enable_floating_ip             = true
 }
 
 resource "azurerm_lb_rule" "lbruleike" {
-  resource_group_name            = azurerm_resource_group.resourcegroup.name
   loadbalancer_id                = azurerm_lb.elb.id
   name                           = "PublicLBRule-FE1-ike-udp-500"
   protocol                       = "Udp"
@@ -119,12 +115,11 @@ resource "azurerm_lb_rule" "lbruleike" {
   backend_port                   = 500
   frontend_ip_configuration_name = "${var.PREFIX}-ELB-PIP"
   probe_id                       = azurerm_lb_probe.elbprobe.id
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.elbbackend.id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.elbbackend.id]
   enable_floating_ip             = false
 }
 
 resource "azurerm_lb_rule" "lbruleipsec" {
-  resource_group_name            = azurerm_resource_group.resourcegroup.name
   loadbalancer_id                = azurerm_lb.elb.id
   name                           = "PublicLBRule-FE1-ipsec-udp-4500"
   protocol                       = "Udp"
@@ -132,7 +127,7 @@ resource "azurerm_lb_rule" "lbruleipsec" {
   backend_port                   = 4500
   frontend_ip_configuration_name = "${var.PREFIX}-ELB-PIP"
   probe_id                       = azurerm_lb_probe.elbprobe.id
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.elbbackend.id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.elbbackend.id]
   enable_floating_ip             = false
 }
 
@@ -156,14 +151,12 @@ resource "azurerm_lb_backend_address_pool" "ilbbackend" {
 }
 
 resource "azurerm_lb_probe" "ilbprobe" {
-  resource_group_name = azurerm_resource_group.resourcegroup.name
-  loadbalancer_id     = azurerm_lb.ilb.id
-  name                = "lbprobe"
-  port                = 8008
+  loadbalancer_id = azurerm_lb.ilb.id
+  name            = "lbprobe"
+  port            = 8008
 }
 
 resource "azurerm_lb_rule" "lb_haports_rule" {
-  resource_group_name            = azurerm_resource_group.resourcegroup.name
   loadbalancer_id                = azurerm_lb.ilb.id
   name                           = "lb_haports_rule"
   protocol                       = "All"
@@ -171,7 +164,7 @@ resource "azurerm_lb_rule" "lb_haports_rule" {
   backend_port                   = 0
   frontend_ip_configuration_name = "${var.PREFIX}-ILB-PIP"
   probe_id                       = azurerm_lb_probe.ilbprobe.id
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.ilbbackend.id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.ilbbackend.id]
 }
 
 resource "azurerm_network_interface" "fgtaifcext" {
@@ -184,7 +177,7 @@ resource "azurerm_network_interface" "fgtaifcext" {
   ip_configuration {
     name                          = "interface1"
     subnet_id                     = azurerm_subnet.subnet1.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = var.fgt_ipaddress_a["1"]
   }
 }
@@ -210,7 +203,7 @@ resource "azurerm_network_interface" "fgtaifcint" {
   ip_configuration {
     name                          = "interface1"
     subnet_id                     = azurerm_subnet.subnet2.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = var.fgt_ipaddress_a["2"]
   }
 }
@@ -236,7 +229,7 @@ resource "azurerm_network_interface" "fgtaifchasync" {
   ip_configuration {
     name                          = "interface1"
     subnet_id                     = azurerm_subnet.subnet3.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = var.fgt_ipaddress_a["3"]
   }
 }
@@ -265,7 +258,7 @@ resource "azurerm_network_interface" "fgtaifcmgmt" {
   ip_configuration {
     name                          = "interface1"
     subnet_id                     = azurerm_subnet.subnet4.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = var.fgt_ipaddress_a["4"]
     public_ip_address_id          = azurerm_public_ip.fgtamgmtpip.id
   }
@@ -337,7 +330,7 @@ data "template_file" "fgt_a_custom_data" {
   vars = {
     fgt_vm_name         = "${var.PREFIX}-A-VM-FGT"
     fgt_license_file    = var.FGT_BYOL_LICENSE_FILE_A
-    fgt_license_flexvm  = var.FGT_BYOL_FLEXVM_LICENSE_FILE_A
+    fgt_license_fortiflex  = var.FGT_BYOL_FORTIFLEX_LICENSE_TOKEN_A
     fgt_username        = var.USERNAME
     fgt_ssh_public_key  = var.FGT_SSH_PUBLIC_KEY_FILE
     fgt_external_ipaddr = var.fgt_ipaddress_a["1"]
@@ -369,7 +362,7 @@ resource "azurerm_network_interface" "fgtbifcext" {
   ip_configuration {
     name                          = "interface1"
     subnet_id                     = azurerm_subnet.subnet1.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = var.fgt_ipaddress_b["1"]
   }
 }
@@ -395,7 +388,7 @@ resource "azurerm_network_interface" "fgtbifcint" {
   ip_configuration {
     name                          = "interface1"
     subnet_id                     = azurerm_subnet.subnet2.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = var.fgt_ipaddress_b["2"]
   }
 }
@@ -421,7 +414,7 @@ resource "azurerm_network_interface" "fgtbifchasync" {
   ip_configuration {
     name                          = "interface1"
     subnet_id                     = azurerm_subnet.subnet3.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = var.fgt_ipaddress_b["3"]
   }
 }
@@ -450,7 +443,7 @@ resource "azurerm_network_interface" "fgtbifcmgmt" {
   ip_configuration {
     name                          = "interface1"
     subnet_id                     = azurerm_subnet.subnet4.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = var.fgt_ipaddress_b["4"]
     public_ip_address_id          = azurerm_public_ip.fgtbmgmtpip.id
   }
@@ -522,7 +515,7 @@ data "template_file" "fgt_b_custom_data" {
   vars = {
     fgt_vm_name         = "${var.PREFIX}-B-VM-FGT"
     fgt_license_file    = var.FGT_BYOL_LICENSE_FILE_B
-    fgt_license_flexvm  = var.FGT_BYOL_FLEXVM_LICENSE_FILE_B
+    fgt_license_fortiflex  = var.FGT_BYOL_FORTIFLEX_LICENSE_TOKEN_B
     fgt_username        = var.USERNAME
     fgt_ssh_public_key  = var.FGT_SSH_PUBLIC_KEY_FILE
     fgt_external_ipaddr = var.fgt_ipaddress_b["1"]

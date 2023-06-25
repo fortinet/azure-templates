@@ -48,6 +48,9 @@ The ARM template deploys different resources and it is required to have the acce
   - PAYG
 `az vm image accept-terms --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm_payg_2020`
 
+### Change default MTU
+The FortiGate VM is going to receive VXLAN encapsulated packets. The inner packets can use the Azure default maximum transmission unit (MTU) (~1500bytes). As a result, the entire encapsulated packets may exceed the MTU of the FortiGate VM thus causing packet drops. Changing default MTU on the NVA VM prevents such packet drops. The additional bytes needed are the size of encapsulated headers, including an Ethernet header, an IP header, a UDP header, and a VXLAN header (RFC7348). To be specific, the additional size will be 50 bytes for regular IPv4 and 70 bytes for regular IPv6. So, the MTU of NVA needs to be at least 1570 to support both IPv4 and IPv6. FortiGate VM allows changing the MTU size to 1570. The template has functionality to update the MTU a required.
+
 ## FortiGate configuration
 
 The FortiGate VMs need a specific configuration to match the deployed environment. The basic configuration is already setup through the UserData portion of the ARM template.  This includes VXLAN tunnels from each FortiGate to the Gateway Load Balancer.  These provide the external and internal interfaces which are configured as a virtual wire pair. All communication between the Gateway Load Balancer and FortiGate occur at layer 2 within these tunnels.  The following shows the basic configuration which is already included in the template. Notice that the policy allows all traffic, but does enable IPS and logging. This can be modified and restricted as necessary. The policy here is only an initial example which does allow all traffic to flow.
@@ -168,6 +171,7 @@ The producer environment only sees public IPs and doesn't require specific routi
 
 ## Links and documentation
 
+- [Fortinet Community blog](https://community.fortinet.com/t5/Blogs/Deploy-FortiGate-VMs-Seamlessly-with-Azure-Gateway-Load-Balancer/ba-p/238441)
 - [Azure Gateway Load Balancer](https://docs.microsoft.com/en-us/azure/load-balancer/gateway-overview)
 - [Azure Load Balancer SKUs](https://docs.microsoft.com/en-gb/azure/load-balancer/skus)
 - [Azure Load Balancer outbound connectivity](https://docs.microsoft.com/en-gb/azure/load-balancer/load-balancer-outbound-connections)
@@ -180,4 +184,4 @@ For direct issues, please refer to the [Issues](https://github.com/fortinet/azur
 
 ## License
 
-[License](LICENSE) © Fortinet Technologies. All rights reserved.
+[License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.

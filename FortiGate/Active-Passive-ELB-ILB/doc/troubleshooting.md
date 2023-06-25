@@ -2,10 +2,11 @@
 
 There are different components in the whole delivery chain
 
-1. Azure Load Balancer
-2. Network Security Groups
-3. Standard Public IP
-4. FortiGate
+1. [Azure Load Balancer](#azure-load-balancer)
+2. [Network Security Groups](#network-security-groups-nsg)
+3. [Standard Public IP](#standard-public-ip)
+4. [FortiGate](#fortigate)
+5. [IPSEC Troubleshooting](../../Documentation/faq-ipsec-connectivity.md#troubleshooting)
 
 ## Azure Load Balancer
 
@@ -114,4 +115,4 @@ Azure CLI NIC information
 # az network nic show -g <Resource group name> -n <NIC name>
 ```
 
-- Fabric connector: This connector enables integration with the Azure platform. More troubleshooting can be found [here](https://docs.fortinet.com/vm/azure/fortigate/7.0/azure-administration-guide/7.0.0/985498/troubleshooting-azure-fabric-connector)
+- Fabric connector: This connector enables integration with the Azure platform. More troubleshooting can be found [here](https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/985498/troubleshooting-azure-sdn-connector)

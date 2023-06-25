@@ -21,7 +21,7 @@ VMs running in Microsoft Azure using Availability Zones have a better SLA provid
 
 A cluster of FortiGate VMs will have a cross region/parallel SLA of 99,999999%. More information about the uptime of the Azure datacenter can be found on [this blog post](https://kvaes.wordpress.com/2020/02/16/is-azure-a-tier-3-datacenter-and-what-about-service-levels-in-a-broader-sense/). FortiGate A will be deployed in Zone 1. FortiGate B will deployed in Zone 2. The template can off course be changed to use other zones.
 
-![active/active design](images/fgt-ap.png)
+![active/active design](../../../Active-Passive-ELB-ILB/images/fgt-ap-az.png)
 
 This Terraform template can also be used to extend or customized based on your requirements. Additional subnets besides the one's mentioned above are not automatically generated. By adapting the ARM templates you can add additional subnets which preferably require their own routing tables.
 
@@ -56,4 +56,4 @@ For direct issues, please refer to the [Issues](https://github.com/fortinet/azur
 For other questions related to this project, contact [github@fortinet.com](mailto:github@fortinet.com).
 
 ## License
-[License](LICENSE) © Fortinet Technologies. All rights reserved.
+[License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.

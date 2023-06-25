@@ -126,7 +126,7 @@
             "value": "Disabled"
         },
         "location": {
-            "value": "[resourceGroup().location]"
+            "value": ""
         },
         "FortinetTags": {
             "value": {

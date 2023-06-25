@@ -128,10 +128,10 @@
     "fortiGateLicenseBYOLB": {
       "value": ""
     },
-    "fortiGateLicenseFlexVMA": {
+    "fortiGateLicenseFortiFlexA": {
       "value": ""
     },
-    "fortiGateLicenseFlexVMB": {
+    "fortiGateLicenseFortiFlexB": {
       "value": ""
     },
     "location": {

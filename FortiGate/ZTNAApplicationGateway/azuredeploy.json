@@ -41,7 +41,41 @@
       "type": "string",
       "defaultValue": "7.2.4",
       "allowedValues": [
-        "7.2.4"
+        "6.2.0",
+        "6.2.2",
+        "6.2.4",
+        "6.2.5",
+        "6.4.0",
+        "6.4.10",
+        "6.4.11",
+        "6.4.12",
+        "6.4.2",
+        "6.4.3",
+        "6.4.5",
+        "6.4.6",
+        "6.4.7",
+        "6.4.8",
+        "6.4.9",
+        "7.0.0",
+        "7.0.1",
+        "7.0.10",
+        "7.0.11",
+        "7.0.12",
+        "7.0.2",
+        "7.0.3",
+        "7.0.4",
+        "7.0.5",
+        "7.0.6",
+        "7.0.8",
+        "7.0.9",
+        "7.2.0",
+        "7.2.1",
+        "7.2.2",
+        "7.2.3",
+        "7.2.4",
+        "7.2.5",
+        "7.4.0",
+        "latest"
       ],
       "metadata": {
         "description": "Select the image version"
@@ -302,11 +336,11 @@
         "description": "FortiGate BYOL license content"
       }
     },
-    "fortiGateLicenseFlexVM": {
+    "fortiGateLicenseFortiFlex": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "FortiGate BYOL Flex-VM license token"
+        "description": "FortiGate BYOL FortiFlex license token"
       }
     },
     "fortiGateAdminPort": {
@@ -385,7 +419,7 @@
     "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('fortiGateNamePrefix'),'-VNET'),parameters('vnetName'))]",
     "vnetResourceGroup": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceGroup().name,parameters('vnetResourceGroup'))]",
     "customDataSystemGlobal": "[concat('config system global\nset admin-sport ', parameters('fortiGateAdminPort'), '\nend\n')]",
-    "customDataDashboard": "config system admin\n edit admin\n config gui-dashboard\n edit 0\n set name \"FortiView ZTNA Servers\"\n set vdom root\n set layout-type standalone\n set csf disable\n config widget\n edit 1\n set type fortiview\n set width 1\n set height 1\n set csf-device all\n set fortiview-type ztnaServer\n set fortiview-sort-by bytes\n set fortiview-timeframe 5min\n set fortiview-visualization table\n next\n end\n next\n end\n next\n end\n config system settings\n set gui-implicit-policy disable\n set gui-dos-policy disable\n set gui-dynamic-routing disable\n set gui-threat-weight disable\n set gui-file-filter disable\n set gui-application-control disable\n set gui-endpoint-control disable\n set gui-vpn disable\n set gui-wireless-controller disable\n set gui-traffic-shaping disable\n set gui-webfilter disable\n set gui-dnsfilter disable\n set allow-subnet-overlap enable\n end\n", 
+    "customDataDashboard": "config system admin\n edit admin\n config gui-dashboard\n edit 0\n set name \"FortiView ZTNA Servers\"\n set vdom root\n set layout-type standalone\n set csf disable\n config widget\n edit 1\n set type fortiview\n set width 1\n set height 1\n set csf-device all\n set fortiview-type ztnaServer\n set fortiview-sort-by bytes\n set fortiview-timeframe 5min\n set fortiview-visualization table\n next\n end\n next\n end\n next\n end\n config system settings\n set gui-implicit-policy disable\n set gui-dos-policy disable\n set gui-dynamic-routing disable\n set gui-threat-weight disable\n set gui-file-filter disable\n set gui-application-control disable\n set gui-endpoint-control disable\n set gui-vpn disable\n set gui-wireless-controller disable\n set gui-traffic-shaping disable\n set gui-webfilter disable\n set gui-dnsfilter disable\n set allow-subnet-overlap enable\n end\n",
     "customDataFirewallAddress": "[concat('config firewall address\nedit webserver1\nset subnet ', parameters('backendWebServer'), ' 255.255.255.255\nnext\nend\n')]",
     "customDataFirewallAddressGroup": "[concat('config firewall addrgrp\nedit \"WebServer\"\nset member \"webserver1\"\nnext\nend\n')]",
     "customDataUserLocal": "[concat('config user local\nedit ', parameters('ztnaUsername'), '\nset type password\nset passwd ', parameters('ztnaPassword'), '\nnext\nend\n')]",
@@ -454,38 +488,102 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "adminUsername": { "value": "[parameters('adminUsername')]" },
-          "adminPassword": { "value": "[parameters('adminPassword')]" },
-          "fortiGateNamePrefix": { "value": "[concat(parameters('fortiGateNamePrefix'))]" },
-          "fortiGateName": { "value": "[concat(parameters('fortiGateName'))]" },
-          "fortiGateImageSKU": { "value": "[parameters('fortiGateImageSKU')]" },
-          "fortiGateImageVersion": { "value": "[parameters('fortiGateImageVersion')]" },
-          "fortiGateAdditionalCustomData": { "value": "[variables('customDataCombined')]" },
-          "instanceType": { "value": "[parameters('instanceType')]" },
-          "acceleratedNetworking": { "value": "[parameters('acceleratedNetworking')]" },
-          "publicIp1NewOrExisting": { "value": "[parameters('publicIp1NewOrExisting')]" },
-          "publicIp1Name": { "value": "[parameters('publicIp1Name')]" },
-          "publicIp1ResourceGroup": { "value": "[parameters('publicIp1ResourceGroup')]" },
-          "publicIp1AddressType": { "value": "[parameters('publicIp1AddressType')]" },
-          "publicIp1SKU": { "value": "[parameters('publicIp1SKU')]" },
-          "vnetNewOrExisting": { "value": "existing" },
-          "vnetName": { "value": "[variables('vnetName')]" },
-          "vnetResourceGroup": { "value": "[variables('vnetResourceGroup')]" },
-          "vnetAddressPrefix": { "value": "[parameters('vnetAddressPrefix')]" },
-          "subnet1Name": { "value": "[parameters('subnet1Name')]" },
-          "subnet1Prefix": { "value": "[parameters('subnet1Prefix')]" },
-          "subnet1StartAddress": { "value": "[parameters('subnet1StartAddress')]" },
-          "subnet2Name": { "value": "[parameters('subnet2Name')]" },
-          "subnet2Prefix": { "value": "[parameters('subnet2Prefix')]" },
-          "subnet2StartAddress": { "value": "[parameters('subnet2StartAddress')]" },
-          "serialConsole": { "value": "[parameters('serialConsole')]" },
-          "fortiManager": { "value": "[parameters('fortiManager')]" },
-          "fortiManagerIP": { "value": "[parameters('fortiManagerIP')]" },
-          "fortiManagerSerial": { "value": "[parameters('fortiManagerSerial')]" },
-          "fortiGateLicenseBYOL": { "value": "[parameters('fortiGateLicenseBYOL')]" },
-          "fortiGateLicenseFlexVM": { "value": "[parameters('fortiGateLicenseFlexVM')]" },
-          "location": { "value": "[parameters('location')]" },
-          "fortinetTags": { "value": "[parameters('fortinetTags')]" }
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "fortiGateNamePrefix": {
+            "value": "[concat(parameters('fortiGateNamePrefix'))]"
+          },
+          "fortiGateName": {
+            "value": "[concat(parameters('fortiGateName'))]"
+          },
+          "fortiGateImageSKU": {
+            "value": "[parameters('fortiGateImageSKU')]"
+          },
+          "fortiGateImageVersion": {
+            "value": "[parameters('fortiGateImageVersion')]"
+          },
+          "fortiGateAdditionalCustomData": {
+            "value": "[variables('customDataCombined')]"
+          },
+          "instanceType": {
+            "value": "[parameters('instanceType')]"
+          },
+          "acceleratedNetworking": {
+            "value": "[parameters('acceleratedNetworking')]"
+          },
+          "publicIp1NewOrExisting": {
+            "value": "[parameters('publicIp1NewOrExisting')]"
+          },
+          "publicIp1Name": {
+            "value": "[parameters('publicIp1Name')]"
+          },
+          "publicIp1ResourceGroup": {
+            "value": "[parameters('publicIp1ResourceGroup')]"
+          },
+          "publicIp1AddressType": {
+            "value": "[parameters('publicIp1AddressType')]"
+          },
+          "publicIp1SKU": {
+            "value": "[parameters('publicIp1SKU')]"
+          },
+          "vnetNewOrExisting": {
+            "value": "existing"
+          },
+          "vnetName": {
+            "value": "[variables('vnetName')]"
+          },
+          "vnetResourceGroup": {
+            "value": "[variables('vnetResourceGroup')]"
+          },
+          "vnetAddressPrefix": {
+            "value": "[parameters('vnetAddressPrefix')]"
+          },
+          "subnet1Name": {
+            "value": "[parameters('subnet1Name')]"
+          },
+          "subnet1Prefix": {
+            "value": "[parameters('subnet1Prefix')]"
+          },
+          "subnet1StartAddress": {
+            "value": "[parameters('subnet1StartAddress')]"
+          },
+          "subnet2Name": {
+            "value": "[parameters('subnet2Name')]"
+          },
+          "subnet2Prefix": {
+            "value": "[parameters('subnet2Prefix')]"
+          },
+          "subnet2StartAddress": {
+            "value": "[parameters('subnet2StartAddress')]"
+          },
+          "serialConsole": {
+            "value": "[parameters('serialConsole')]"
+          },
+          "fortiManager": {
+            "value": "[parameters('fortiManager')]"
+          },
+          "fortiManagerIP": {
+            "value": "[parameters('fortiManagerIP')]"
+          },
+          "fortiManagerSerial": {
+            "value": "[parameters('fortiManagerSerial')]"
+          },
+          "fortiGateLicenseBYOL": {
+            "value": "[parameters('fortiGateLicenseBYOL')]"
+          },
+          "fortiGateLicenseFortiFlex": {
+            "value": "[parameters('fortiGateLicenseFortiFlex')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "fortinetTags": {
+            "value": "[parameters('fortinetTags')]"
+          }
         }
       }
     }

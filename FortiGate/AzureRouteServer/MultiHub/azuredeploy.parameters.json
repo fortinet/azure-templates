@@ -204,7 +204,7 @@
             "value": ""
         },
         "hubALocation": {
-            "value": "[resourceGroup().location]"
+            "value": ""
         },
         "hubBLocation": {
             "value": ""

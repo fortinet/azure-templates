@@ -1,0 +1,3 @@
+# This is a place holder file to add your specific FortiGate base configuration
+# Using the deployment script this config will be added to the baseconfig file from the github package
+# https://github.com/fortinet/fortigate-autoscale/tree/master/azure_template_deployment/assets/configset

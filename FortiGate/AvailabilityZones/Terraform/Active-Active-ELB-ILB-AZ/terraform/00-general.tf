@@ -25,8 +25,8 @@ variable "PASSWORD" {
 ##############################################################################################################
 
 variable "FGT_IMAGE_SKU" {
-  description = "Azure Marketplace default image sku hourly (PAYG 'fortinet_fg-vm_payg_20190624') or byol (Bring your own license 'fortinet_fg-vm')"
-  default     = "fortinet_fg-vm_payg_20190624"
+  description = "Azure Marketplace default image sku hourly (PAYG 'fortinet_fg-vm_payg_2022') or byol (Bring your own license 'fortinet_fg-vm')"
+  default     = "fortinet_fg-vm_payg_2022"
 }
 
 variable "FGT_VERSION" {
@@ -147,11 +147,11 @@ variable "fgt_vmsize" {
 }
 
 variable "fortinet_tags" {
-    type = map
-    default = {
-        publisher: "Fortinet",
-        template: "Active-Active-ELB-ILB",
-        provider: "7EB3B02F-50E5-4A3E-8CB8-2E129258AA"
+  type = map(any)
+  default = {
+    publisher : "Fortinet",
+    template : "Active-Active-ELB-ILB",
+    provider : "7EB3B02F-50E5-4A3E-8CB8-2E129258AA"
   }
 }
 

@@ -92,7 +92,7 @@ Describe 'FGT A/P SDN' {
         It 'Contains the expected parameters' {
             $expectedTemplateParameters = 'adminPassword',
                                           'adminUsername',
-                                          'fortiGateAditionalCustomData',
+                                          'fortiGateAdditionalCustomData',
                                           'fortiGateImageSKU',
                                           'fortiGateImageVersion',
                                           'fortiGateNamePrefix',

@@ -48,4 +48,4 @@ After deployment you will be shown the IP address of all deployed components, th
 This architecture uses the Active/Passive building block. More information about configuration can be found [here](../../Active-Passive-ELB-ILB/README.md).
 
 ## License
-[License](LICENSE) © Fortinet Technologies. All rights reserved.
+[License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.

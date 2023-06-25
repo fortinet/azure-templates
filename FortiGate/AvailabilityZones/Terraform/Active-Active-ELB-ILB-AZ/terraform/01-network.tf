@@ -41,7 +41,7 @@ resource "azurerm_subnet" "subnet4" {
   name                 = "${var.PREFIX}-SUBNET-PROTECTED-B"
   resource_group_name  = azurerm_resource_group.resourcegroup.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes       = [var.subnet["4"]]
+  address_prefixes     = [var.subnet["4"]]
 }
 
 resource "azurerm_subnet_route_table_association" "subnet5rt" {

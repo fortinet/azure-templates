@@ -89,7 +89,7 @@
         "fortiGateLicenseBYOL": {
             "value": ""
         },
-        "fortiGateLicenseFlexVM": {
+        "fortiGateLicenseFortiFlex": {
             "value": ""
         },
         "fortiGateAdminPort": {

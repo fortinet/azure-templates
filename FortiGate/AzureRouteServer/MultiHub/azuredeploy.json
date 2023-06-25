@@ -32,7 +32,7 @@
       "defaultValue": "fortinet_fg-vm",
       "allowedValues": [
         "fortinet_fg-vm",
-        "fortinet_fg-vm_payg_20190624"
+        "fortinet_fg-vm_payg_2022"
       ],
       "metadata": {
         "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)"
@@ -57,8 +57,6 @@
         "7.0.1",
         "7.0.2",
         "7.0.3",
-        "7.0.4",
-        "7.0.5",
         "latest"
       ],
       "metadata": {
@@ -538,26 +536,28 @@
   },
   "variables": {
 
-    "hubAVnetName": "[if(equals(parameters('hubAVnetName'),''),concat(parameters('fortiGateNamePrefix'),'-HUBA-VNET'),parameters('hubAVnetName'))]",
+    "hubAVnetName": "[if(equals(parameters('hubAVnetName'),''),concat(parameters('fortiGateNamePrefix'),'-HubA-VNET'),parameters('hubAVnetName'))]",
     "hubAVnetId": "[if(equals(parameters('hubAVnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('hubAVnetName')),resourceId(parameters('hubAVnetResourceGroup'),'Microsoft.Network/virtualNetworks', variables('hubAVnetName')))]",
-    "hubAVnetNameSpoke1": "[if(equals(parameters('hubAVnetNameSpoke1'),''),concat(parameters('fortiGateNamePrefix'),'-HUBA-VNET-SPOKE1'),parameters('hubAVnetNameSpoke1'))]",
+    "hubAVnetNameSpoke1": "[if(equals(parameters('hubAVnetNameSpoke1'),''),concat(parameters('fortiGateNamePrefix'),'-HubA-VNET-SPOKE1'),parameters('hubAVnetNameSpoke1'))]",
     "hubAVnetIdSpoke1": "[if(equals(parameters('hubAVnetNewOrExistingSpoke1'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('hubAVnetNameSpoke1')),resourceId(parameters('hubAVnetResourceGroupSpoke1'),'Microsoft.Network/virtualNetworks', variables('hubAVnetNameSpoke1')))]",
     "hubAVnetResourceGroup": "[if(equals(parameters('hubAVnetNewOrExisting'),'new'),resourceGroup().name, parameters('hubAVnetResourceGroup'))]",
-    "hubARouteTableFGTName": "[concat(parameters('fortiGateNamePrefix'),'-HUBA-FGT-RT')]",
+    "hubARouteTableFGTName": "[concat(parameters('fortiGateNamePrefix'),'-HubA-FGT-RT')]",
     "hubARouteTableFGTId": "[resourceId('Microsoft.Network/routeTables',variables('hubARouteTableFGTName'))]",
 
     "hubAtoSpoke1PeeringName": "[concat(variables('hubAVnetName'), 'To', variables('hubAVnetNameSpoke1'))]",
+    "hubAtohubBPeeringName": "[concat(variables('hubAVnetName'), 'To', variables('hubBVnetName'))]",
     "spoke1toHubAPeeringName": "[concat(variables('hubAVnetNameSpoke1'), 'To', variables('hubAVnetName'))]",
 
-    "hubBVnetName": "[if(equals(parameters('hubBVnetName'),''),concat(parameters('fortiGateNamePrefix'),'-HUBB-VNET'),parameters('hubBVnetName'))]",
+    "hubBVnetName": "[if(equals(parameters('hubBVnetName'),''),concat(parameters('fortiGateNamePrefix'),'-HubB-VNET'),parameters('hubBVnetName'))]",
     "hubBVnetId": "[if(equals(parameters('hubBVnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('hubBVnetName')),resourceId(parameters('hubBVnetResourceGroup'),'Microsoft.Network/virtualNetworks', variables('hubBVnetName')))]",
-    "hubBVnetNameSpoke1": "[if(equals(parameters('hubBVnetNameSpoke1'),''),concat(parameters('fortiGateNamePrefix'),'-HUBB-VNET-SPOKE1'),parameters('hubBVnetNameSpoke1'))]",
+    "hubBVnetNameSpoke1": "[if(equals(parameters('hubBVnetNameSpoke1'),''),concat(parameters('fortiGateNamePrefix'),'-HubB-VNET-SPOKE1'),parameters('hubBVnetNameSpoke1'))]",
     "hubBVnetIdSpoke1": "[if(equals(parameters('hubBVnetNewOrExistingSpoke1'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('hubBVnetNameSpoke1')),resourceId(parameters('hubBVnetResourceGroupSpoke1'),'Microsoft.Network/virtualNetworks', variables('hubBVnetNameSpoke1')))]",
     "hubBVnetResourceGroup": "[if(equals(parameters('hubBVnetNewOrExisting'),'new'),resourceGroup().name, parameters('hubBVnetResourceGroup'))]",
-    "hubBRouteTableFGTName": "[concat(parameters('fortiGateNamePrefix'),'-HUBB-FGT-RT')]",
+    "hubBRouteTableFGTName": "[concat(parameters('fortiGateNamePrefix'),'-HubB-FGT-RT')]",
     "hubBRouteTableFGTId": "[resourceId('Microsot.Network/routeTables',variables('hubBRouteTableFGTName'))]",
 
     "hubBtoSpoke1PeeringName": "[concat(variables('hubBVnetName'), 'To', variables('hubBVnetNameSpoke1'))]",
+    "hubBtohubAPeeringName": "[concat(variables('hubBVnetName'), 'To', variables('hubAVnetName'))]",
     "spoke1toHubBPeeringName": "[concat(variables('hubBVnetNameSpoke1'), 'To', variables('hubBVnetName'))]",
 
     "hubASn1IPArray": "[split(parameters('hubASubnet1Prefix'),'.')]",
@@ -587,10 +587,28 @@
     "overlaySubnetIPhubBfgA": "[concat(variables('overlaySubnetIPArray0'),'.',variables('overlaySubnetIPArray1'),'.',variables('overlaySubnetIPArray2'),'.',add(variables('overlaySubnetIPArray3'),3))]",
     "overlaySubnetIPhubBfgB": "[concat(variables('overlaySubnetIPArray0'),'.',variables('overlaySubnetIPArray1'),'.',variables('overlaySubnetIPArray2'),'.',add(variables('overlaySubnetIPArray3'),4))]",
 
-    "hubAFGTACustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubBSn1IPfga'), ' ', variables('hubBSn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubAfgA'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n config neighbor\n edit', variables('overlaySubnetIPhubBfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as ', parameters('hubBFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubBfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as', parameters('hubBFortiGateASN'), '\n next\n end\n end\n config firewall policy\n edit 1\n set name ', variables('hubAVnetName'), '-2-', variables('hubBVnetName'), '\n set srcintf port2\n set dstintf vx1\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n edit 2\n set name ', variables('hubBVnetName'), '-2-', variables('hubAVnetName'), '\n set srcintf vx1\n set dstintf port2\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n end')]",
-    "hubAFGTBCustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubBSn1IPfga'), ' ', variables('hubBSn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubAfgB'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n config neighbor\n edit', variables('overlaySubnetIPhubBfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as ', parameters('hubBFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubBfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as', parameters('hubBFortiGateASN'), '\n next\n end\n end')]",
-    "hubBFGTACustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubASn1IPfga'), ' ', variables('hubASn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubBfgA'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n config neighbor\n edit', variables('overlaySubnetIPhubAfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as ', parameters('hubAFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubAfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as', parameters('hubAFortiGateASN'), '\n next\n end\n end\n config firewall policy\n edit 1\n set name ', variables('hubAVnetName'), '-2-', variables('hubBVnetName'), '\n set srcintf vx1\n set dstintf port2\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n edit 2\n set name ', variables('hubBVnetName'), '-2-', variables('hubAVnetName'), '\n set srcintf port2\n set dstintf vx1\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n end')]",
-    "hubBFGTBCustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubASn1IPfga'), ' ', variables('hubASn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubBfgA'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n config neighbor\n edit', variables('overlaySubnetIPhubAfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as ', parameters('hubAFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubAfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set remote-as', parameters('hubAFortiGateASN'), '\n next\n end\n end')]",
+    "hubASubnet5IPStartAddress": "[split(parameters('hubASubnet5StartAddress'),'.')]",
+    "sn5IPArrayA3": "[string(int(variables('hubASubnet5IPStartAddress')[3]))]",
+    "sn5IPArrayA2": "[string(int(variables('hubASubnet5IPStartAddress')[2]))]",
+    "sn5IPArrayA1": "[string(int(variables('hubASubnet5IPStartAddress')[1]))]",
+    "sn5IPArrayA0": "[string(int(variables('hubASubnet5IPStartAddress')[0]))]",
+    "sn5IPbgppeerA": "[concat(variables('sn5IPArrayA0'),'.',variables('sn5IPArrayA1'),'.',variables('sn5IPArrayA2'),'.',int(variables('sn5IPArrayA3')))]",
+    "sn5IPbgppeerA2": "[concat(variables('sn5IPArrayA0'),'.',variables('sn5IPArrayA1'),'.',variables('sn5IPArrayA2'),'.',add(int(variables('sn5IPArrayA3')),1))]",
+
+    "hubBSubnet5IPStartAddress": "[split(parameters('hubBSubnet5StartAddress'),'.')]",
+    "sn5IPArrayB3": "[string(int(variables('hubBSubnet5IPStartAddress')[3]))]",
+    "sn5IPArrayB2": "[string(int(variables('hubBSubnet5IPStartAddress')[2]))]",
+    "sn5IPArrayB1": "[string(int(variables('hubBSubnet5IPStartAddress')[1]))]",
+    "sn5IPArrayB0": "[string(int(variables('hubBSubnet5IPStartAddress')[0]))]",
+    "sn5IPbgppeerB": "[concat(variables('sn5IPArrayB0'),'.',variables('sn5IPArrayB1'),'.',variables('sn5IPArrayB2'),'.',int(variables('sn5IPArrayB3')))]",
+    "sn5IPbgppeerB2": "[concat(variables('sn5IPArrayB0'),'.',variables('sn5IPArrayB1'),'.',variables('sn5IPArrayB2'),'.',add(int(variables('sn5IPArrayB3')),1))]",
+
+    "routeServerBGPasn": "65515",
+
+    "hubAFGTACustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubBSn1IPfga'), ' ', variables('hubBSn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubAfgA'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router aspath-list\n edit ASRpath\n config rule\n edit 1\n set action permit\n set regexp _65515_\n next\n end\n next\n edit anypath\n config rule\n edit 1\n set action permit\n set regexp .* \n next\n end\n next\n end\n config router route-map\n edit changepath\n config rule\n edit 1\n set match-as-path ASRpath\n set set-aspath-action replace\n set set-aspath 10000\n next\n edit 2\n set match-as-path anypath\n next\n end\n next\n end\n config router bgp\n set as ', parameters('hubAFortiGateASN'), '\n set keepalive-timer 1\n set holdtime-timer 3\n set ebgp-multipath enable\n set graceful-restart enable\n config neighbor\n edit ', variables('sn5IPbgppeerA'), '\n set ebgp-enforce-multihop enable\n set next-hop-self enable\n set soft-reconfiguration enable\n set as-override enable\n set interface port2\n set remote-as ' , variables('routeServerBGPasn'), '\n set route-map-in changepath\n next\n edit ', variables('sn5IPbgppeerA2'), '\n set ebgp-enforce-multihop enable\n set next-hop-self enable\n set soft-reconfiguration enable\n set as-override enable\n set interface port2\n set remote-as ', variables('routeServerBGPasn'), '\n set route-map-in changepath\n next\n edit ', variables('overlaySubnetIPhubBfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set next-hop-self enable\n set interface vx1\n set remote-as ', parameters('hubBFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubBfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set next-hop-self enable\n set interface vx1\n set remote-as ', parameters('hubBFortiGateASN'), '\n next\n end\n end\n config firewall policy\n edit 1\n set name ', variables('hubAVnetName'), '-2-', variables('hubBVnetName'), '\n set srcintf port2\n set dstintf vx1\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n edit 2\n set name ', variables('hubBVnetName'), '-2-', variables('hubAVnetName'), '\n set srcintf vx1\n set dstintf port2\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n end')]",
+    "hubAFGTBCustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubBSn1IPfga'), ' ', variables('hubBSn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubAfgB'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router aspath-list\n edit ASRpath\n config rule\n edit 1\n set action permit\n set regexp _65515_\n next\n end\n next\n edit anypath\n config rule\n edit 1\n set action permit\n set regexp .* \n next\n end\n next\n end\n config router route-map\n edit changepath\n config rule\n edit 1\n set match-as-path ASRpath\n set set-aspath-action replace\n set set-aspath 10000\n next\n edit 2\n set match-as-path anypath\n next\n end\n next\n end\n config router bgp\n set as ', parameters('hubAFortiGateASN'), '\n set keepalive-timer 1\n set holdtime-timer 3\n set ebgp-multipath enable\n set graceful-restart enable\n config neighbor\n edit ', variables('sn5IPbgppeerA'), '\n set ebgp-enforce-multihop enable\n set next-hop-self enable\n set soft-reconfiguration enable\n set as-override enable\n set interface port2\n set remote-as ' , variables('routeServerBGPasn'), '\n set route-map-in changepath\n next\n edit ', variables('sn5IPbgppeerA2'), '\n set ebgp-enforce-multihop enable\n set next-hop-self enable\n set soft-reconfiguration enable\n set as-override enable\n set interface port2\n set remote-as ', variables('routeServerBGPasn'), '\n set route-map-in changepath\n next\n edit ', variables('overlaySubnetIPhubBfgA'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set next-hop-self enable\n set interface vx1\n set remote-as ', parameters('hubBFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubBfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set next-hop-self enable\n set interface vx1\n set remote-as ', parameters('hubBFortiGateASN'), '\n next\n end\n end\n config firewall policy\n edit 1\n set name ', variables('hubAVnetName'), '-2-', variables('hubBVnetName'), '\n set srcintf port2\n set dstintf vx1\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n edit 2\n set name ', variables('hubBVnetName'), '-2-', variables('hubAVnetName'), '\n set srcintf vx1\n set dstintf port2\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n end')]",
+    "hubBFGTACustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubASn1IPfga'), ' ', variables('hubASn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubBfgA'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n set as ', parameters('hubBFortiGateASN'), '\n set keepalive-timer 1\n set holdtime-timer 3\n set ebgp-multipath enable\n set graceful-restart enable\n config neighbor\n edit ', variables('sn5IPbgppeerB'), '\n set capability-default-originate enable\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set interface port2\n set remote-as ' , variables('routeServerBGPasn'), '\n next\n edit ', variables('sn5IPbgppeerB2'), '\n set capability-default-originate enable\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set interface port2\n set remote-as ', variables('routeServerBGPasn'), '\n next\n edit ', variables('overlaySubnetIPhubAfgA'), '\n set ebgp-enforce-multihop enable\n set next-hop-self enable\n set soft-reconfiguration enable\n set interface vx1\n set remote-as ', parameters('hubAFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubAfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set next-hop-self enable\n set interface vx1\n set remote-as ', parameters('hubAFortiGateASN'), '\n next\n end\n end\n config firewall policy\n edit 1\n set name ', variables('hubAVnetName'), '-2-', variables('hubBVnetName'), '\n set srcintf vx1\n set dstintf port2\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n edit 2\n set name ', variables('hubBVnetName'), '-2-', variables('hubAVnetName'), '\n set srcintf port2\n set dstintf vx1\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n end')]",
+    "hubBFGTBCustomData": "[concat('config system vxlan\n edit vx1\n set interface port1\n set vni 1000\n set remote-ip ', variables('hubASn1IPfga'), ' ', variables('hubASn1IPfgb'), '\n next\n end\n config system interface\n edit vx1\n set vdom root\n set ip ', variables('overlaySubnetIPhubBfgB'), '/', variables('overlaySubnetCIDRmask'), '\n set allowaccess ping\n set type vxlan\n set snmp-index 7\n set interface port1\n next\n end\n config router bgp\n set as ', parameters('hubBFortiGateASN'), '\n set keepalive-timer 1\n set holdtime-timer 3\n set ebgp-multipath enable\n set graceful-restart enable\n config neighbor\n edit ', variables('sn5IPbgppeerB'), '\n set capability-default-originate enable\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set interface port2\n set remote-as ' , variables('routeServerBGPasn'), '\n next\n edit ', variables('sn5IPbgppeerB2'), '\n set capability-default-originate enable\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set interface port2\n set remote-as ', variables('routeServerBGPasn'), '\n next\n edit ', variables('overlaySubnetIPhubAfgA'), '\n set ebgp-enforce-multihop enable\n set next-hop-self enable\n set soft-reconfiguration enable\n set interface vx1\n set remote-as ', parameters('hubAFortiGateASN'), '\n next\n edit ', variables('overlaySubnetIPhubAfgB'), '\n set ebgp-enforce-multihop enable\n set soft-reconfiguration enable\n set next-hop-self enable\n set interface vx1\n set remote-as ', parameters('hubAFortiGateASN'), '\n next\n end\n end\n config firewall policy\n edit 1\n set name ', variables('hubAVnetName'), '-2-', variables('hubBVnetName'), '\n set srcintf vx1\n set dstintf port2\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n edit 2\n set name ', variables('hubBVnetName'), '-2-', variables('hubAVnetName'), '\n set srcintf port2\n set dstintf vx1\n set srcaddr all\n set dstaddr all\n set action accept\n set schedule always\n set service ALL\n set logtraffic all\n set logtraffic-start enable\n next\n end')]",
 
     "hubADeployementName": "[concat(parameters('fortiGateNamePrefix'), '-azurerouteserver-huba-', uniquestring(resourceGroup().id))]",
     "hubBDeployementName": "[concat(parameters('fortiGateNamePrefix'), '-azurerouteserver-hubb-', uniquestring(resourceGroup().id))]",
@@ -599,7 +617,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2021-04-01",
       "name": "[concat(parameters('fortiGateNamePrefix'), '-fortinetdeployment-', uniquestring(resourceGroup().id))]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -614,7 +632,7 @@
     {
       "condition": "[equals(parameters('hubAVnetNewOrExisting'), 'new')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2020-04-01",
+      "apiVersion": "2022-05-01",
       "name": "[variables('hubAVnetName')]",
       "location": "[parameters('hubALocation')]",
       "properties": {
@@ -655,35 +673,15 @@
             }
           }
         ]
-      },
-      "resources": [
-        {
-          "condition": "[equals(parameters('hubAVnetNewOrExisting'), 'new')]",
-          "apiVersion": "2020-04-01",
-          "type": "virtualNetworkPeerings",
-          "name": "[variables('hubAtoSpoke1PeeringName')]",
-          "location": "[parameters('hubALocation')]",
-          "dependsOn": [
-            "[variables('hubAVnetName')]",
-            "[variables('hubAVnetNameSpoke1')]"
-          ],
-          "comments": "Hub to Spoke 1",
-          "properties": {
-            "allowVirtualNetworkAccess": true,
-            "allowForwardedTraffic": true,
-            "allowGatewayTransit": false,
-            "useRemoteGateways": false,
-            "remoteVirtualNetwork": {
-              "id": "[variables('hubAVnetIdSpoke1')]"
-            }
-          }
-        }
-      ]
+      }
     },
+
+
+
     {
       "condition": "[equals(parameters('hubAVnetNewOrExistingSpoke1'), 'new')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2020-04-01",
+      "apiVersion": "2022-05-01",
       "name": "[variables('hubAVnetNameSpoke1')]",
       "location": "[parameters('hubALocation')]",
       "properties": {
@@ -703,7 +701,7 @@
       },
       "resources": [
         {
-          "apiVersion": "2020-04-01",
+          "apiVersion": "2022-05-01",
           "type": "virtualNetworkPeerings",
           "name": "[variables('spoke1toHubAPeeringName')]",
           "location": "[parameters('hubALocation')]",
@@ -727,7 +725,7 @@
     {
       "condition": "[equals(parameters('hubBVnetNewOrExisting'), 'new')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2020-04-01",
+      "apiVersion": "2022-05-01",
       "name": "[variables('hubBVnetName')]",
       "location": "[parameters('hubBLocation')]",
       "properties": {
@@ -768,35 +766,13 @@
             }
           }
         ]
-      },
-      "resources": [
-        {
-          "condition": "[equals(parameters('hubBVnetNewOrExisting'), 'new')]",
-          "apiVersion": "2020-04-01",
-          "type": "virtualNetworkPeerings",
-          "name": "[variables('hubBtoSpoke1PeeringName')]",
-          "location": "[parameters('hubBLocation')]",
-          "dependsOn": [
-            "[variables('hubBVnetName')]",
-            "[variables('hubBVnetNameSpoke1')]"
-          ],
-          "comments": "Hub to Spoke 1",
-          "properties": {
-            "allowVirtualNetworkAccess": true,
-            "allowForwardedTraffic": true,
-            "allowGatewayTransit": false,
-            "useRemoteGateways": false,
-            "remoteVirtualNetwork": {
-              "id": "[variables('hubBVnetIdSpoke1')]"
-            }
-          }
-        }
-      ]
+      }
     },
+
     {
       "condition": "[equals(parameters('hubBVnetNewOrExistingSpoke1'), 'new')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2020-04-01",
+      "apiVersion": "2022-05-01",
       "name": "[variables('hubBVnetNameSpoke1')]",
       "location": "[parameters('hubBLocation')]",
       "properties": {
@@ -816,7 +792,7 @@
       },
       "resources": [
         {
-          "apiVersion": "2020-04-01",
+          "apiVersion": "2022-05-01",
           "type": "virtualNetworkPeerings",
           "name": "[variables('spoke1toHubBPeeringName')]",
           "location": "[parameters('hubBLocation')]",
@@ -839,15 +815,15 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2021-04-01",
       "name": "[variables('hubADeployementName')]",
       "dependsOn": [
-          "[variables('hubAVnetName')]"
+        "[variables('hubAVnetName')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/fortinet/azure-templates/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
+          "uri": "https://raw.githubusercontent.com/40net-cloud/fortinet-azure-solutions/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -856,8 +832,8 @@
           "fortiGateNamePrefix": { "value": "[concat(parameters('fortiGateNamePrefix'),'-HubA')]" },
           "fortiGateImageSKU": { "value": "[parameters('fortiGateImageSKU')]" },
           "fortiGateImageVersion": { "value": "[parameters('fortiGateImageVersion')]" },
-          "fortiGateAAditionalCustomData": { "value": "[variables('hubAFGTACustomData')]" },
-          "fortiGateBAditionalCustomData": { "value": "[variables('hubAFGTBCustomData')]" },
+          "fortiGateAAdditionalCustomData": { "value": "[variables('hubAFGTACustomData')]" },
+          "fortiGateBAdditionalCustomData": { "value": "[variables('hubAFGTBCustomData')]" },
           "fortiGateBGPASN": { "value": "65005" },
           "instanceType": { "value": "[parameters('instanceType')]" },
           "acceleratedNetworking": { "value": "false" },
@@ -897,15 +873,15 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2021-04-01",
       "name": "[variables('hubBDeployementName')]",
       "dependsOn": [
-          "[variables('hubBVnetName')]"
+        "[variables('hubBVnetName')]"
       ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/fortinet/azure-templates/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
+          "uri": "https://raw.githubusercontent.com/40net-cloud/fortinet-azure-solutions/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -914,9 +890,9 @@
           "fortiGateNamePrefix": { "value": "[concat(parameters('fortiGateNamePrefix'),'-HubB')]" },
           "fortiGateImageSKU": { "value": "[parameters('fortiGateImageSKU')]" },
           "fortiGateImageVersion": { "value": "[parameters('fortiGateImageVersion')]" },
-          "fortiGateAAditionalCustomData": { "value": "[variables('hubBFGTACustomData')]" },
-          "fortiGateBAditionalCustomData": { "value": "[variables('hubBFGTBCustomData')]" },
-          "fortiGateBGPASN": { "value": "65005" },
+          "fortiGateAAdditionalCustomData": { "value": "[variables('hubBFGTACustomData')]" },
+          "fortiGateBAdditionalCustomData": { "value": "[variables('hubBFGTBCustomData')]" },
+          "fortiGateBGPASN": { "value": "65006" },
           "instanceType": { "value": "[parameters('instanceType')]" },
           "acceleratedNetworking": { "value": "false" },
           "publicIpNewOrExisting": { "value": "new" },
@@ -955,10 +931,10 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2021-04-01",
       "name": "[variables('hubARTDeployementName')]",
       "dependsOn": [
-          "[resourceId('Microsoft.Resources/deployments', variables('hubADeployementName'))]"
+        "[resourceId('Microsoft.Resources/deployments', variables('hubADeployementName'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -971,7 +947,7 @@
               "apiVersion": "2019-09-01",
               "name": "[concat(variables('hubAVnetName'),'/',parameters('hubASubnet1Name'))]",
               "properties": {
-                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet1Name')), '2020-04-01').addressPrefix]",
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet1Name')), '2022-05-01').addressPrefix]",
                 "routeTable": {
                   "id": "[variables('hubARouteTableFGTId')]"
                 }
@@ -985,7 +961,7 @@
                 "[parameters('hubASubnet1Name')]"
               ],
               "properties": {
-                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet2Name')), '2020-04-01').addressPrefix]",
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet2Name')), '2022-05-01').addressPrefix]",
                 "routeTable": {
                   "id": "[variables('hubARouteTableFGTId')]"
                 }
@@ -999,7 +975,7 @@
                 "[parameters('hubASubnet2Name')]"
               ],
               "properties": {
-                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet3Name')), '2020-04-01').addressPrefix]",
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet3Name')), '2022-05-01').addressPrefix]",
                 "routeTable": {
                   "id": "[variables('hubARouteTableFGTId')]"
                 }
@@ -1013,9 +989,42 @@
                 "[parameters('hubASubnet3Name')]"
               ],
               "properties": {
-                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet4Name')), '2020-04-01').addressPrefix]",
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubAVnetName'), parameters('hubASubnet4Name')), '2022-05-01').addressPrefix]",
                 "routeTable": {
                   "id": "[variables('hubARouteTableFGTId')]"
+                }
+              }
+            },
+            {
+              "condition": "[equals(parameters('hubAVnetNewOrExisting'), 'new')]",
+              "apiVersion": "2022-05-01",
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "name": "[concat(variables('hubAVnetName'),'/',variables('hubAtoSpoke1PeeringName'))]",
+              "location": "[parameters('hubALocation')]",
+              "comments": "Hub to Spoke 1",
+              "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                  "id": "[variables('hubAVnetIdSpoke1')]"
+                }
+              }
+            },
+            {
+              "apiVersion": "2022-05-01",
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "name": "[concat(variables('hubAVnetName'),'/',variables('hubAtohubBPeeringName'))]",
+              "location": "[parameters('hubBLocation')]",
+              "comments": "HubA to HubB",
+              "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                  "id": "[variables('hubBVnetId')]"
                 }
               }
             }
@@ -1025,10 +1034,10 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2021-04-01",
       "name": "[variables('hubBRTDeployementName')]",
       "dependsOn": [
-          "[resourceId('Microsoft.Resources/deployments', variables('hubADeployementName'))]"
+        "[resourceId('Microsoft.Resources/deployments', variables('hubARTDeployementName'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -1041,7 +1050,7 @@
               "apiVersion": "2019-09-01",
               "name": "[concat(variables('hubBVnetName'),'/',parameters('hubBSubnet1Name'))]",
               "properties": {
-                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet1Name')), '2020-04-01').addressPrefix]",
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet1Name')), '2022-05-01').addressPrefix]",
                 "routeTable": {
                   "id": "[variables('hubBRouteTableFGTId')]"
                 }
@@ -1055,7 +1064,7 @@
                 "[parameters('hubBSubnet1Name')]"
               ],
               "properties": {
-                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet2Name')), '2020-04-01').addressPrefix]",
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet2Name')), '2022-05-01').addressPrefix]",
                 "routeTable": {
                   "id": "[variables('hubBRouteTableFGTId')]"
                 }
@@ -1069,7 +1078,7 @@
                 "[parameters('hubBSubnet2Name')]"
               ],
               "properties": {
-                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet3Name')), '2020-04-01').addressPrefix]",
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet3Name')), '2022-05-01').addressPrefix]",
                 "routeTable": {
                   "id": "[variables('hubBRouteTableFGTId')]"
                 }
@@ -1083,9 +1092,41 @@
                 "[parameters('hubBSubnet3Name')]"
               ],
               "properties": {
-                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet4Name')), '2020-04-01').addressPrefix]",
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', variables('hubBVnetName'), parameters('hubBSubnet4Name')), '2022-05-01').addressPrefix]",
                 "routeTable": {
                   "id": "[variables('hubBRouteTableFGTId')]"
+                }
+              }
+            },
+            {
+              "apiVersion": "2022-05-01",
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "name": "[concat(variables('hubBVnetName'),'/',variables('hubBtoSpoke1PeeringName'))]",
+              "location": "[parameters('hubBLocation')]",
+              "comments": "Hub to Spoke 1",
+              "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": true,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                  "id": "[variables('hubBVnetIdSpoke1')]"
+                }
+              }
+            },
+            {
+              "apiVersion": "2022-05-01",
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "name": "[concat(variables('hubBVnetName'),'/',variables('hubBtohubAPeeringName'))]",
+              "location": "[parameters('hubBLocation')]",
+              "comments": "HubB to HubA",
+              "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                  "id": "[variables('hubAVnetId')]"
                 }
               }
             }

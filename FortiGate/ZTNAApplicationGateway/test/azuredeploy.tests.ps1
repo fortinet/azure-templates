@@ -89,7 +89,7 @@ Describe 'FGT Single VM' {
                                           'fortiGateImageSKU',
                                           'fortiGateImageVersion',
                                           'fortiGateLicenseBYOL',
-                                          'fortiGateLicenseFlexVM',
+                                          'fortiGateLicenseFortiFlex',
                                           'fortiGateName',
                                           'fortiGateNamePrefix',
                                           'fortiManager',

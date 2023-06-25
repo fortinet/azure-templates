@@ -68,8 +68,8 @@ Describe 'FGT Single VM' {
         It 'Creates the expected Azure resources' {
             $expectedResources = 'Microsoft.Resources/deployments',
                                  'Microsoft.Compute/availabilitySets',
-                                 'Microsoft.Network/routeTables',
                                  'Microsoft.Network/virtualNetworks',
+                                 'Microsoft.Network/routeTables',
                                  'Microsoft.Network/networkSecurityGroups',
                                  'Microsoft.Network/publicIPAddresses',
                                  'Microsoft.Network/networkInterfaces',
@@ -85,12 +85,13 @@ Describe 'FGT Single VM' {
                                           'adminUsername',
                                           'availabilityOptions',
                                           'availabilityZoneNumber',
+                                          'customImageReference',
                                           'existingAvailabilitySetName',
                                           'fortiGateAdditionalCustomData',
                                           'fortiGateImageSKU',
                                           'fortiGateImageVersion',
                                           'fortiGateLicenseBYOL',
-                                          'fortiGateLicenseFlexVM',
+                                          'fortiGateLicenseFortiFlex',
                                           'fortiGateName',
                                           'fortiGateNamePrefix',
                                           'fortiManager',
@@ -149,11 +150,11 @@ Describe 'FGT Single VM' {
         BeforeAll {
             $fgt = (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName).IpAddress
             Write-Host ("FortiGate public IP: " + $fgt)
-            chmod 400 $sshkey
             $verify_commands = @'
             config system console
             set output standard
             end
+            get system status
             show system interface
             show router static
             diag debug cloudinit show
@@ -165,17 +166,20 @@ Describe 'FGT Single VM' {
             ForEach( $port in $ports ) {
                 Write-Host ("Check port: $port" )
                 $portListening = (Test-Connection -TargetName $fgt -TCPPort $port -TimeoutSeconds 100)
-                $portListening | Should -Be $true
+                $portListening | Should -BeTrue
             }
         }
-        It "FGT: Verify FortiGate A configuration" {
-            $result = $verify_commands | ssh -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
-            Write-Host (": " + $result) -Separator `n
+        It "FGT: Verify FortiGate configuration" {
+            $result = $verify_commands | ssh -v -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
+            $LASTEXITCODE | Should -Be "0"
+            Write-Host ("FGT CLI info: " + $result) -Separator `n
+            $result | Should -Not -BeLike "*Command fail*"
         }
     }
 
     Context 'Cleanup' {
         It "Cleanup of deployment" {
+            Write-Host ("ERROR: Cleanup disabled" )
             Remove-AzResourceGroup -Name $testsResourceGroupName -Force
         }
     }

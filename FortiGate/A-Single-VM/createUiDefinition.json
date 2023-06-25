@@ -105,7 +105,7 @@
         "name": "fortiGateImageVersion",
         "type": "Microsoft.Common.DropDown",
         "label": "Fortigate Image Version",
-        "defaultValue": "latest",
+        "defaultValue": "7.2.5",
         "toolTip": "Only 6.x has the A/P HA feature currently",
         "constraints": {
           "required": false,
@@ -183,6 +183,14 @@
               "value": "7.0.10"
             },
             {
+              "label": "7.0.11",
+              "value": "7.0.11"
+            },
+            {
+              "label": "7.0.12",
+              "value": "7.0.12"
+            },
+            {
               "label": "7.0.2",
               "value": "7.0.2"
             },
@@ -229,6 +237,14 @@
             {
               "label": "7.2.4",
               "value": "7.2.4"
+            },
+            {
+              "label": "7.2.5",
+              "value": "7.2.5"
+            },
+            {
+              "label": "7.4.0",
+              "value": "7.4.0"
             },
             {
               "label": "latest",
@@ -399,7 +415,37 @@
                     "Standard_D4ads_v5",
                     "Standard_D8ads_v5",
                     "Standard_D16ads_v5",
-                    "Standard_D32ads_v5"
+                    "Standard_D32ads_v5",
+                    "Standard_D2ps_v5",
+                    "Standard_D4ps_v5",
+                    "Standard_D8ps_v5",
+                    "Standard_D16ps_v5",
+                    "Standard_D32ps_v5",
+                    "Standard_D2pds_v5",
+                    "Standard_D4pds_v5",
+                    "Standard_D8pds_v5",
+                    "Standard_D16pds_v5",
+                    "Standard_D32pds_v5",
+                    "Standard_D2pls_v5",
+                    "Standard_D4pls_v5",
+                    "Standard_D8pls_v5",
+                    "Standard_D16pls_v5",
+                    "Standard_D32pls_v5",
+                    "Standard_D2plds_v5",
+                    "Standard_D4plds_v5",
+                    "Standard_D8plds_v5",
+                    "Standard_D16plds_v5",
+                    "Standard_D32plds_v5",
+                    "Standard_E2ps_v5",
+                    "Standard_E4ps_v5",
+                    "Standard_E8ps_v5",
+                    "Standard_E16ps_v5",
+                    "Standard_E32ps_v5",
+                    "Standard_E2pds_v5",
+                    "Standard_E4pds_v5",
+                    "Standard_E8pds_v5",
+                    "Standard_E16pds_v5",
+                    "Standard_E32pds_v5"
                   ]
                 },
                 "options": {
@@ -538,10 +584,10 @@
                 }
               },
               {
-                "name": "fgtLicenseFlexVMCheck",
+                "name": "fgtLicenseFortiFlexCheck",
                 "type": "Microsoft.Common.CheckBox",
-                "label": "My organisation is using the Flex-VM subscription service.",
-                "toolTip": "Select this box to enter a Flex-VM token",
+                "label": "My organisation is using the FortiFlex subscription service.",
+                "toolTip": "Select this box to enter a FortiFlex token",
                 "visible": "[equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm')]"
               },
               {
@@ -559,20 +605,20 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),not(steps('instance').fgtLicense.fgtLicenseFlexVMCheck))]"
+                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
-                "name": "fgtflexvm",
+                "name": "fgtfortiflex",
                 "type": "Microsoft.Common.TextBox",
-                "label": "FortiGate Flex-VM",
+                "label": "FortiGate FortiFlex",
                 "defaultValue": "",
-                "toolTip": "FortiGate Flex-VM license token",
+                "toolTip": "FortiGate FortiFlex license token",
                 "constraints": {
                   "required": false,
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[steps('instance').fgtLicense.fgtLicenseFlexVMCheck]"
+                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgtLicensePAYGInfo",
@@ -865,11 +911,11 @@
                 "type": "Microsoft.Common.TextBox",
                 "label": "FortiManager IP address",
                 "defaultValue": "",
-                "toolTip": "Provide the IP address or DNS name of the FortiManager reachable over port TCP/541",
+                "toolTip": "Provide up to 10 IP addresses or DNS name of the FortiManager reachable over port TCP/541",
                 "constraints": {
                   "required": false,
-                  "regex": "^[A-Za-z0-9.]{1,64}$",
-                  "validationMessage": "Only alphanumeric characters and dots are allowed, and the value must be 1 to 64 characters."
+                  "regex": "^[A-Za-z0-9 .-]{1,128}$",
+                  "validationMessage": "Only alphanumeric characters and dots, dashs and spaces are allowed, and the value must be 1 to 512 characters."
                 },
                 "visible": true
               },
@@ -957,15 +1003,45 @@
                   "required": true
                 },
                 "visible": true
-              },
+              }
+            ]
+          },
+          {
+            "name": "customvhd",
+            "type": "Microsoft.Common.Section",
+            "label": "Custom VHD",
+            "elements": [
               {
-                "name": "standardsku",
+                "name": "customvhdinfo",
                 "type": "Microsoft.Common.InfoBox",
                 "visible": true,
                 "options": {
                   "icon": "Info",
-                  "text": "This requires a storage account which willl be created during deployment.",
-                  "uri": "https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/serial-console-overview"
+                  "text": "For BYOL it is possible to upload a specific FortiGate image to Azure provided by support. Provide the resource ID of the required VM image version in the field below.",
+                  "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/392531/deploying-fortigate-vm-from-a-vhd-image-file"
+                }
+              },
+              {
+                "name": "resourceid",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Azure Compute Gallery Image Version resource ID",
+                "defaultValue": "",
+                "toolTip": "Azure Compute Gallery Image Version resource ID",
+                "constraints": {
+                  "required": "[and(contains(steps('instance').instancetype.selection, 'p'),equals(basics('fortiGateImageSKU'),'fortinet_fg-vm'))]",
+                  "regex": "^[\\w\\W\n\t]{0,10240}$",
+                  "validationMessage": "All characters allowed, max 10240 characters."
+                },
+                "visible": "[equals(basics('fortiGateImageSKU'),'fortinet_fg-vm')]"
+              },
+              {
+                "name": "customvhdinfo2",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": "[contains(steps('instance').instancetype.selection, 'p')]",
+                "options": {
+                  "icon": "Info",
+                  "text": "An ARM64 based instance type was selected. This requires a custom image using an Azure Compute Gallery.",
+                  "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/392531/deploying-fortigate-vm-from-a-vhd-image-file"
                 }
               }
             ]
@@ -986,7 +1062,7 @@
       "existingAvailabilitySetName": "[steps('instance').availabilityOptions.availabilitySetSelector.name]",
       "availabilityZoneNumber": "[steps('instance').availabilityOptions.availabilityZoneSelector]",
       "fortiGateLicenseBYOL": "[steps('instance').fgtLicense.fgtcontent]",
-      "fortiGateLicenseFlexVM": "[steps('instance').fgtLicense.fgtflexvm]",
+      "fortiGateLicenseFortiFlex": "[steps('instance').fgtLicense.fgtfortiflex]",
       "acceleratedNetworking": "[steps('networking').acceleratednetworksection.acceleratednetworking]",
       "publicIP1NewOrExisting": "[steps('publicip').publicip.newOrExistingOrNone]",
       "publicIP1Name": "[steps('publicip').publicip.name]",
@@ -1009,7 +1085,8 @@
       "fortiManager": "[steps('advanced').fortimanager.enabled]",
       "fortiManagerIP": "[steps('advanced').fortimanager.fortimanagerip]",
       "fortiManagerSerial": "[steps('advanced').fortimanager.fortimanagerserial]",
-      "fortiGateAdditionalCustomData": "[steps('advanced').customdata.config]"
+      "fortiGateAdditionalCustomData": "[steps('advanced').customdata.config]",
+      "customImageReference": "[steps('advanced').customvhd.resourceid]"
     }
   }
 }

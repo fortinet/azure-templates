@@ -49,4 +49,4 @@ The Terraform template deployment deploys different resources and is required to
 For more specific information verify the documentation included in the [ARM template](../Active-Passive-ELB-ILB/)
 
 ## License
-[License](LICENSE) © Fortinet Technologies. All rights reserved.
+[License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.

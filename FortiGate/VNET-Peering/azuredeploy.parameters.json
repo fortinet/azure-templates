@@ -135,7 +135,7 @@
             "value": "172.16.142.0/26"
         },
         "location": {
-            "value": "[resourceGroup().location]"
+            "value": ""
         },
         "fortinetTags": {
             "value": {

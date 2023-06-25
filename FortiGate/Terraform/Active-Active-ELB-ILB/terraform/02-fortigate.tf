@@ -236,7 +236,7 @@ resource "azurerm_network_interface_backend_address_pool_association" "fgtaifcin
 }
 
 resource "azurerm_linux_virtual_machine" "fgtavm" {
-  name                  = "${var.PREFIX}-FGT-A-VM"
+  name                  = "${var.PREFIX}-FGT-A"
   location              = azurerm_resource_group.resourcegroup.location
   resource_group_name   = azurerm_resource_group.resourcegroup.name
   network_interface_ids = [azurerm_network_interface.fgtaifcext.id, azurerm_network_interface.fgtaifcint.id]
@@ -272,7 +272,7 @@ resource "azurerm_linux_virtual_machine" "fgtavm" {
   custom_data = base64encode(templatefile("${path.module}/customdata.tpl", {
     fgt_vm_name         = "${var.PREFIX}-FGT-A"
     fgt_license_file    = var.FGT_BYOL_LICENSE_FILE_A
-    fgt_license_flexvm  = var.FGT_BYOL_FLEXVM_LICENSE_FILE_A
+    fgt_license_fortiflex  = var.FGT_BYOL_FORTIFLEX_LICENSE_TOKEN_A
     fgt_username        = var.USERNAME
     fgt_ssh_public_key  = var.FGT_SSH_PUBLIC_KEY_FILE
     fgt_external_ipaddr = var.fgt_ipaddress_a["1"]
@@ -421,7 +421,7 @@ resource "azurerm_linux_virtual_machine" "fgtbvm" {
   custom_data = base64encode(templatefile("${path.module}/customdata.tpl", {
     fgt_vm_name         = "${var.PREFIX}-FGT-B"
     fgt_license_file    = var.FGT_BYOL_LICENSE_FILE_B
-    fgt_license_flexvm  = var.FGT_BYOL_FLEXVM_LICENSE_FILE_B
+    fgt_license_fortiflex  = var.FGT_BYOL_FORTIFLEX_LICENSE_TOKEN_B
     fgt_username        = var.USERNAME
     fgt_ssh_public_key  = var.FGT_SSH_PUBLIC_KEY_FILE
     fgt_external_ipaddr = var.fgt_ipaddress_b["1"]

@@ -11,11 +11,26 @@ The FortiGate can be used in different scenario's to protect assets deployed in 
 
 Click [here](https://www.fortinet.com/products/public-cloud-security/azure#usecases) for a general overview of the different public cloud use cases.
 
-## Resiliency and High Availability
+## Deployment options and architectures
 
 When designing a reliable architecture in Microsoft Azure it is important to take resiliency and High Availability into account. Microsoft has the [Microsoft Azure Well-Architected Framework](https://docs.microsoft.com/en-us/azure/architecture/framework/resiliency/overview) available.
 
-Running the FortiGate Next-Generation Firewall inside of Microsoft Azure can offer different levels of reliability based on these building blocks
+Running the FortiGate Next-Generation Firewall inside of Microsoft Azure can offer different levels of reliability based on the different building blocks and architectures. Over the years, new functionality has been released in Microsoft Azure for specific deployments.
+
+For each architecture/building block, there is information in the table whether it is supported (yes) by each architecture or not (no). Take into account that each architecture has requirements and limitations that are listed on their respective page.
+
+| Use cases/ Architectures              | [Single FGT](https://github.com/40net-cloud/fortinet-azure-solutions/tree/main/FortiGate/A-Single-VM) | [Active Passive SDN ](https://github.com/40net-cloud/fortinet-azure-solutions/tree/main/FortiGate/Active-Passive-SDN)| [Active Passive ELB/ILB](https://github.com/40net-cloud/fortinet-azure-solutions/tree/main/FortiGate/Active-Passive-ELB-ILB) | [Active Active ELB/ILB](https://github.com/40net-cloud/fortinet-azure-solutions/tree/main/FortiGate/Active-Active-ELB-ILB) | [Virtual WAN](https://github.com/40net-cloud/fortinet-azure-solutions/tree/main/FortiGate/AzureVirtualWAN) | [Active Passive Azure Route Server](https://github.com/40net-cloud/fortinet-azure-solutions/tree/main/FortiGate/AzureRouteServer) | [Auto-Scale Cluster](https://github.com/40net-cloud/fortinet-azure-solutions/tree/main/FortiGate/Autoscale) | [Gateway Load Balancer](https://github.com/fortinetsolutions/Azure-Templates/tree/master/GWLB) |
+|---------------------------------------|------------|--------------------|------------------------|-----------------------|-------------|-----------------------------------|--------------------|-----------------------|
+| North-South (ingress) filtering       |     YES    |         YES        |           YES          |          YES        |     YES     |                YES                |         YES       |          YES          |
+| East-West filtering                   |     YES    |         YES        |           YES          |          YES          |     YES     |                YES                |         YES        |           NO          |
+| South-North (egress) filtering        |     YES    |         YES        |           YES          |          YES          |     YES     |                YES                |         YES        |          YES          |
+| SDWAN                                 |     YES    |         YES        |           YES          |          YES          |     YES     |                YES                |         YES        |           NO          |
+| Site to Site VPN                      |     YES    |         YES        |           YES          |          YES          |     YES     |                YES                |         NO        |           NO          |
+| Client to Site VPN                    |     YES    |         YES        |           YES          |          YES          |     YES     |                YES                |         NO        |           NO          |
+| Express Route Filtering               |     YES    |         YES        |           YES          |          YES          |     YES     |                YES                |         YES        |           NO          |
+| Scalability - vertical                |     YES    |         YES        |           YES          |          YES          |     YES     |                YES                |         YES        |          YES          |
+| Scalability - horizontal              |     NO     |         NO         |           NO           |          YES          |     YES     |                 NO                |         YES        |          YES          |
+| Protect resources in multiple regions |     YES    |         YES        |           YES          |          YES          |     YES      |                YES                 |         YES        |          YES          |
 
 ### SLA
 
@@ -66,11 +81,11 @@ The FortiGate Next-Generation Firewall can be deployed in Microsoft Azure in dif
 
 - __**Single VNET**__: All the building block above are ready to deploy in a new or existing VNET. Select your block above to get started.
 - [__**Cloud Security Services Hub (VNET peering)**__](VNET-Peering/): With VNET peering it is possible to have different islands deploying different services managed by diferent internal and/or external teams but to maintain a single point of control going to on-premise, other clouds or public internet. By connecting the different VNETs in a Hub-Spoke setup the Hub can control all traffic. Get started [here](VNET-Peering/)
-- __**Autoscaling**__: For application that are fluid in the amount of resources the FortiGate can also be deployed with a autoscaling architecture. This architecture is documented [here](https://docs.fortinet.com/vm/azure/fortigate/7.0/azure-administration-guide/7.0.0/161167/deploying-auto-scaling-on-azure)
+- __**Autoscaling**__: For application that are fluid in the amount of resources the FortiGate can also be deployed with a autoscaling architecture. This architecture is documented [here](https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/161167/deploying-autoscaling-on-azure) or a quickstart script is available [here](Autoscale/).
 
 ## Support
 Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.
 For direct issues, please refer to the [Issues](https://github.com/fortinet/azure-templates/issues) tab of this GitHub project.
 
 ## License
-[License](LICENSE) © Fortinet Technologies. All rights reserved.
+[License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.

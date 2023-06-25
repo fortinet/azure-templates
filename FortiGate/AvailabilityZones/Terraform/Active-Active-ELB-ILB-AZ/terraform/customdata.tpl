@@ -76,9 +76,18 @@ end
 #    set session-pickup-nat enable
 #    set override disable
 #end
+# < 7.2.1
 #config system cluster-sync
 #    edit 0
 #        set peerip ${fgt_ha_peerip}
+#        set syncvd "root"
+#    next
+#end
+# > 7.2.1 - https://docs.fortinet.com/document/fortigate/7.2.1/fortios-release-notes/517622/changes-in-cli
+#config system standalone-cluster
+#    edit 0
+#        set peerip ${fgt_ha_peerip}
+#        set syncvd "root"
 #    next
 #end
 
