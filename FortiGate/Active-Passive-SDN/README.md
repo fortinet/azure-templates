@@ -1,6 +1,6 @@
 # Active/Passive High Available FortiGate pair with Fabric Connector Failover
 
-[![[FGT] ARM - Active-Passive-SDN](https://github.com/40net-cloud/fortinet-azure-solutions/actions/workflows/fgt-arm-active-passive-sdn.yml/badge.svg)](https://github.com/40net-cloud/fortinet-azure-solutions/actions/workflows/fgt-arm-active-passive-sdn.yml)
+:wave: - [Introduction](#introduction) - [Design](#design) - [Deployment](#deployment) - [Requirements](#requirements-and-limitations) - [Configuration](#configuration) - :wave:
 
 ## Introduction
 
@@ -27,7 +27,7 @@ To enhance the availability of the solution VM can be installed in different Ava
 
 This ARM template can also be used to extend or customized based on your requirements. Additional subnets besides the one's mentioned above are not automatically generated. By adapting the ARM templates you can add additional subnets which preferably require their own routing tables.
 
-## How to deploy
+## Deployment
 
 The FortiGate solution can be deployed using the Azure Portal or Azure CLI. There are 4 variables needed to complete kickstart the deployment. The deploy.sh script will ask them automatically. When you deploy the ARM template the Azure Portal will request the variables as a requirement.
 
@@ -78,16 +78,17 @@ The ARM template deploys different resources and it is required to have the acce
   - PAYG
 `az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm_payg_2022`
 
-## FortiGate configuration
+## Configuration
 
 The FortiGate VMs need a specific configuration to operate in your environment. This configuration can be injected during provisioning or afterwards via the different management options including GUI, CLI, FortiManager or REST API.
 
 - [Default configuration using this template](doc/config-provisioning.md)
 - [Failover configuration](doc/config-failover.md)
+- [Upload VHD](../Documentation/faq-upload-vhd.md)
 
 ### Fabric Connector
 
-The FortiGate-VM uses [Managed Identities](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/) for the SDN Fabric Connector. A SDN Fabric Connector is created automatically during deployment. After deployment, it is required apply the 'Reader' role to the Azure Subscription you want to resolve Azure Resources from. More information can be found on the [Fortinet Documentation Libary](https://docs.fortinet.com/vm/azure/fortigate/7.0/azure-administration-guide/7.0.0/236610/creating-a-fabric-connector-using-a-managed-identity).
+The FortiGate-VM uses [Managed Identities](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/) for the SDN Fabric Connector. A SDN Fabric Connector is created automatically during deployment. After deployment, it is required apply the 'Reader' role to the Azure Subscription you want to resolve Azure Resources from. More information can be found on the [Fortinet Documentation Libary](https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/236610/configuring-an-sdn-connector-using-a-managed-identity).
 
 ## Support
 
@@ -97,4 +98,4 @@ For other questions related to this project, contact [github@fortinet.com](mailt
 
 ## License
 
-[License](LICENSE) © Fortinet Technologies. All rights reserved.
+[License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.

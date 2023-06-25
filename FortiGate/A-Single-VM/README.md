@@ -1,5 +1,6 @@
 # FortiGate Next-Generation Firewall - A Single VM
 
+:wave: - [Introduction](#introduction) - [Design](#design) - [Deployment](#deployment) - [Requirements](#requirements-and-limitations) - [Configuration](#configuration) - :wave:
 ## Introduction
 
 More and more enterprises are turning to Microsoft Azure to extend or replace internal data centers and take advantage of the elasticity of the public cloud. While Azure secures the infrastructure, you are responsible for protecting the resources you put in it. As workloads are being moved from local data centers connectivity and security are key elements to take into account. FortiGate-VM offers a consistent security posture and protects connectivity across public and private clouds, while high-speed VPN connections protect data.
@@ -73,6 +74,7 @@ The ARM template deploys different resources and it is required to have the acce
 The FortiGate VMs need a specific configuration to match the deployed environment. This configuration can be injected during provisioning or afterwards via the different options including GUI, CLI, FortiManager or REST API.
 
 - [Default configuration using this template](doc/config-provisioning.md)
+- [Upload VHD](../Documentation/faq-upload-vhd.md)
 
 ### Fabric Connector
 
@@ -85,4 +87,4 @@ For direct issues, please refer to the [Issues](https://github.com/fortinet/azur
 
 ## License
 
-[License](LICENSE) © Fortinet Technologies. All rights reserved.
+[License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.
