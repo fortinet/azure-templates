@@ -19,7 +19,7 @@ More information about this deployment type can be found [here](https://github.c
 
 * The **Floating IP** options should not be enabled on the IPSEC VPN LB rules (UDP 500 and UDP 4500). When **Floating IP** is enabled, Azure Load Balancer doesn't DNAT the packets to the private IP configured on the FortiGate. The FortiGate VM in Azure doesn't have the public IPs configured and as such local processes like IPSEC do not listen on this public IP address. 
 
-More information on when to enable floating IP or not on a load balancing rule towards the FortiGate can be found [here](https://github.com/40net-cloud/fortinet-azure-solutions/blob/main/FortiGate/Active-Passive-ELB-ILB/doc/config-inbound-connections.md#when-to-enable-the-floating-ip-in-the-azure-load-balancing-rule). More information on the floating ip options can be found [here](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-floating-ip).
+More information on when to enable floating IP or not on a load balancing rule towards the FortiGate can be found [here](https://github.com/fortinet/azure-templates/blob/main/FortiGate/Active-Passive-ELB-ILB/doc/config-inbound-connections.md#when-to-enable-the-floating-ip-in-the-azure-load-balancing-rule). More information on the floating ip options can be found [here](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-floating-ip).
 
 ![floating](images/faq-ipsec-floating-disabled-udp500.png)
 ![floating](images/faq-ipsec-floating-disabled-udp4500.png)

@@ -1,6 +1,9 @@
 # Active/Active loadbalanced pair of standalone FortiGates for resilience and scale
 
+[![[FGT] ARM - Active-Active-ELB-ILB](https://github.com/fortinet/azure-templates/actions/workflows/fgt-arm-active-active-elb-ilb.yml/badge.svg)](https://github.com/fortinet/azure-templates/actions/workflows/fgt-arm-active-active-elb-ilb.yml)
+
 :wave: - [Introduction](#introduction) - [Design](#design) - [Deployment](#deployment) - [Requirements](#requirements-and-limitations) - [Configuration](#configuration) - :wave:
+
 ## Introduction
 
 More and more enterprises are turning to Microsoft Azure to extend or replace internal data centers and take advantage of the elasticity of the public cloud. While Azure secures the infrastructure, you are responsible for protecting the resources you put in it. As workloads are being moved from local data centers connectivity and security are key elements to take into account. FortiGate-VM offers a consistent security posture and protects connectivity across public and private clouds, while high-speed VPN connections protect data.
@@ -65,8 +68,8 @@ After deployment you will be shown the IP address of all deployed components. Yo
 
 The ARM template deploys different resources and it is required to have the access rights and quota in your Microsoft Azure subscription to deploy the resources.
 
-- The template will deploy Standard F2s VMs for this architecture. Other VM instances are supported as well with a minimum of 2 NICs. A list can be found [here](https://docs.fortinet.com/document/fortigate/6.4.0/azure-cookbook/562841/instance-type-support)
-- Licenses for Fortigate
+- The template will deploy Standard F2s VMs for this architecture. Other VM instances are supported as well with a minimum of 2 NICs. A list can be found [here](https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/azure-administration-guide/562841/instance-type-support)
+- Licenses for FortiGate
   - BYOL: A demo license can be made available via your Fortinet partner or on our website. These can be injected during deployment or added after deployment. Purchased licenses need to be registered on the [Fortinet support site](http://support.fortinet.com). Download the .lic file after registration. Note, these files may not work until 60 minutes after it's initial creation.
   - PAYG or OnDemand: These licenses are automatically generated during the deployment of the FortiGate systems.
 - The password provided during deployment must need password complexity rules from Microsoft Azure:
@@ -76,13 +79,15 @@ The ARM template deploys different resources and it is required to have the acce
   - BYOL
 `az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm`
   - PAYG
-`az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm_payg_2022`
+`az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm_payg_2023`
 
-## FortiGate configuration
+## Configuration
 
 The FortiGate VMs need a specific configuration to match the deployed environment. This configuration can be injected during provisioning or afterwards via the different options including GUI, CLI, FortiManager or REST API.
 
 - [Default configuration using this template](doc/config-provisioning.md)
+- [Inbound connections](doc/config-inbound-connections.md)
+- [Outbound connections](doc/config-outbound-connections.md)
 - [Availability Zone](doc/config-availability-zone.md)
 - [Upload VHD](../Documentation/faq-upload-vhd.md)
 
@@ -128,10 +133,12 @@ config system ha
 end
 
 config system standalone-cluster
+  config cluster-peer
     edit 0
         set peerip 10.0.1.x
         set syncvd "root"
     next
+  end
 end
 ```
 

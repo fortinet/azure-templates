@@ -1,32 +1,3 @@
-# FAQ - Deployment of FortiGate-VM using a VHD image file
-
-In case a specific release provided by Fortinet is required or the use of the Azure Marketplace is not possible the FortiGate-VM can be deploy using an Azure Compute Gallery. The regular VHD images are available via support.fortinet.com.
-
-FortiGate-VM ARM64 images suitable for ARM based processors like the Ampere ARM CPUs available in Microsoft, currently can only be deployed via an [Azure Compute Gallery](https://learn.microsoft.com/en-us/azure/virtual-machines/azure-compute-gallery).
-
-## Downloading the FortiGate Image
-
-FortiGate-VM VHD image files are available from [Fortinet Customer Service & Support](https://support.fortinet.com/). 
-
-* Go to Download > VM Image, then select FortiGate as the Product and Azure for the Platform. 
-* The file name for ARM64 CPUs is FGT_ARM64_AZURE-v7-build XXXX-FORTINET.out.hyperv.zip, where XXXX is the build number.
-* The file name for the x86 CPUs is FGT_VM64_AZURE-v7-buildXXXX-FORTINET.out.hyperv.zip, where XXXX is the build number.
-Once the download is complete, unzip the file and locate the fortios.vhd file. To upload the fortios.vhd you need to have access to Azure CLI logged on to your Azure Subscription from the system that has the fortios.vhd downloaded. 
-
-## Preparing the FortiGate image on Microsoft Azure
-
-Create the bash script (below or on [GitHub](https://github.com/fortinet/azure-templates/blob/main/FortiGate/A-Single-VM/customvhd.sh)) onto this system located in the same directory as the fortios.vhd. Adapt the variables according to your needs and the script will perform the following:
-
-* Create a resource group
-* Create an Azure Storage Account
-* Upload the fortios.vhd file onto the Azure Storage Account into the vhd container
-* Create an Azure Compute Gallery
-* Create an Image Definition for either x86 or ARM64
-* Create an Image Version based on the uploaded forties.vhd file in the Azure Storage Account
-
-_The image needs to be deployed in the all the Azure regions you would be deploying the FortiGate-VM._
-
-```sh
 #!/bin/bash
 echo "
 ##############################################################################################################
@@ -51,7 +22,7 @@ PREFIX="test"
 LOCATION="westeurope"
 # ARCHITECTURE: arm64 or x86
 ARCHITECTURE="arm64"
-# HYPER_V_GENERATION: FortiGate x86 uses V1, arm64 uses V2
+# HYPER_V_GENERATION: currenlty FortiGate x86 uses V1, arm64 uses V2
 HYPER_V_GENERATION="V2"
 # VHD image with path
 FORTIGATE_IMAGE_DIRECTORY="$PWD"
@@ -144,22 +115,3 @@ az sig image-version show --gallery-image-definition "${image_definition_name}" 
                           --query "id" -o tsv
 
 exit 0
-```
-More information about the Azure Compute Gallery can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/azure/virtual-machines/create-gallery).
-
-## Deployment of the FortiGate-VM
-
-Once the Azure Compute Gallery is fully deployed in the required region, the deployment can be started from the Azure Marketplace. Only the BYOL licensed version can be used when uploading a VHD file. 
-In the Azure Marketplace deployment of the different architectures in the Advanced tab you can find the ‘Azure Compute Gallery Image Version resource ID’ field.
-
-![ARM Template Custom Deployment](images/faq-custom-vhd-custom-deployment.png)
-
-This field requires the full resource id the has the following format. This resource ID can be found in the Configuration page in the Image Version of the Azure Compute Gallery that you would like to install.
-
-```
-/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.Compute/galleries/xxxgallery/images/xxxxx/versions/x.x.x
-```
-
-_Beware: when an ARM64 based instance type is selected, the Azure Compute Gallery Image Version resource ID’ field becomes a requirement as well as the BYOL license type for deployment._
-
-![Azure Compute Gallery - resource ID](images/faq-custom-vhd-compute-gallery.png)

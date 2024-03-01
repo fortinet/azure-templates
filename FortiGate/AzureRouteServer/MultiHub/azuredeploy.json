@@ -823,7 +823,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/40net-cloud/fortinet-azure-solutions/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
+          "uri": "https://raw.githubusercontent.com/fortinet/azure-templates/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -881,7 +881,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/40net-cloud/fortinet-azure-solutions/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
+          "uri": "https://raw.githubusercontent.com/fortinet/azure-templates/main/FortiGate/AzureRouteServer/Active-Passive/azuredeploy.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

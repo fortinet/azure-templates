@@ -12,7 +12,7 @@ In this design an Azure Standard Load Balancer Internal is used with a specific 
 
 In the diagram the different steps to establish a session are layed out. This flow is based on the configuration as deployed in this template.
 
-![East west flow](../images/eastwest-flow.png)
+![East west flow](../images/ew-flow.png)
 
 1. Connection from client to the private IP of server. Azure routes the traffic using UDR to the internal Load Balancer - s: 172.16.137.4 - d: 172.16.138.4
 2. Azure Internal Load Balancer probes and send the packet to the active FGT - s: 172.16.137.4 - d: 172.16.138.4

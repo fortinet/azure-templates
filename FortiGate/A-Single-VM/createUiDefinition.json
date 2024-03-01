@@ -70,7 +70,7 @@
       {
         "name": "fortiGateNamePrefix",
         "type": "Microsoft.Common.TextBox",
-        "label": "Fortigate Name Prefix",
+        "label": "FortiGate Name Prefix",
         "defaultValue": "",
         "toolTip": "Naming prefix for all deployed resources",
         "constraints": {
@@ -83,7 +83,7 @@
       {
         "name": "fortiGateImageSKU",
         "type": "Microsoft.Common.DropDown",
-        "label": "Fortigate Image SKU",
+        "label": "FortiGate Image SKU",
         "defaultValue": "Bring Your Own License",
         "toolTip": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)",
         "constraints": {
@@ -95,7 +95,7 @@
             },
             {
               "label": "Pay As You Go",
-              "value": "fortinet_fg-vm_payg_2022"
+              "value": "fortinet_fg-vm_payg_2023"
             }
           ]
         },
@@ -104,8 +104,8 @@
       {
         "name": "fortiGateImageVersion",
         "type": "Microsoft.Common.DropDown",
-        "label": "Fortigate Image Version",
-        "defaultValue": "7.2.5",
+        "label": "FortiGate Image Version",
+        "defaultValue": "7.2.7",
         "toolTip": "Only 6.x has the A/P HA feature currently",
         "constraints": {
           "required": false,
@@ -141,6 +141,10 @@
             {
               "label": "6.4.12",
               "value": "6.4.12"
+            },
+            {
+              "label": "6.4.13",
+              "value": "6.4.13"
             },
             {
               "label": "6.4.2",
@@ -189,6 +193,10 @@
             {
               "label": "7.0.12",
               "value": "7.0.12"
+            },
+            {
+              "label": "7.0.13",
+              "value": "7.0.13"
             },
             {
               "label": "7.0.2",
@@ -243,8 +251,20 @@
               "value": "7.2.5"
             },
             {
+              "label": "7.2.6",
+              "value": "7.2.6"
+            },
+            {
               "label": "7.4.0",
               "value": "7.4.0"
+            },
+            {
+              "label": "7.4.1",
+              "value": "7.4.1"
+            },
+            {
+              "label": "7.4.2",
+              "value": "7.4.2"
             },
             {
               "label": "latest",
@@ -651,7 +671,7 @@
                 "name": "fgtvmname",
                 "type": "Microsoft.Common.TextBox",
                 "label": "Name of the FortiGate VM",
-                "defaultValue": "[if(equals(basics('fortiGateNamePrefix'),''),'FortiGate-VM',concat(basics('fortiGateNamePrefix'),'-FGT'))]",
+                "defaultValue": "[if(equals(basics('fortiGateNamePrefix'),''),'FortiGate-VM',concat(basics('fortiGateNamePrefix'),'-fgt'))]",
                 "toolTip": "Provide the name of the FortiGate VM. This is not required as a field.",
                 "constraints": {
                   "required": false,
@@ -697,7 +717,7 @@
                   "subnets": "Standard deployment is to have an external and internal subnet"
                 },
                 "defaultValue": {
-                  "name": "[if(equals(basics('fortiGateNamePrefix'),''),'FortiGate-VNET',concat(basics('fortiGateNamePrefix'),'-VNET'))]",
+                  "name": "[if(equals(basics('fortiGateNamePrefix'),''),'fortigate-vnet',concat(basics('fortiGateNamePrefix'),'-vnet'))]",
                   "addressPrefixSize": "/22"
                 },
                 "constraints": {
@@ -710,7 +730,7 @@
                   "subnet1": {
                     "label": "External Subnet",
                     "defaultValue": {
-                      "name": "ExternalSubnet",
+                      "name": "externalsubnet",
                       "addressPrefixSize": "/26"
                     },
                     "constraints": {
@@ -722,7 +742,7 @@
                   "subnet2": {
                     "label": "Internal subnet",
                     "defaultValue": {
-                      "name": "InternalSubnet",
+                      "name": "internalsubnet",
                       "addressPrefixSize": "/26"
                     },
                     "constraints": {
@@ -734,7 +754,7 @@
                   "subnet3": {
                     "label": "Protected subnet",
                     "defaultValue": {
-                      "name": "ProtectedSubnet",
+                      "name": "protectedsubnet",
                       "addressPrefixSize": "/24"
                     },
                     "constraints": {
@@ -805,6 +825,52 @@
                   "text": "Accelerated Networking is supported on most general purpose and compute-optimized instance sizes with 2 or more vCPUs. On instances that support hyperthreading, Accelerated Networking is supported on VM instances with 4 or more vCPUs. Deployment with the accelerated networking feature enabled on a host that doesn't support it will result in a failure to connect to it. The accelerated networking can be disabled after deployment from the Azure Portal or Azure CLI.",
                   "uri": "https://docs.microsoft.com/en-us/azure/virtual-machines/sizes"
                 }
+              },
+              {
+                "name": "acceleratedconnectionscheck",
+                "type": "Microsoft.Common.CheckBox",
+                "label": "Accelerated Connections feature (PREVIEW)",
+                "toolTip": "This option enables the Accelerated Connections feature. provides higher bandwidth at an additional cost",
+                "visible": "[and(equals(steps('networking').acceleratednetworksection.acceleratednetworking, 'true'),not(contains(steps('instance').instancetype.selection, 'p')),not(contains(steps('instance').instancetype.selection, 'v5')))]"
+              },
+              {
+                "name": "acceleratedconnectionssku",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Auxiliary SKU - Bandwidth Tiers",
+                "defaultValue": "A1 - 4vCPU and above",
+                "toolTip": "This option selects the required bandwidth capability. SKUs incur additional cost when selected.",
+                "constraints": {
+                  "required": false,
+                  "allowedValues": [
+                    {
+                      "label": "A1 - 4vCPU and above",
+                      "value": "A1"
+                    },
+                    {
+                      "label": "A2 - 4vCPU and above",
+                      "value": "A2"
+                    },
+                    {
+                      "label": "A4 - 8vCPU and above",
+                      "value": "A4"
+                    },
+                    {
+                      "label": "A8 - 32vCPU and above",
+                      "value": "A8"
+                    }
+                  ]
+                },
+                "visible": "[and(equals(steps('networking').acceleratednetworksection.acceleratednetworking, 'true'),steps('networking').acceleratednetworksection.acceleratedconnectionscheck)]"
+              },
+              {
+                "name": "AccelConnwarning",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": "[steps('networking').acceleratednetworksection.AcceleratedConnectionCheck]",
+                "options": {
+                  "icon" : "Warning",
+                  "text": "This feature is currently in Preview, please contact Fortinet at 'azuretech@fortinet.com'. Verify the limitations with Microsoft on supported regions. Currently Dv5 instance types are not supported.",
+                  "uri": "https://learn.microsoft.com/en-us/azure/networking/nva-accelerated-connections"
+                }
               }
             ]
           }
@@ -823,7 +889,7 @@
             "type": "Microsoft.Common.TextBlock",
             "visible": true,
             "options": {
-              "text": "The public IP will be used for public services hosted on the FortiGate such as IPSEC termination, management of the FortiGate from external or services behind the Fortigate such as a webserver."
+              "text": "The public IP will be used for public services hosted on the FortiGate such as IPSEC termination, management of the FortiGate from external or services behind the FortiGate such as a webserver."
             }
           },
           {
@@ -838,7 +904,7 @@
               "domainNameLabel": "DNS name linked to this public IP"
             },
             "defaultValue": {
-              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'FGTPublicIP',concat(basics('fortiGateNamePrefix'),'-FGT-PIP'))]",
+              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'FGTPublicIP',concat(basics('fortiGateNamePrefix'),'-fgt-pip'))]",
               "domainNameLabel": "mydomain"
             },
             "constraints": {
@@ -911,7 +977,7 @@
                 "type": "Microsoft.Common.TextBox",
                 "label": "FortiManager IP address",
                 "defaultValue": "",
-                "toolTip": "Provide up to 10 IP addresses or DNS name of the FortiManager reachable over port TCP/541",
+                "toolTip": "Provide up to 10 IP addresses or DNS names of the FortiManager reachable over port TCP/541",
                 "constraints": {
                   "required": false,
                   "regex": "^[A-Za-z0-9 .-]{1,128}$",
@@ -924,7 +990,7 @@
                 "type": "Microsoft.Common.TextBox",
                 "label": "FortiManager Serial Number",
                 "defaultValue": "",
-                "toolTip": "Provide the serial number of the FortiManager",
+                "toolTip": "Provide the serial number of the primary FortiManager",
                 "constraints": {
                   "required": false,
                   "regex": "^[A-Za-z0-9-]{1,64}$",
@@ -988,7 +1054,7 @@
                 "type": "Microsoft.Common.OptionsGroup",
                 "label": "Enable Serial Console",
                 "defaultValue": "yes",
-                "toolTip": "Enables the serial console and creates a required storage account.",
+                "toolTip": "Enables the serial console.",
                 "constraints": {
                   "allowedValues": [
                     {
@@ -1047,6 +1113,26 @@
             ]
           }
         ]
+      },
+      {
+        "name": "tags",
+        "label": "Tags",
+        "elements": [
+          {
+            "name": "tagsByResource",
+            "type": "Microsoft.Common.TagsByResource",
+            "toolTip": "Add tags to Azure Resources",
+            "resources": [
+              "Microsoft.Compute/availabilitySets",
+              "Microsoft.Network/networkSecurityGroups",
+              "Microsoft.Network/publicIPAddresses",
+              "Microsoft.Network/networkInterfaces",
+              "Microsoft.Compute/virtualMachines",
+              "Microsoft.Network/virtualNetworks",
+              "Microsoft.Network/routeTables"
+            ]
+          }
+        ]
       }
     ],
     "outputs": {
@@ -1064,6 +1150,8 @@
       "fortiGateLicenseBYOL": "[steps('instance').fgtLicense.fgtcontent]",
       "fortiGateLicenseFortiFlex": "[steps('instance').fgtLicense.fgtfortiflex]",
       "acceleratedNetworking": "[steps('networking').acceleratednetworksection.acceleratednetworking]",
+      "acceleratedConnections": "[steps('networking').acceleratednetworksection.acceleratedconnectionscheck]",
+      "acceleratedConnectionsSku": "[steps('networking').acceleratednetworksection.acceleratedconnectionssku]",
       "publicIP1NewOrExisting": "[steps('publicip').publicip.newOrExistingOrNone]",
       "publicIP1Name": "[steps('publicip').publicip.name]",
       "publicIP1ResourceGroup": "[steps('publicip').publicip.resourceGroup]",
@@ -1086,7 +1174,8 @@
       "fortiManagerIP": "[steps('advanced').fortimanager.fortimanagerip]",
       "fortiManagerSerial": "[steps('advanced').fortimanager.fortimanagerserial]",
       "fortiGateAdditionalCustomData": "[steps('advanced').customdata.config]",
-      "customImageReference": "[steps('advanced').customvhd.resourceid]"
+      "customImageReference": "[steps('advanced').customvhd.resourceid]",
+      "tagsByResource": "[steps('tags').tagsByResource]"
     }
   }
 }

@@ -29,6 +29,12 @@
     "acceleratedNetworking": {
       "value": "true"
     },
+    "acceleratedConnections": {
+      "value": false
+    },
+    "acceleratedConnectionsSku": {
+      "value": "A1"
+    },
     "publicIP1NewOrExisting": {
       "value": "new"
     },
@@ -135,6 +141,9 @@
       "value": ""
     },
     "location": {
+      "value": ""
+    },
+    "tagsByResource": {
       "value": ""
     },
     "fortinetTags": {

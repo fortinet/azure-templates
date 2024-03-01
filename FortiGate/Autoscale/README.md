@@ -27,7 +27,7 @@ To fast track the deployment, use the Azure Cloud Shell. The Azure Cloud Shell i
 
 To provision the FortiGate BYOL systems with a license create a directory called 'license' in the presistent clouddrive directory. [Copy](https://microsoft.github.io/AzureTipsAndTricks/blog/tip127.html) the license files to the directory '~/clouddrive/license' on the Azure Cloud Shell.
 
-`cd ~/clouddrive/ && wget -qO- https://github.com/jvhoof/fortinet-azure-solutions/archive/main.tar.gz | tar zxf - && cd ~/clouddrive/fortinet-azure-solutions-main/FortiGate/Autoscale/ && ./deploy.sh`
+`cd ~/clouddrive/ && wget -qO- https://github.com/jvhoof/azure-templates/archive/main.tar.gz | tar zxf - && cd ~/clouddrive/azure-templates-main/FortiGate/Autoscale/ && ./deploy.sh`
 
 ![Azure Cloud Shell](images/azure-cloud-shell.png)
 
@@ -44,7 +44,7 @@ The Azure ARM template deployment deploys different resources and is required to
 
 ## Support
 Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.
-For direct issues, please refer to the [Issues](https://github.com/jvhoof/fortinet-azure-solutions/issues) tab of this GitHub project.
+For direct issues, please refer to the [Issues](https://github.com/jvhoof/azure-templates/issues) tab of this GitHub project.
 
 ## License
 [License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.
