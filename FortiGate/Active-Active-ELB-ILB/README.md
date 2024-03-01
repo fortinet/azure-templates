@@ -1,7 +1,5 @@
 # Active/Active loadbalanced pair of standalone FortiGates for resilience and scale
 
-[![[FGT] ARM - Active-Active-ELB-ILB](https://github.com/fortinet/azure-templates/actions/workflows/fgt-arm-active-active-elb-ilb.yml/badge.svg)](https://github.com/fortinet/azure-templates/actions/workflows/fgt-arm-active-active-elb-ilb.yml)
-
 :wave: - [Introduction](#introduction) - [Design](#design) - [Deployment](#deployment) - [Requirements](#requirements-and-limitations) - [Configuration](#configuration) - :wave:
 
 ## Introduction
