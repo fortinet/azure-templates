@@ -296,7 +296,7 @@
         "description": "Resource group to which the Public IP belongs."
       }
     },
-    "publicIP3AddressSKU": {
+    "publicIP3AddressSku": {
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
@@ -881,7 +881,7 @@
       "location": "[parameters('location')]",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Network/publicIPAddresses'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Network/publicIPAddresses']), parameters('fortinetTags')) ]",
       "sku": {
-        "name": "[parameters('publicIP3AddressSKU')]"
+        "name": "[parameters('publicIP3AddressSku')]"
       },
       "zones": "[variables('pipZones')]",
       "properties": {
