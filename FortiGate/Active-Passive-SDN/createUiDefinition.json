@@ -147,6 +147,10 @@
               "value": "6.4.13"
             },
             {
+              "label": "6.4.15",
+              "value": "6.4.15"
+            },
+            {
               "label": "6.4.2",
               "value": "6.4.2"
             },
@@ -197,6 +201,10 @@
             {
               "label": "7.0.13",
               "value": "7.0.13"
+            },
+            {
+              "label": "7.0.14",
+              "value": "7.0.14"
             },
             {
               "label": "7.0.2",
@@ -781,7 +789,7 @@
                 "type": "Microsoft.Common.InfoBox",
                 "visible": "[steps('networking').acceleratednetworksection.AcceleratedConnectionCheck]",
                 "options": {
-                  "icon" : "Warning",
+                  "icon": "Warning",
                   "text": "This feature is currently in Preview, please contact Fortinet at 'azuretech@fortinet.com'. Verify the limitations with Microsoft on supported regions. Currently Dv5 instance types are not supported.",
                   "uri": "https://learn.microsoft.com/en-us/azure/networking/nva-accelerated-connections"
                 }
