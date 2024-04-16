@@ -169,3 +169,5 @@ For other questions related to this project, contact [github@fortinet.com](mailt
 
 ## License
 [License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.
+
+*In memory of [Jeroen Bismans](https://github.com/jbismans), contributor to these fine templates. From diver to [astronaut](https://star-finder.starregistration.net/?q=8A66120FE).*

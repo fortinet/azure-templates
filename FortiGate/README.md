@@ -89,3 +89,5 @@ For direct issues, please refer to the [Issues](https://github.com/fortinet/azur
 
 ## License
 [License](/../../blob/main/LICENSE) © Fortinet Technologies. All rights reserved.
+
+*In memory of [Jeroen Bismans](https://github.com/jbismans), contributor to these fine templates. From diver to [astronaut](https://star-finder.starregistration.net/?q=8A66120FE).*
