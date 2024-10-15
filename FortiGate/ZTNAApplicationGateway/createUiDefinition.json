@@ -101,7 +101,7 @@
         "name": "fortiGateImageVersion",
         "type": "Microsoft.Common.DropDown",
         "label": "ZTNA Gateway (FortiGate) Image Version",
-        "defaultValue": "7.2.4",
+        "defaultValue": "7.4.5",
         "toolTip": "Only 6.x has the A/P HA feature currently",
         "constraints": {
           "required": false,
