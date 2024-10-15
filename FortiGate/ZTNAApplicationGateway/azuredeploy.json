@@ -500,16 +500,16 @@
           "fortiGateName": {
             "value": "[concat(parameters('fortiGateName'))]"
           },
-          "fortiGateImageSKU": {
+          "fortiGateImageSKU_x64": {
             "value": "[parameters('fortiGateImageSKU')]"
           },
-          "fortiGateImageVersion": {
+          "fortiGateImageVersion_x64": {
             "value": "[parameters('fortiGateImageVersion')]"
           },
           "fortiGateAdditionalCustomData": {
             "value": "[variables('customDataCombined')]"
           },
-          "instanceType": {
+          "instanceType_x64": {
             "value": "[parameters('instanceType')]"
           },
           "acceleratedNetworking": {
