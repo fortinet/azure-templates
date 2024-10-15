@@ -509,7 +509,7 @@
                 "name": "fgtvmname",
                 "type": "Microsoft.Common.TextBox",
                 "label": "Name of the ZTNA Application Gateway",
-                "defaultValue": "[if(equals(basics('fortiGateNamePrefix'),''),'FortiGate-VM',concat(basics('fortiGateNamePrefix'),'-FGT'))]",
+                "defaultValue": "[if(equals(basics('fortiGateNamePrefix'),''),'FortiGate-VM',concat(basics('fortiGateNamePrefix'),'-fgt'))]",
                 "toolTip": "Provide the name of the FortiGate VM. This is not required as a field.",
                 "constraints": {
                   "required": false,
@@ -883,7 +883,7 @@
               "domainNameLabel": "DNS name linked to this public IP"
             },
             "defaultValue": {
-              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'FGTPublicIP',concat(basics('fortiGateNamePrefix'),'-FGT-PIP'))]",
+              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'FGTPublicIP',concat(basics('fortiGateNamePrefix'),'-fgt-pip'))]",
               "domainNameLabel": "mydomain"
             },
             "constraints": {

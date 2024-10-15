@@ -17,7 +17,7 @@
     "fortiGateNamePrefix": {
       "type": "string",
       "metadata": {
-        "description": "Naming prefix for all deployed resources. The FortiGate VM will have the suffix '-FGT'. For example if the prefix is 'ACME-01' the FortiGate will be named 'ACME-01-FGT'"
+        "description": "Naming prefix for all deployed resources. The FortiGate VM will have the suffix '-fgt'. For example if the prefix is 'acme-01' the FortiGate will be named 'acme-01-fgt'"
       }
     },
     "fortiGateName": {
@@ -187,7 +187,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Name of Public IP address, if no name is provided the default name will be the Resource Group Name as the Prefix and '-FGT-PIP' as the suffix"
+        "description": "Name of Public IP address, if no name is provided the default name will be the Resource Group Name as the Prefix and '-fgt-pip' as the suffix"
       }
     },
     "publicIP1ResourceGroup": {
