@@ -1,117 +1,145 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "adminUsername": {
-      "value": "## TO BE DEFINED ##"
-    },
-    "adminPassword": {
-      "value": "## TO BE DEFINED ##"
-    },
-    "fortiGateNamePrefix": {
-      "value": "## TO BE DEFINED ##"
-    },
-    "fortiGateImageSKU": {
-      "value": "fortinet_fg-vm"
-    },
-    "fortiGateImageVersion": {
-      "value": "latest"
-    },
-    "fortiGateAdditionalCustomData": {
-      "value": ""
-    },
-    "instanceType": {
-      "value": "Standard_F2s"
-    },
-    "acceleratedNetworking": {
-      "value": "false"
-    },
-    "acceleratedConnections": {
-      "value": false
-    },
-    "acceleratedConnectionsSku": {
-      "value": "A1"
-    },
-    "publicIP1NewOrExisting": {
-      "value": "new"
-    },
-    "publicIP1Name": {
-      "value": ""
-    },
-    "publicIP1ResourceGroup": {
-      "value": ""
-    },
-    "publicIP1AddressType": {
-      "value": "Static"
-    },
-    "publicIP1SKU": {
-      "value": "Standard"
-    },
-    "vnetNewOrExisting": {
-      "value": "new"
-    },
-    "vnetName": {
-      "value": ""
-    },
-    "vnetResourceGroup": {
-      "value": ""
-    },
-    "vnetAddressPrefix": {
-      "value": "172.16.136.0/22"
-    },
-    "subnet1Name": {
-      "value": "externalsubnet"
-    },
-    "subnet1Prefix": {
-      "value": "172.16.136.0/26"
-    },
-    "subnet1StartAddress": {
-      "value": "172.16.136.4"
-    },
-    "subnet2Name": {
-      "value": "internalsubnet"
-    },
-    "subnet2Prefix": {
-      "value": "172.16.136.64/26"
-    },
-    "subnet2StartAddress": {
-      "value": "172.16.136.68"
-    },
-    "subnet3Name": {
-      "value": "protectedsubnet"
-    },
-    "subnet3Prefix": {
-      "value": "172.16.137.0/24"
-    },
-    "serialConsole": {
-      "value": "yes"
-    },
-    "fortiManager": {
-      "value": "no"
-    },
-    "fortiManagerIP": {
-      "value": ""
-    },
-    "fortiManagerSerial": {
-      "value": ""
-    },
-    "fortiGateLicenseBYOL": {
-      "value": ""
-    },
-    "fortiGateLicenseFortiFlex": {
-      "value": ""
-    },
-    "location": {
-      "value": ""
-    },
-    "tagsByResource": {
-      "value": {}
-    },
-    "fortinetTags": {
-      "value": {
-        "publisher": "Fortinet",
-        "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831VM"
-      }
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "" // TODO: Fill in parameter value
+        },
+        "adminPassword": {
+            "value": "" // TODO: Fill in parameter value
+        },
+        "fortiGateNamePrefix": {
+            "value": "" // TODO: Fill in parameter value
+        },
+        "fortiGateName": {
+            "value": ""
+        },
+        "fortiGateImageSKU_x64": {
+            "value": "fortinet_fg-vm"
+        },
+        "fortiGateImageSKU_arm64": {
+            "value": "fortinet_fg-vm_arm64"
+        },
+        "fortiGateInstanceArchitecture": {
+            "value": "x64"
+        },
+        "fortiGateImageVersion_x64": {
+            "value": "7.4.4"
+        },
+        "fortiGateImageVersion_arm64": {
+            "value": "7.4.4"
+        },
+        "fortiGateAdditionalCustomData": {
+            "value": ""
+        },
+        "instanceType_x64": {
+            "value": "Standard_F2s"
+        },
+        "instanceType_arm64": {
+            "value": "Standard_D2ps_v5"
+        },
+        "availabilityOptions": {
+            "value": "None"
+        },
+        "existingAvailabilitySetName": {
+            "value": ""
+        },
+        "availabilityZoneNumber": {
+            "value": ""
+        },
+        "acceleratedNetworking": {
+            "value": "false"
+        },
+        "acceleratedConnections": {
+            "value": false
+        },
+        "acceleratedConnectionsSku": {
+            "value": "A1"
+        },
+        "publicIP1NewOrExisting": {
+            "value": "new"
+        },
+        "publicIP1Name": {
+            "value": ""
+        },
+        "publicIP1ResourceGroup": {
+            "value": ""
+        },
+        "publicIP1AddressType": {
+            "value": "Static"
+        },
+        "publicIP1SKU": {
+            "value": "Standard"
+        },
+        "vnetNewOrExisting": {
+            "value": "new"
+        },
+        "vnetName": {
+            "value": ""
+        },
+        "vnetResourceGroup": {
+            "value": ""
+        },
+        "vnetAddressPrefix": {
+            "value": "172.16.136.0/22"
+        },
+        "subnet1Name": {
+            "value": "ExternalSubnet"
+        },
+        "subnet1Prefix": {
+            "value": "172.16.136.0/26"
+        },
+        "subnet1StartAddress": {
+            "value": "172.16.136.4"
+        },
+        "subnet2Name": {
+            "value": "InternalSubnet"
+        },
+        "subnet2Prefix": {
+            "value": "172.16.136.64/26"
+        },
+        "subnet2StartAddress": {
+            "value": "172.16.136.68"
+        },
+        "subnet3Name": {
+            "value": "ProtectedASubnet"
+        },
+        "subnet3Prefix": {
+            "value": "172.16.137.0/24"
+        },
+        "serialConsole": {
+            "value": "yes"
+        },
+        "fortiManager": {
+            "value": "no"
+        },
+        "fortiManagerIP": {
+            "value": ""
+        },
+        "fortiManagerSerial": {
+            "value": ""
+        },
+        "fortiGateLicenseBYOL": {
+            "value": ""
+        },
+        "fortiGateLicenseFortiFlex": {
+            "value": ""
+        },
+        "customImageReference": {
+            "value": ""
+        },
+        "location": {
+            "value": "" // TODO: Fill in parameter value
+        },
+        "tagsByResource": {
+            "value": {}
+        },
+        "fortinetTags": {
+            "value": {
+              "publisher": "Fortinet",
+              "template": "A-Single-VM",
+              "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831VM"
+            }
+        }
     }
-  }
 }

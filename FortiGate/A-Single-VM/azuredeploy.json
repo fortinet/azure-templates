@@ -27,7 +27,7 @@
         "description": "Custom naming for the deployed FortiGate resources. This will override the automatic generation based on the prefix for the FortiGate name."
       }
     },
-    "fortiGateImageSKU": {
+    "fortiGateImageSKU_x64": {
       "type": "string",
       "defaultValue": "fortinet_fg-vm",
       "allowedValues": [
@@ -38,54 +38,100 @@
         "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately"
       }
     },
-    "fortiGateImageVersion": {
+    "fortiGateImageSKU_arm64": {
       "type": "string",
-      "defaultValue": "7.2.7",
+      "defaultValue": "fortinet_fg-vm_arm64",
       "allowedValues": [
-        "6.2.0",
-        "6.2.2",
-        "6.2.4",
-        "6.2.5",
-        "6.4.0",
-        "6.4.10",
-        "6.4.11",
-        "6.4.12",
-        "6.4.13",
-        "6.4.15",
-        "6.4.2",
-        "6.4.3",
-        "6.4.5",
-        "6.4.6",
-        "6.4.7",
-        "6.4.8",
-        "6.4.9",
-        "7.0.0",
-        "7.0.1",
-        "7.0.10",
-        "7.0.11",
-        "7.0.12",
-        "7.0.13",
-        "7.0.14",
-        "7.0.2",
-        "7.0.3",
-        "7.0.4",
-        "7.0.5",
-        "7.0.6",
-        "7.0.8",
-        "7.0.9",
-        "7.2.0",
-        "7.2.1",
-        "7.2.2",
-        "7.2.3",
-        "7.2.4",
-        "7.2.5",
-        "7.2.6",
-        "7.2.7",
-        "7.4.0",
-        "7.4.1",
-        "7.4.2",
+        "fortinet_fg-vm_arm64",
+        "fortinet_fg-vm_payg_2023_arm64"
+      ],
+      "metadata": {
+        "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately"
+      }
+    },
+    "fortiGateInstanceArchitecture": {
+      "type": "string",
+      "defaultValue": "x64",
+      "allowedValues": [
+        "x64",
+        "arm64"
+      ],
+      "metadata": {
+        "description": "Indicates the instance Architecture of the VM deployment. Intel/AMD or ARM"
+      }
+    },
+    "fortiGateImageVersion_x64": {
+      "type": "string",
+      "defaultValue": "7.4.5",
+      "allowedValues": [
+        "latest",
+        "7.6.0",
+        "7.4.5",
+        "7.4.4",
         "7.4.3",
-        "latest"
+        "7.4.2",
+        "7.4.1",
+        "7.4.0",
+        "7.2.10",
+        "7.2.9",
+        "7.2.8",
+        "7.2.7",
+        "7.2.6",
+        "7.2.5",
+        "7.2.4",
+        "7.2.3",
+        "7.2.2",
+        "7.2.1",
+        "7.2.0",
+        "7.0.15",
+        "7.0.14",
+        "7.0.13",
+        "7.0.12",
+        "7.0.11",
+        "7.0.10",
+        "7.0.9",
+        "7.0.8",
+        "7.0.6",
+        "7.0.5",
+        "7.0.4",
+        "7.0.3",
+        "7.0.2",
+        "7.0.1",
+        "7.0.0",
+        "6.4.15",
+        "6.4.13",
+        "6.4.12",
+        "6.4.11",
+        "6.4.10",
+        "6.4.9",
+        "6.4.8",
+        "6.4.7",
+        "6.4.6",
+        "6.4.5",
+        "6.4.3",
+        "6.4.2",
+        "6.4.0",
+        "6.2.5",
+        "6.2.4",
+        "6.2.2",
+        "6.2.0"
+      ],
+      "metadata": {
+        "description": "Select the image version"
+      }
+    },
+    "fortiGateImageVersion_arm64": {
+      "type": "string",
+      "defaultValue": "7.4.4",
+      "allowedValues": [
+        "latest",
+        "7.6.0",
+        "7.4.5",
+        "7.4.4",
+        "7.4.3",
+        "7.2.10",
+        "7.2.9",
+        "7.2.8"
       ],
       "metadata": {
         "description": "Select the image version"
@@ -98,7 +144,7 @@
         "description": "The ARM template provides a basic configuration. Additional configuration can be added here."
       }
     },
-    "instanceType": {
+    "instanceType_x64": {
       "type": "string",
       "defaultValue": "Standard_F2s",
       "allowedValues": [
@@ -164,7 +210,16 @@
         "Standard_D4ads_v5",
         "Standard_D8ads_v5",
         "Standard_D16ads_v5",
-        "Standard_D32ads_v5",
+        "Standard_D32ads_v5"
+      ],
+      "metadata": {
+        "description": "Virtual Machine size selection - must be F4 or other instance that supports 4 NICs"
+      }
+    },
+    "instanceType_arm64": {
+      "type": "string",
+      "defaultValue": "Standard_D2ps_v5",
+      "allowedValues": [
         "Standard_D2ps_v5",
         "Standard_D4ps_v5",
         "Standard_D8ps_v5",
@@ -473,7 +528,10 @@
   "variables": {
     "imagePublisher": "fortinet",
     "imageOffer": "fortinet_fortigate-vm_v5",
-    "availabilitySetName": "[if(equals(parameters('existingAvailabilitySetName'),''),concat(parameters('fortiGateNamePrefix'),'-availabilityset'),parameters('existingAvailabilitySetName'))]",
+    "fortiGateImageSKU": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageSKU_arm64'), parameters('fortiGateImageSKU_x64'))]",
+    "fortiGateImageVersion": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageVersion_arm64'), parameters('fortiGateImageVersion_x64'))]",
+    "instanceType": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('instanceType_arm64'), parameters('instanceType_x64'))]",
+    "availabilitySetName": "[if(equals(parameters('existingAvailabilitySetName'),''),concat(parameters('fortiGateNamePrefix'),'-AvailabilitySet'),parameters('existingAvailabilitySetName'))]",
     "availabilitySetId": {
       "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
     },
@@ -532,14 +590,14 @@
     "imageReferenceMarketplace": {
       "publisher": "[variables('imagePublisher')]",
       "offer": "[variables('imageOffer')]",
-      "sku": "[parameters('fortiGateImageSKU')]",
-      "version": "[parameters('FortiGateImageVersion')]"
+      "sku": "[variables('fortiGateImageSKU')]",
+      "version": "[variables('FortigateImageVersion')]"
     },
     "imageReferenceCustomImage": {
       "id": "[parameters('customImageReference')]"
     },
     "virtualMachinePlan": {
-      "name": "[parameters('fortiGateImageSKU')]",
+      "name": "[variables('fortiGateImageSKU')]",
       "publisher": "[variables('imagePublisher')]",
       "product": "[variables('imageOffer')]"
     },
@@ -551,7 +609,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-07-01",
       "name": "[concat(parameters('fortiGateNamePrefix'), '-fortinetdeployment-', uniquestring(resourceGroup().id))]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -565,9 +623,9 @@
     },
     {
       "condition": "[and(variables('useAS'),equals(parameters('existingAvailabilitySetName'),''))]",
-      "type": "Microsoft.Compute/availabilitySets",
-      "apiVersion": "2023-03-01",
       "name": "[variables('availabilitySetName')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "apiVersion": "2023-09-01",
       "location": "[parameters('location')]",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Compute/availabilitySets'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Compute/availabilitySets']), parameters('fortinetTags')) ]",
       "properties": {
@@ -582,7 +640,7 @@
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
       "name": "[variables('vnetName')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-06-01",
       "location": "[parameters('location')]",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Network/virtualNetworks'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Network/virtualNetworks']), parameters('fortinetTags')) ]",
       "dependsOn": [
@@ -623,7 +681,7 @@
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
       "type": "Microsoft.Network/routeTables",
       "name": "[variables('routeTableProtectedName')]",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-06-01",
       "location": "[parameters('location')]",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Network/routeTables'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Network/routeTables']), parameters('fortinetTags')) ]",
       "properties": {
@@ -655,9 +713,9 @@
       }
     },
     {
-      "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('nsgName')]",
-      "apiVersion": "2023-04-01",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-06-01",
       "location": "[parameters('location')]",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Network/networkSecurityGroups'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Network/networkSecurityGroups']), parameters('fortinetTags')) ]",
       "properties": {
@@ -695,9 +753,9 @@
     },
     {
       "condition": "[equals(parameters('publicIP1NewOrExisting'), 'new')]",
-      "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIP1Name')]",
-      "apiVersion": "2023-04-01",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2023-06-01",
       "location": "[parameters('location')]",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Network/publicIPAddresses'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Network/publicIPAddresses']), parameters('fortinetTags')) ]",
       "sku": {
@@ -712,9 +770,9 @@
       }
     },
     {
-      "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgtNic1Name')]",
-      "apiVersion": "2023-04-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2023-06-01",
       "location": "[parameters('location')]",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Network/networkInterfaces'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Network/networkInterfaces'],variables('fastpathtag')), union(parameters('fortinetTags'),variables('fastpathtag'))) ]",
       "dependsOn": [
@@ -747,7 +805,7 @@
     {
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgtNic2Name')]",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-06-01",
       "location": "[parameters('location')]",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Network/networkInterfaces'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Network/networkInterfaces'],variables('fastpathtag')), union(parameters('fortinetTags'),variables('fastpathtag'))) ]",
       "dependsOn": [
@@ -779,21 +837,21 @@
     {
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('fgtVmName')]",
-      "apiVersion": "2022-03-01",
+      "apiVersion": "2023-03-01",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Compute/virtualMachines'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Compute/virtualMachines']), parameters('fortinetTags')) ]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
       },
       "zones": "[if(variables('useAZ'), variables('zone1'), json('null'))]",
-      "plan": "[if(and(equals(parameters('fortiGateImageSKU'),'fortinet_fg-vm'),not(equals(parameters('customImageReference'),''))), json('null'), variables('virtualMachinePlan'))]",
+      "plan": "[if(and(or(equals(variables('fortiGateImageSKU'),'fortinet_fg-vm'),equals(variables('fortiGateImageSKU'),'fortinet_fg-vm_arm64')),not(equals(parameters('customImageReference'),''))), json('null'), variables('virtualMachinePlan'))]",
       "dependsOn": [
         "[variables('fgtNic1Id')]",
         "[variables('fgtNic2Id')]"
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[parameters('instanceType')]"
+          "vmSize": "[variables('instanceType')]"
         },
         "availabilitySet": "[if(variables('useAS'), variables('availabilitySetId'), json('null'))]",
         "osProfile": {
@@ -803,7 +861,7 @@
           "customData": "[variables('fgtCustomData')]"
         },
         "storageProfile": {
-          "imageReference": "[if(and(equals(parameters('fortiGateImageSKU'),'fortinet_fg-vm'),not(equals(parameters('customImageReference'),''))), variables('imageReferenceCustomImage'), variables('imageReferenceMarketplace'))]",
+          "imageReference": "[if(and(or(equals(variables('fortiGateImageSKU'),'fortinet_fg-vm'),equals(variables('fortiGateImageSKU'),'fortinet_fg-vm_arm64')),not(equals(parameters('customImageReference'),''))), variables('imageReferenceCustomImage'), variables('imageReferenceMarketplace'))]",
           "osDisk": {
             "createOption": "FromImage"
           },
