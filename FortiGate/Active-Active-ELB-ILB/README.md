@@ -134,7 +134,7 @@ The FortiGate VMs need a specific configuration to match the deployed environmen
 - [Session Synchronization](#session-synchronization)
 - [Availability Zone](#availability-zone)
 - [Default configuration using this template](#default-configuration)
-- [Upload VHD](../Documentation/faq-upload-vhd.md)
+- [Upload VHD](https://community.fortinet.com/t5/FortiGate-Azure-Technical/Deployment-of-FortiGate-VM-using-a-VHD-image-file/ba-p/320338)
 
 ### Fabric Connector
 
@@ -148,15 +148,13 @@ In Microsoft Azure, this central security services hub is commonly implemented u
 
 ### East-West connections
 
-#### Introduction
-
 East-West connections are considered the connections between internal subnets within the VNET or peered VNETs. The goal is to direct this traffic via the FortiGate.
 
 To direct traffic to the FortiGate NGFW routing needs to be adapted on Microsoft Azure using User Defined Routing (UDR). With UDRs the routing in Azure can be adapted to send traffic destined for a specific network IP range to a specific destination such as Internet, VPN Gateway, Virtual Network (VNET), ... In order for the FortiGate to become the destination there is a specific destination called Virtual Appliance. Either the private IP of the FortiGate or the private IP of the internal Load Balancer is provided. More information about User Defined Routing can be found [here](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview)
 
 In this design an Azure Standard Load Balancer Internal is used with a specific feature called HA Ports. This feature allows fast failover between the different members of the FortiGate HA custer for all TCP, UDP and ICMP protocols. It is only available in the Standard Load Balancer and as such all load balancers connected to the FortiGate need to be of the Standard type. ALso the public IPs connected to the FortiGate need to be of the Standard type. These is no possibility to migrate between basic and standard public IP sku's. More information about HA Ports can be found [here](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-ha-ports-overview)
 
-#### East-West Flow
+#### East-West flow
 
 In the diagram the different steps to establish a session are layed out. This flow is based on the configuration as deployed in this template.
 
@@ -169,7 +167,7 @@ In the diagram the different steps to establish a session are layed out. This fl
 5. The Azure External Load Balancer sends the returns packet to the active FortiGate - s: 172.16.137.4 - d: 172.16.138.4
 6. The active FGT accepts the return packet after inspection - s: 172.16.137.4 - d: 172.16.138.4
 
-#### Configuration
+#### East-West configuration
 
 To configure the east-west connectivity to a service there are 2 resources that need to be verified/configured:
 
@@ -206,7 +204,7 @@ To go beyond the limitation of the Azure Load Balancer and use other protocols (
 
 There are 2 public IP SKU's: Basic and Standard. This template will use the Standard SKU as we are using the Azure Standard Load Balancer. The standard public IP by default is a static allocation. More information can be found [in the Microsoft documentation](https://docs.microsoft.com/en-us/azure/virtual-network/public-ip-addresses).
 
-#### Inbound Flow
+#### Inbound flow
 
 In the diagram the different steps to establish a session are layed out. This flow is based on the configuration as deployed in this template.
 
@@ -221,7 +219,7 @@ In the diagram the different steps to establish a session are layed out. This fl
 5. FGT A translates the source to the FGT VIP on the external interface - s: a.b.c.d - d: w.x.y.z
 6. Packet is routed to the client using DSR (Direct Server Return) - s: a.b.c.d - d: w.x.y.z
 
-#### Configuration
+#### Inbound configuration
 
 To configure the inbound connectivity to a service there are 2 resources that need to be adapted:
 
@@ -308,7 +306,7 @@ NAT Gateway takes precedence over a public IP directly connected to a NIC as sec
 - [Outbound connectivity with a NAT Gateway](https://learn.microsoft.com/en-us/azure/nat-gateway/faq#how-can-i-use-a-nat-gateway-to-connect-outbound-in-a-setup-where-i-m-currently-using-a-different-service-for-outbound)
 - [Quickstart: Create a public load balancer to load balance VMs using the Azure portal](https://learn.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-portal)
 
-#### Outbound Flow
+#### Outbound flow
 
 In the diagram the different steps to establish a session are layed out. 
 
@@ -324,7 +322,7 @@ In the diagram the different steps to establish a session are layed out.
 6. The Azure External Load Balancer sends the returns packet to the active FortiGate - s: a.b.c.d - d: 172.16.136.5
 7. The active FGT accepts the return packet after inspection. It translates and routes the packet to the client - s: a.b.c.d - d: 172.16.137.4
 
-#### Configuration
+#### Outbound configuration
 
 Outbound connectivity in Azure has several properties that are specific to the platform. These need to be taken into account. This configuration is a basic configuration that will NAT all outbound connections behind 1 or more public IPs on the Azure Load Balancer.
 
@@ -363,7 +361,7 @@ The NAT behind the FortiGate outgoing interface allows for a very simple configu
 
 #### Limitations
 
-- Azure has certain limitations on outbound connections: https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-connections#limitations
+- Azure has certain limitations on outbound connections [more info](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-connections#limitations)
 - Azure has a limited number of outbound ports it can allocated per public ip. More information and optimisations can be found [here](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-connections#preallocatedports)
 - In case of failover the Azure Load Balancer will sends existing sessions to the failed VM as explained [here](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-custom-probe-overview#probedown).
 
@@ -399,6 +397,7 @@ end
 ```
 
 In version 7.2.1 and above the syntax has changed as reported [here](https://docs.fortinet.com/document/fortigate/7.2.1/fortios-release-notes/517622/changes-in-cli).
+
 ```text
 config system ha
     set session-pickup enable
@@ -418,7 +417,7 @@ config system standalone-cluster
 end
 ```
 
-* Where x in 10.0.1.x is the IP of port 1 of the opposite FortiGate. With the default values this would be either 5 or 6.
+*Where x in 10.0.1.x is the IP of port 1 of the opposite FortiGate. With the default values this would be either 5 or 6.*
 
 If the firewall policies include UTM profiles it is required to enable specific UTM inspection. When enabled, the packets arriving on FortiGate that has not seen the initial packet will be send back to the FortiGate that processed the initial packet. A maximum of 4 FortiGate devices can be linked using this method: [UTM inspection on asymmetric traffic on L3](https://docs.fortinet.com/document/fortigate/7.6.0/administration-guide/324430/utm-inspection-on-asymmetric-traffic-on-l3)
 
@@ -463,7 +462,7 @@ Microsoft defines an Availability Zone to have the following properties:
 
 Based on information in the presentation ['Inside Azure datacenter architecture with Mark Russinovich' at Microsoft Ignite 2019](https://www.youtube.com/watch?v=X-0V6bYfTpA)
 
-![active/passive design](images/fgt-aa-az.png)
+![active/active design](images/fgt-aa-az.png)
 
 ### Default Configuration
 

@@ -82,7 +82,7 @@ The FortiGate-VMs need a specific configuration to match the deployed environmen
 - [Outbound connections](#outbound-connections)
 - [Availability Zone](#availability-zone)
 - [Default configuration using this template](#default-configuration)
-- [Upload VHD](../Documentation/faq-upload-vhd.md)
+- [Upload VHD](https://community.fortinet.com/t5/FortiGate-Azure-Technical/Deployment-of-FortiGate-VM-using-a-VHD-image-file/ba-p/320338)
 
 ### Fabric Connector
 
