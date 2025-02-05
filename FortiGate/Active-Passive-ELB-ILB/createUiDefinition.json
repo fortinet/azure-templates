@@ -141,7 +141,7 @@
                 "name": "fortiGateImageVersion_x64",
                 "type": "Microsoft.Common.DropDown",
                 "label": "FortiGate Image Version",
-                "defaultValue": "7.4.5",
+                "defaultValue": "7.4.6",
                 "toolTip": "Select the FortiGate image version",
                 "constraints": {
                   "required": false,
@@ -151,8 +151,16 @@
                       "value": "latest"
                     },
                     {
-                      "label": "7.6.0",
-                      "value": "7.6.0"
+                      "label": "7.6.2",
+                      "value": "7.6.2"
+                    },
+                    {
+                      "label": "7.6.1",
+                      "value": "7.6.1"
+                    },
+                    {
+                      "label": "7.4.6",
+                      "value": "7.4.6"
                     },
                     {
                       "label": "7.4.5",
@@ -462,10 +470,20 @@
                 "imageReference": {
                   "publisher": "Fortinet",
                   "offer": "fortinet_fortigate-vm_v5",
-                  "sku": "[steps('instance').instancetype_x64.fortiGateImageSKU_x64]"
+                  "sku": "[if(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest')),concat(steps('instance').instancetype_x64.fortiGateImageSKU_x64,'_g2'),steps('instance').instancetype_x64.fortiGateImageSKU_x64)]"
                 },
                 "count": 2,
                 "visible": true
+              },
+              {
+                "name": "versionInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": "[and(contains(steps('instance').instancetype_x64.selection_x64, '_v6'),not(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest'))))]",
+                "options": {
+                  "icon" : "Error",
+                  "text": "Dsv6 and Esv6 Instance families require a Gen2 VM Image, support for MANA network drivers and are incompatible with the selected FortiGate version, please select version 7.6.1 or higher",
+                  "uri": "https://azure.microsoft.com/en-ca/updates/public-preview-internet-inbound-for-network-virtual-appliances-in-virtual-wan-hubs/"
+                }  
               }
             ],
             "visible": "[equals(basics('fortiGateInstanceArchitecture'),'x64')]"
@@ -500,7 +518,7 @@
                 "name": "fortiGateImageVersion_arm64",
                 "type": "Microsoft.Common.DropDown",
                 "label": "FortiGate Image Version",
-                "defaultValue": "7.4.4",
+                "defaultValue": "7.4.6",
                 "toolTip": "Select the FortiGate image version",
                 "constraints": {
                   "required": false,
@@ -510,8 +528,20 @@
                       "value": "latest"
                     },
                     {
+                      "label": "7.6.2",
+                      "value": "7.6.2"
+                    },
+                    {
+                      "label": "7.6.1",
+                      "value": "7.6.1"
+                    },
+                    {
                       "label": "7.6.0",
                       "value": "7.6.0"
+                    },
+                    {
+                      "label": "7.4.6",
+                      "value": "7.4.6"
                     },
                     {
                       "label": "7.4.5",
@@ -636,7 +666,7 @@
                 "name": "availabilityOptions",
                 "type": "Microsoft.Common.DropDown",
                 "label": "Availability Option",
-                "defaultValue": "Availability Set",
+                "defaultValue": "Availability Zones",
                 "toolTip": "Deploy FortiGate VMs in an Availability Set or Availability Zones.",
                 "constraints": {
                   "required": false,
@@ -1085,8 +1115,8 @@
             "visible": true,
             "options": {
               "icon": "Info",
-              "text": "This deployment uses a Standard SKU Azure Load Balancer and requires a Standard SKU public IP. Microsoft Azure offers a migration path from a basic to standard SKU public IP. The management IP's for both FortiGate can be set to none. If no alternative internet access is provided the SDN Connector functionality will not work.",
-              "uri": "https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-public-ip-address-upgrade?tabs=option-upgrade-cli%2Coption-migrate-powershell"
+              "text": "This deployment uses a Standard SKU Azure Load Balancer and requires a Standard SKU public IP. On September 30, 2025, Basic SKU public IPs will be retired. Microsoft Azure offers a migration path from a basic to standard SKU public IP. The management IP's for both FortiGate can be set to none. If no alternative internet access is provided the SDN Connector functionality will not work.",
+              "uri": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-addresses"
             }
           }
         ]
@@ -1375,7 +1405,7 @@
     ],
     "outputs": {
       "fortiGateNamePrefix": "[basics('fortiGateNamePrefix')]",
-      "fortiGateImageSKU_x64": "[steps('instance').instancetype_x64.fortiGateImageSKU_x64]",
+      "fortiGateImageSKU_x64": "[if(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest')),concat(steps('instance').instancetype_x64.fortiGateImageSKU_x64,'_g2'),steps('instance').instancetype_x64.fortiGateImageSKU_x64)]",
       "fortiGateImageSKU_arm64": "[steps('instance').instancetype_arm64.fortiGateImageSKU_arm64]",
       "fortiGateImageVersion_x64": "[steps('instance').instancetype_x64.fortiGateImageVersion_x64]",
       "fortiGateImageVersion_arm64": "[steps('instance').instancetype_arm64.fortiGateImageVersion_arm64]",
