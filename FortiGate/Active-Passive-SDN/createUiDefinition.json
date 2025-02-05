@@ -25,6 +25,27 @@
         }
       },
       {
+        "name": "fortiGateInstanceArchitecture",
+        "type": "Microsoft.Common.OptionsGroup",
+        "label": "FortiGate VM instance Architecture",
+        "defaultValue": "X64 - Intel / AMD based processors",
+        "toolTip": "Select FortiGate VM instance Architecture",
+        "constraints": {
+          "allowedValues": [
+            {
+              "label": "X64 - Intel / AMD based processors",
+              "value": "x64"
+            },
+            {
+              "label": "ARM64 - Ampere Altra based processors",
+              "value": "arm64"
+            }
+          ],
+          "required": true
+        },
+        "visible": true
+      },
+      {
         "name": "adminUsername",
         "type": "Microsoft.Common.TextBox",
         "label": "FortiGate administrative username",
@@ -79,216 +100,6 @@
           "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1 to 15 characters."
         },
         "visible": true
-      },
-      {
-        "name": "fortiGateImageSKU",
-        "type": "Microsoft.Common.DropDown",
-        "label": "FortiGate Image SKU",
-        "defaultValue": "Bring Your Own License",
-        "toolTip": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)",
-        "constraints": {
-          "required": false,
-          "allowedValues": [
-            {
-              "label": "Bring Your Own License",
-              "value": "fortinet_fg-vm"
-            },
-            {
-              "label": "Pay As You Go",
-              "value": "fortinet_fg-vm_payg_2023"
-            }
-          ]
-        },
-        "visible": true
-      },
-      {
-        "name": "fortiGateImageVersion",
-        "type": "Microsoft.Common.DropDown",
-        "label": "FortiGate Image Version",
-        "defaultValue": "7.2.7",
-        "toolTip": "Only 6.x has the A/P HA feature currently",
-        "constraints": {
-          "required": false,
-          "allowedValues": [
-            {
-              "label": "6.2.0",
-              "value": "6.2.0"
-            },
-            {
-              "label": "6.2.2",
-              "value": "6.2.2"
-            },
-            {
-              "label": "6.2.4",
-              "value": "6.2.4"
-            },
-            {
-              "label": "6.2.5",
-              "value": "6.2.5"
-            },
-            {
-              "label": "6.4.0",
-              "value": "6.4.0"
-            },
-            {
-              "label": "6.4.10",
-              "value": "6.4.10"
-            },
-            {
-              "label": "6.4.11",
-              "value": "6.4.11"
-            },
-            {
-              "label": "6.4.12",
-              "value": "6.4.12"
-            },
-            {
-              "label": "6.4.13",
-              "value": "6.4.13"
-            },
-            {
-              "label": "6.4.15",
-              "value": "6.4.15"
-            },
-            {
-              "label": "6.4.2",
-              "value": "6.4.2"
-            },
-            {
-              "label": "6.4.3",
-              "value": "6.4.3"
-            },
-            {
-              "label": "6.4.5",
-              "value": "6.4.5"
-            },
-            {
-              "label": "6.4.6",
-              "value": "6.4.6"
-            },
-            {
-              "label": "6.4.7",
-              "value": "6.4.7"
-            },
-            {
-              "label": "6.4.8",
-              "value": "6.4.8"
-            },
-            {
-              "label": "6.4.9",
-              "value": "6.4.9"
-            },
-            {
-              "label": "7.0.0",
-              "value": "7.0.0"
-            },
-            {
-              "label": "7.0.1",
-              "value": "7.0.1"
-            },
-            {
-              "label": "7.0.10",
-              "value": "7.0.10"
-            },
-            {
-              "label": "7.0.11",
-              "value": "7.0.11"
-            },
-            {
-              "label": "7.0.12",
-              "value": "7.0.12"
-            },
-            {
-              "label": "7.0.13",
-              "value": "7.0.13"
-            },
-            {
-              "label": "7.0.14",
-              "value": "7.0.14"
-            },
-            {
-              "label": "7.0.2",
-              "value": "7.0.2"
-            },
-            {
-              "label": "7.0.3",
-              "value": "7.0.3"
-            },
-            {
-              "label": "7.0.4",
-              "value": "7.0.4"
-            },
-            {
-              "label": "7.0.5",
-              "value": "7.0.5"
-            },
-            {
-              "label": "7.0.6",
-              "value": "7.0.6"
-            },
-            {
-              "label": "7.0.8",
-              "value": "7.0.8"
-            },
-            {
-              "label": "7.0.9",
-              "value": "7.0.9"
-            },
-            {
-              "label": "7.2.0",
-              "value": "7.2.0"
-            },
-            {
-              "label": "7.2.1",
-              "value": "7.2.1"
-            },
-            {
-              "label": "7.2.2",
-              "value": "7.2.2"
-            },
-            {
-              "label": "7.2.3",
-              "value": "7.2.3"
-            },
-            {
-              "label": "7.2.4",
-              "value": "7.2.4"
-            },
-            {
-              "label": "7.2.5",
-              "value": "7.2.5"
-            },
-            {
-              "label": "7.2.6",
-              "value": "7.2.6"
-            },
-            {
-              "label": "7.2.7",
-              "value": "7.2.7"
-            },
-            {
-              "label": "7.4.0",
-              "value": "7.4.0"
-            },
-            {
-              "label": "7.4.1",
-              "value": "7.4.1"
-            },
-            {
-              "label": "7.4.2",
-              "value": "7.4.2"
-            },
-            {
-              "label": "7.4.3",
-              "value": "7.4.3"
-            },
-            {
-              "label": "latest",
-              "value": "latest"
-            }
-          ]
-        },
-        "visible": true
       }
     ],
     "steps": [
@@ -301,10 +112,256 @@
         },
         "elements": [
           {
-            "name": "instancetype",
+            "name": "instancetype_x64",
             "type": "Microsoft.Common.Section",
-            "label": "Instance Type",
+            "label": "Instance Type x64",
             "elements": [
+              {
+                "name": "fortiGateImageSku_x64",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Fortigate Image SKU",
+                "defaultValue": "Bring Your Own License or FortiFlex",
+                "toolTip": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)",
+                "constraints": {
+                  "required": false,
+                  "allowedValues": [
+                    {
+                      "label": "Bring Your Own License or FortiFlex",
+                      "value": "fortinet_fg-vm"
+                    },
+                    {
+                      "label": "Pay As You Go",
+                      "value": "fortinet_fg-vm_payg_2023"
+                    }
+                  ]
+                },
+                "visible": true
+              },
+              {
+                "name": "fortiGateImageVersion_x64",
+                "type": "Microsoft.Common.DropDown",
+                "label": "FortiGate Image Version",
+                "defaultValue": "7.4.4",
+                "toolTip": "Only 6.x has the A/P HA feature currently",
+                "constraints": {
+                  "required": false,
+                  "allowedValues": [
+                    {
+                      "label": "latest",
+                      "value": "latest"
+                    },
+                    {
+                      "label": "7.6.2",
+                      "value": "7.6.2"
+                    },
+                    {
+                      "label": "7.6.1",
+                      "value": "7.6.1"
+                    },
+                    {
+                      "label": "7.4.6",
+                      "value": "7.4.6"
+                    },
+                    {
+                      "label": "7.4.5",
+                      "value": "7.4.5"
+                    },
+                    {
+                      "label": "7.4.4",
+                      "value": "7.4.4"
+                    },
+                    {
+                      "label": "7.4.3",
+                      "value": "7.4.3"
+                    },
+                    {
+                      "label": "7.4.2",
+                      "value": "7.4.2"
+                    },
+                    {
+                      "label": "7.4.1",
+                      "value": "7.4.1"
+                    },
+                    {
+                      "label": "7.4.0",
+                      "value": "7.4.0"
+                    },
+                    {
+                      "label": "7.2.10",
+                      "value": "7.2.10"
+                    },
+                    {
+                      "label": "7.2.9",
+                      "value": "7.2.9"
+                    },
+                    {
+                      "label": "7.2.8",
+                      "value": "7.2.8"
+                    },
+                    {
+                      "label": "7.2.7",
+                      "value": "7.2.7"
+                    },
+                    {
+                      "label": "7.2.6",
+                      "value": "7.2.6"
+                    },
+                    {
+                      "label": "7.2.5",
+                      "value": "7.2.5"
+                    },
+                    {
+                      "label": "7.2.4",
+                      "value": "7.2.4"
+                    },
+                    {
+                      "label": "7.2.3",
+                      "value": "7.2.3"
+                    },
+                    {
+                      "label": "7.2.2",
+                      "value": "7.2.2"
+                    },
+                    {
+                      "label": "7.2.1",
+                      "value": "7.2.1"
+                    },
+                    {
+                      "label": "7.2.0",
+                      "value": "7.2.0"
+                    },
+                    {
+                      "label": "7.0.15",
+                      "value": "7.0.15"
+                    },
+                    {
+                      "label": "7.0.14",
+                      "value": "7.0.14"
+                    },
+                    {
+                      "label": "7.0.13",
+                      "value": "7.0.13"
+                    },
+                    {
+                      "label": "7.0.12",
+                      "value": "7.0.12"
+                    },
+                    {
+                      "label": "7.0.11",
+                      "value": "7.0.11"
+                    },
+                    {
+                      "label": "7.0.10",
+                      "value": "7.0.10"
+                    },
+                    {
+                      "label": "7.0.9",
+                      "value": "7.0.9"
+                    },
+                    {
+                      "label": "7.0.8",
+                      "value": "7.0.8"
+                    },
+                    {
+                      "label": "7.0.6",
+                      "value": "7.0.6"
+                    },
+                    {
+                      "label": "7.0.5",
+                      "value": "7.0.5"
+                    },
+                    {
+                      "label": "7.0.4",
+                      "value": "7.0.4"
+                    },
+                    {
+                      "label": "7.0.3",
+                      "value": "7.0.3"
+                    },
+                    {
+                      "label": "7.0.2",
+                      "value": "7.0.2"
+                    },
+                    {
+                      "label": "7.0.1",
+                      "value": "7.0.1"
+                    },
+                    {
+                      "label": "7.0.0",
+                      "value": "7.0.0"
+                    },
+                    {
+                      "label": "6.4.15",
+                      "value": "6.4.15"
+                    },
+                    {
+                      "label": "6.4.13",
+                      "value": "6.4.13"
+                    },
+                    {
+                      "label": "6.4.12",
+                      "value": "6.4.12"
+                    },
+                    {
+                      "label": "6.4.11",
+                      "value": "6.4.11"
+                    },
+                    {
+                      "label": "6.4.10",
+                      "value": "6.4.10"
+                    },
+                    {
+                      "label": "6.4.9",
+                      "value": "6.4.9"
+                    },
+                    {
+                      "label": "6.4.8",
+                      "value": "6.4.8"
+                    },
+                    {
+                      "label": "6.4.7",
+                      "value": "6.4.7"
+                    },
+                    {
+                      "label": "6.4.6",
+                      "value": "6.4.6"
+                    },
+                    {
+                      "label": "6.4.5",
+                      "value": "6.4.5"
+                    },
+                    {
+                      "label": "6.4.3",
+                      "value": "6.4.3"
+                    },
+                    {
+                      "label": "6.4.2",
+                      "value": "6.4.2"
+                    },
+                    {
+                      "label": "6.4.0",
+                      "value": "6.4.0"
+                    },
+                    {
+                      "label": "6.2.5",
+                      "value": "6.2.5"
+                    },
+                    {
+                      "label": "6.2.4",
+                      "value": "6.2.4"
+                    },
+                    {
+                      "label": "6.2.2",
+                      "value": "6.2.2"
+                    },
+                    {
+                      "label": "6.2.0",
+                      "value": "6.2.0"
+                    }
+                  ]
+                },
+                "visible": true
+              },
               {
                 "name": "info",
                 "type": "Microsoft.Common.TextBlock",
@@ -313,12 +370,12 @@
                   "text": "For this FortiGate deployment, it is recommended to use the general purpose or compute optimized virtual machines. A selection of supported instances sizes is listed in our documentation. FortiGate Active/Passive HA uses the FGCP protocol for configuration sync and HA failover. This requires dedicated sync and management ports. A minimum of 4 NICs is required for the instance type.",
                   "link": {
                     "label": "Learn more",
-                    "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/562841/instance-type-support"
+                    "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/azure-administration-guide/562841/instance-type-support"
                   }
                 }
               },
               {
-                "name": "selection",
+                "name": "selection_x64",
                 "type": "Microsoft.Compute.SizeSelector",
                 "label": "Size",
                 "toolTip": "Select the instance size of your FortiGate VM solution. Minimum 4 NICs are required.",
@@ -364,7 +421,7 @@
                   "Standard_D32ads_v5"
                 ],
                 "constraints": {
-                  "allowedValues": [
+                  "allowedSizes": [
                     "Standard_F4s",
                     "Standard_F8s",
                     "Standard_F16s",
@@ -403,7 +460,156 @@
                     "Standard_D32as_v5",
                     "Standard_D8ads_v5",
                     "Standard_D16ads_v5",
-                    "Standard_D32ads_v5",
+                    "Standard_D32ads_v5"
+                  ]
+                },
+                "options": {
+                  "hideDiskTypeFilter": false
+                },
+                "osPlatform": "Linux",
+                "imageReference": {
+                  "publisher": "Fortinet",
+                  "offer": "fortinet_fortigate-vm_v5",
+                  "sku": "[if(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest')),concat(steps('instance').instancetype_x64.fortiGateImageSku_x64,'_g2'),steps('instance').instancetype_x64.fortiGateImageSku_x64)]"
+                },
+                "count": 2,
+                "visible": true
+              },
+              {
+                "name": "versionInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": "[and(contains(steps('instance').instancetype_x64.selection_x64, '_v6'),not(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest'))))]",
+                "options": {
+                  "icon": "Error",
+                  "text": "Dsv6 and Esv6 Instance families require a Gen2 VM Image, support for MANA network drivers and are incompatible with the selected FortiGate version, please select version 7.6.1 or higher",
+                  "uri": "https://azure.microsoft.com/en-ca/updates/public-preview-internet-inbound-for-network-virtual-appliances-in-virtual-wan-hubs/"
+                }
+              }
+            ],
+            "visible": "[equals(basics('fortiGateInstanceArchitecture'),'x64')]"
+          },
+          {
+            "name": "instancetype_arm64",
+            "type": "Microsoft.Common.Section",
+            "label": "Instance Type ARM 64",
+            "elements": [
+              {
+                "name": "fortiGateImageSku_arm64",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Fortigate Image SKU",
+                "defaultValue": "Bring Your Own License or FortiFlex",
+                "toolTip": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)",
+                "constraints": {
+                  "required": false,
+                  "allowedValues": [
+                    {
+                      "label": "Bring Your Own License or FortiFlex",
+                      "value": "fortinet_fg-vm_arm64"
+                    },
+                    {
+                      "label": "Pay As You Go",
+                      "value": "fortinet_fg-vm_payg_2023_arm64"
+                    }
+                  ]
+                },
+                "visible": true
+              },
+              {
+                "name": "fortiGateImageVersion_arm64",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Fortigate Image Version",
+                "defaultValue": "7.4.6",
+                "toolTip": "Only 6.x has the A/P HA feature currently",
+                "constraints": {
+                  "required": false,
+                  "allowedValues": [
+                    {
+                      "label": "latest",
+                      "value": "latest"
+                    },
+                    {
+                      "label": "7.6.2",
+                      "value": "7.6.2"
+                    },
+                    {
+                      "label": "7.6.1",
+                      "value": "7.6.1"
+                    },
+                    {
+                      "label": "7.6.0",
+                      "value": "7.6.0"
+                    },
+                    {
+                      "label": "7.4.6",
+                      "value": "7.4.6"
+                    },
+                    {
+                      "label": "7.4.5",
+                      "value": "7.4.5"
+                    },
+                    {
+                      "label": "7.4.4",
+                      "value": "7.4.4"
+                    },
+                    {
+                      "label": "7.4.3",
+                      "value": "7.4.3"
+                    },
+                    {
+                      "label": "7.2.10",
+                      "value": "7.2.10"
+                    },
+                    {
+                      "label": "7.2.9",
+                      "value": "7.2.9"
+                    },
+                    {
+                      "label": "7.2.8",
+                      "value": "7.2.8"
+                    }
+                  ]
+                },
+                "visible": true
+              },
+              {
+                "name": "info",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "For this FortiGate deployment, it is recommended to use the general purpose or compute optimized virtual machines. A selection of supported instances sizes is listed in our documentation. FortiGate Active/Passive HA uses the FGCP protocol for configuration sync and HA failover. This requires dedicated sync and management ports. A minimum of 4 NICs is required for the instance type.",
+                  "link": {
+                    "label": "Learn more",
+                    "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/azure-administration-guide/562841/instance-type-support"
+                  }
+                }
+              },
+              {
+                "name": "selection_arm64",
+                "type": "Microsoft.Compute.SizeSelector",
+                "label": "Size",
+                "toolTip": "Select the instance size of your FortiGate VM solution. Minimum 4 NICs are required.",
+                "recommendedSizes": [
+                  "Standard_D8ps_v5",
+                  "Standard_D16ps_v5",
+                  "Standard_D32ps_v5",
+                  "Standard_D8pds_v5",
+                  "Standard_D16pds_v5",
+                  "Standard_D32pds_v5",
+                  "Standard_D8pls_v5",
+                  "Standard_D16pls_v5",
+                  "Standard_D32pls_v5",
+                  "Standard_D8plds_v5",
+                  "Standard_D16plds_v5",
+                  "Standard_D32plds_v5",
+                  "Standard_E8ps_v5",
+                  "Standard_E16ps_v5",
+                  "Standard_E32ps_v5",
+                  "Standard_E8pds_v5",
+                  "Standard_E16pds_v5",
+                  "Standard_E32pds_v5"
+                ],
+                "constraints": {
+                  "allowedSizes": [
                     "Standard_D8ps_v5",
                     "Standard_D16ps_v5",
                     "Standard_D32ps_v5",
@@ -431,12 +637,13 @@
                 "imageReference": {
                   "publisher": "Fortinet",
                   "offer": "fortinet_fortigate-vm_v5",
-                  "sku": "[basics('fortiGateImageSKU')]"
+                  "sku": "[steps('instance').instancetype_arm64.fortiGateImageSku_arm64]"
                 },
                 "count": 2,
                 "visible": true
               }
-            ]
+            ],
+            "visible": "[equals(basics('fortiGateInstanceArchitecture'),'arm64')]"
           },
           {
             "name": "availabilityOptions",
@@ -459,7 +666,7 @@
                 "name": "availabilityOptions",
                 "type": "Microsoft.Common.DropDown",
                 "label": "Availability Option",
-                "defaultValue": "Availability Set",
+                "defaultValue": "Availability Zones",
                 "toolTip": "Deploy FortiGate VMs in an Availability Set or Availability Zones.",
                 "constraints": {
                   "required": false,
@@ -496,7 +703,7 @@
               {
                 "name": "fgtLicenseBYOLInfo",
                 "type": "Microsoft.Common.TextBlock",
-                "visible": "[equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm')]",
+                "visible": "[or(equals(steps('instance').instancetype_x64.fortiGateImageSku_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSku_arm64, 'fortinet_fg-vm_arm64'))]",
                 "options": {
                   "text": "Bring Your Own License was selected in the basics blade. The license file(s) retrieved from support.fortinet.com can be uploaded here or uploaded after deployment."
                 }
@@ -506,7 +713,7 @@
                 "type": "Microsoft.Common.CheckBox",
                 "label": "My organisation is using the FortiFlex subscription service.",
                 "toolTip": "Select this box to enter a FortiFlex token",
-                "visible": "[equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm')]"
+                "visible": "[or(equals(steps('instance').instancetype_x64.fortiGateImageSku_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSku_arm64, 'fortinet_fg-vm_arm64'))]"
               },
               {
                 "name": "fgtAcontent",
@@ -523,7 +730,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSku_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSku_arm64, 'fortinet_fg-vm_arm64')) ,not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgtBcontent",
@@ -540,7 +747,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSku_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSku_arm64, 'fortinet_fg-vm_arm64')) ,not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgtAfortiflex",
@@ -553,7 +760,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSku_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSku_arm64, 'fortinet_fg-vm_arm64')) ,steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgtBfortiflex",
@@ -566,7 +773,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSku_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSku_arm64, 'fortinet_fg-vm_arm64')) ,steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgtLicensePAYGInfo",
@@ -574,9 +781,9 @@
                 "options": {
                   "icon": "Info",
                   "text": "Pay As You Go licenses was selected in the basics blade and provisioned automatically durig deployment. Registration of the PAYG license is required to receive support.",
-                  "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/533394/creating-a-support-account"
+                  "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/azure-administration-guide/533394/creating-a-support-account"
                 },
-                "visible": "[not(equals(basics('fortiGateImageSKU'), 'fortinet_fg-vm'))]"
+                "visible": "[not(or(equals(steps('instance').instancetype_x64.fortiGateImageSku_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSku_arm64, 'fortinet_fg-vm_arm64')))]"
               },
               {
                 "name": "fgtLicenseMigrateInfo",
@@ -584,7 +791,7 @@
                 "options": {
                   "icon": "Info",
                   "text": "Migration between BYOL and PAYG is possible using a redeployment of the VM.",
-                  "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/81283/migrating-a-fortigate-vm-instance-between-license-types"
+                  "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/azure-administration-guide/81283/migrating-a-fortigate-vm-instance-between-license-types"
                 },
                 "visible": true
               }
@@ -625,7 +832,7 @@
                   "subnets": "Requirement to have 4 subnets connected to the FortiGate VM: external, internal, hasync and management"
                 },
                 "defaultValue": {
-                  "name": "[if(equals(basics('fortiGateNamePrefix'),''),'FortiGate-VNET',concat(basics('fortiGateNamePrefix'),'-VNET'))]",
+                  "name": "[if(equals(basics('fortiGateNamePrefix'),''),'FortiGate-vnet',concat(basics('fortiGateNamePrefix'),'-vnet'))]",
                   "addressPrefixSize": "/21"
                 },
                 "constraints": {
@@ -638,7 +845,7 @@
                   "subnet1": {
                     "label": "External Subnet",
                     "defaultValue": {
-                      "name": "ExternalSubnet",
+                      "name": "externalsubnet",
                       "addressPrefixSize": "/26"
                     },
                     "constraints": {
@@ -650,7 +857,7 @@
                   "subnet2": {
                     "label": "Internal subnet",
                     "defaultValue": {
-                      "name": "InternalSubnet",
+                      "name": "internalsubnet",
                       "addressPrefixSize": "/26"
                     },
                     "constraints": {
@@ -662,7 +869,7 @@
                   "subnet3": {
                     "label": "HA Sync subnet",
                     "defaultValue": {
-                      "name": "HASyncSubnet",
+                      "name": "hasyncsubnet",
                       "addressPrefixSize": "/26"
                     },
                     "constraints": {
@@ -672,9 +879,9 @@
                     }
                   },
                   "subnet4": {
-                    "label": "Management subnet",
+                    "label": "HA Management subnet",
                     "defaultValue": {
-                      "name": "MGMTSubnet",
+                      "name": "hamgmtsubnet",
                       "addressPrefixSize": "/26"
                     },
                     "constraints": {
@@ -686,7 +893,7 @@
                   "subnet5": {
                     "label": "Protected subnet",
                     "defaultValue": {
-                      "name": "ProtectedSubnet",
+                      "name": "protectedsubnet",
                       "addressPrefixSize": "/24"
                     },
                     "constraints": {
@@ -723,7 +930,7 @@
                   "text": "Enables SR-IOV support allowing the FortiOS to bypass the hypervisor and talk directly with the PCIe card underneath.",
                   "link": {
                     "label": "Learn more",
-                    "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/651644/enabling-accelerated-networking-on-the-fortigate-vm"
+                    "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/azure-administration-guide/651644/enabling-accelerated-networking-on-the-fortigate-vm"
                   }
                 }
               },
@@ -753,7 +960,7 @@
                 "type": "Microsoft.Common.CheckBox",
                 "label": "Accelerated Connections feature (PREVIEW)",
                 "toolTip": "This option enables the Accelerated Connections feature. provides higher bandwidth at an additional cost",
-                "visible": "[and(equals(steps('networking').acceleratednetworksection.acceleratednetworking, 'true'),not(contains(steps('instance').instancetype.selection, 'p')),not(contains(steps('instance').instancetype.selection, 'v5')))]"
+                "visible": "[and(equals(steps('networking').acceleratednetworksection.acceleratednetworking, 'true'),equals(basics('fortiGateInstanceArchitecture'),'x64'),not(contains(steps('instance').instancetype_x64.selection_x64, 'v5')))]"
               },
               {
                 "name": "acceleratedconnectionssku",
@@ -782,17 +989,17 @@
                     }
                   ]
                 },
-                "visible": "[and(equals(steps('networking').acceleratednetworksection.acceleratednetworking, 'true'),steps('networking').acceleratednetworksection.acceleratedconnectionscheck)]"
+                "visible": "[and(steps('networking').acceleratednetworksection.acceleratedconnectionscheck,equals(basics('fortiGateInstanceArchitecture'),'x64'),not(contains(steps('instance').instancetype_x64.selection_x64, 'v5')))]"
               },
               {
                 "name": "AccelConnwarning",
                 "type": "Microsoft.Common.InfoBox",
-                "visible": "[steps('networking').acceleratednetworksection.AcceleratedConnectionCheck]",
                 "options": {
                   "icon": "Warning",
                   "text": "This feature is currently in Preview, please contact Fortinet at 'azuretech@fortinet.com'. Verify the limitations with Microsoft on supported regions. Currently Dv5 instance types are not supported.",
                   "uri": "https://learn.microsoft.com/en-us/azure/networking/nva-accelerated-connections"
-                }
+                },
+                "visible": "[and(steps('networking').acceleratednetworksection.acceleratedconnectionscheck,equals(basics('fortiGateInstanceArchitecture'),'x64'),not(contains(steps('instance').instancetype_x64.selection_x64, 'v5')))]"
               }
             ]
           }
@@ -826,7 +1033,7 @@
               "domainNameLabel": "DNS name linked to this public IP"
             },
             "defaultValue": {
-              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'FGTAPClusterPublicIP',concat(basics('fortiGateNamePrefix'),'-FGT-PIP'))]",
+              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'fgtapclusterpublicip',concat(basics('fortiGateNamePrefix'),'-fgt-pip'))]",
               "domainNameLabel": "mydomain"
             },
             "constraints": {
@@ -852,7 +1059,7 @@
               "domainNameLabel": "DNS name linked to this public IP"
             },
             "defaultValue": {
-              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'FGTAMgmtPublicIP',concat(basics('fortiGateNamePrefix'),'-FGT-A-MGMT-PIP'))]",
+              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'fgtamgmtpublicip',concat(basics('fortiGateNamePrefix'),'-fgt-a-mgmt-pip'))]",
               "domainNameLabel": "mydomain"
             },
             "constraints": {
@@ -878,7 +1085,7 @@
               "domainNameLabel": "DNS name linked to this public IP"
             },
             "defaultValue": {
-              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'FGTBMgmtPublicIP',concat(basics('fortiGateNamePrefix'),'-FGT-B-MGMT-PIP'))]",
+              "publicIpAddressName": "[if(equals(basics('fortiGateNamePrefix'),''),'fgtbmgmtpublicip',concat(basics('fortiGateNamePrefix'),'-fgt-b-mgmt-pip'))]",
               "domainNameLabel": "mydomain"
             },
             "constraints": {
@@ -898,8 +1105,8 @@
             "visible": true,
             "options": {
               "icon": "Info",
-              "text": "This deployment can use Basic or Standard SKU public IP. Microsoft Azure offers a migration path from a basic to standard SKU public IP. All public IPs can be set to none. If no alternative internet access is provided, the SDN Connector functionality for both HA failover (via the HA MGMT NIC) and dynamic objects will not work.",
-              "uri": "https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-public-ip-address-upgrade?tabs=option-upgrade-cli%2Coption-migrate-powershell"
+              "text": "This deployment defaults to standard SKU public IP's. On September 30, 2025, Basic SKU public IPs will be retired. Microsoft Azure offers a migration path from a basic to standard SKU public IP. All public IPs can be set to none. If no alternative internet access is provided, the SDN Connector functionality for both HA failover (via the HA MGMT NIC) and dynamic objects will not work.",
+              "uri": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-addresses"
             }
           }
         ]
@@ -1176,14 +1383,21 @@
             "label": "Custom VHD",
             "elements": [
               {
+                "name": "customvhdcheck",
+                "type": "Microsoft.Common.CheckBox",
+                "label": "Use Azure compute gallery VHD for deployment",
+                "toolTip": "Provide a customer VHD image provided by Fortinet",
+                "visible": true
+              },
+              {
                 "name": "customvhdinfo",
                 "type": "Microsoft.Common.InfoBox",
-                "visible": true,
                 "options": {
                   "icon": "Info",
                   "text": "For BYOL it is possible to upload a specific FortiGate image to Azure provided by support. Provide the resource ID of the required VM image version in the field below.",
-                  "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/392531/deploying-fortigate-vm-from-a-vhd-image-file"
-                }
+                  "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/azure-administration-guide/392531/deploying-fortigate-vm-from-a-vhd-image-file"
+                },
+                "visible": "[steps('advanced').customvhd.customvhdcheck]"
               },
               {
                 "name": "resourceid",
@@ -1192,21 +1406,11 @@
                 "defaultValue": "",
                 "toolTip": "Azure Compute Gallery Image Version resource ID",
                 "constraints": {
-                  "required": "[and(contains(steps('instance').instancetype.selection, 'p'),equals(basics('fortiGateImageSKU'),'fortinet_fg-vm'))]",
+                  "required": "[and(steps('advanced').customvhd.customvhdcheck, equals(basics('fortiGateInstanceArchitecture'), 'arm64'))]",
                   "regex": "^[\\w\\W\n\t]{0,10240}$",
                   "validationMessage": "All characters allowed, max 10240 characters."
                 },
-                "visible": "[equals(basics('fortiGateImageSKU'),'fortinet_fg-vm')]"
-              },
-              {
-                "name": "customvhdinfo2",
-                "type": "Microsoft.Common.InfoBox",
-                "visible": "[contains(steps('instance').instancetype.selection, 'p')]",
-                "options": {
-                  "icon": "Info",
-                  "text": "An ARM64 based instance type was selected. This requires a custom image using an Azure Compute Gallery.",
-                  "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/392531/deploying-fortigate-vm-from-a-vhd-image-file"
-                }
+                "visible": "[steps('advanced').customvhd.customvhdcheck]"
               }
             ]
           }
@@ -1235,12 +1439,16 @@
     ],
     "outputs": {
       "fortiGateNamePrefix": "[basics('fortiGateNamePrefix')]",
-      "fortiGateImageSKU": "[basics('fortiGateImageSKU')]",
-      "fortiGateImageVersion": "[basics('fortiGateImageVersion')]",
+      "fortiGateImageSku_x64": "[if(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest')),concat(steps('instance').instancetype_x64.fortiGateImageSku_x64,'_g2'),steps('instance').instancetype_x64.fortiGateImageSku_x64)]",
+      "fortiGateImageSku_arm64": "[steps('instance').instancetype_arm64.fortiGateImageSku_arm64]",
+      "fortiGateImageVersion_x64": "[steps('instance').instancetype_x64.fortiGateImageVersion_x64]",
+      "fortiGateImageVersion_arm64": "[steps('instance').instancetype_arm64.fortiGateImageVersion_arm64]",
+      "fortiGateInstanceArchitecture": "[basics('fortiGateInstanceArchitecture')]",
       "adminUsername": "[basics('adminUsername')]",
       "adminPassword": "[basics('adminPassword')]",
       "location": "[location()]",
-      "instanceType": "[steps('instance').instancetype.selection]",
+      "instanceType_x64": "[steps('instance').instancetype_x64.selection_x64]",
+      "instanceType_arm64": "[steps('instance').instancetype_arm64.selection_arm64]",
       "availabilityOptions": "[steps('instance').availabilityOptions.availabilityOptions]",
       "fortiGateLicenseBYOLA": "[steps('instance').fgtLicense.fgtAcontent]",
       "fortiGateLicenseBYOLB": "[steps('instance').fgtLicense.fgtBcontent]",
@@ -1258,12 +1466,6 @@
       "publicIP2ResourceGroup": "[steps('publicip').fgtamgmtpublicip.resourceGroup]",
       "publicIP3Name": "[steps('publicip').fgtbmgmtpublicip.name]",
       "publicIP3ResourceGroup": "[steps('publicip').fgtbmgmtpublicip.resourceGroup]",
-      "publicIP1AddressSku": "[steps('publicip').externalpublicip.sku]",
-      "publicIP2AddressSku": "[steps('publicip').fgtamgmtpublicip.sku]",
-      "publicIP3AddressSku": "[steps('publicip').fgtbmgmtpublicip.sku]",
-      "publicIP1AddressType": "[steps('publicip').externalpublicip.publicIPAllocationMethod]",
-      "publicIP2AddressType": "[steps('publicip').fgtamgmtpublicip.publicIPAllocationMethod]",
-      "publicIP3AddressType": "[steps('publicip').fgtbmgmtpublicip.publicIPAllocationMethod]",
       "vnetNewOrExisting": "[steps('networking').virtualnetworksection.virtualnetwork.newOrExisting]",
       "vnetName": "[steps('networking').virtualnetworksection.virtualnetwork.name]",
       "vnetResourceGroup": "[steps('networking').virtualnetworksection.virtualnetwork.resourceGroup]",
