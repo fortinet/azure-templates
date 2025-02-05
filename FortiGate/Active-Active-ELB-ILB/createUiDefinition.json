@@ -154,7 +154,7 @@
                 "name": "fortiGateImageVersion_x64",
                 "type": "Microsoft.Common.DropDown",
                 "label": "FortiGate Image Version",
-                "defaultValue": "7.4.5",
+                "defaultValue": "7.4.6",
                 "toolTip": "Select the FortiGate image version",
                 "constraints": {
                   "required": false,
@@ -164,8 +164,16 @@
                       "value": "latest"
                     },
                     {
-                      "label": "7.6.0",
-                      "value": "7.6.0"
+                      "label": "7.6.2",
+                      "value": "7.6.2"
+                    },
+                    {
+                      "label": "7.6.1",
+                      "value": "7.6.1"
+                    },
+                    {
+                      "label": "7.4.6",
+                      "value": "7.4.6"
                     },
                     {
                       "label": "7.4.5",
@@ -557,6 +565,16 @@
                 },
                 "count": 2,
                 "visible": true
+              },
+              {
+                "name": "versionInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": "[and(contains(steps('instance').instancetype_x64.selection_x64, '_v6'),not(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest'))))]",
+                "options": {
+                  "icon" : "Error",
+                  "text": "Dsv6 and Esv6 Instance families require a Gen2 VM Image, support for MANA network drivers and are incompatible with the selected FortiGate version, please select version 7.6.1 or higher",
+                  "uri": "https://azure.microsoft.com/en-ca/updates/public-preview-internet-inbound-for-network-virtual-appliances-in-virtual-wan-hubs/"
+                }  
               }
             ],
             "visible": "[equals(basics('fortiGateInstanceArchitecture'),'x64')]"
@@ -591,7 +609,7 @@
                 "name": "fortiGateImageVersion_arm64",
                 "type": "Microsoft.Common.DropDown",
                 "label": "FortiGate Image Version",
-                "defaultValue": "7.4.4",
+                "defaultValue": "7.4.6",
                 "toolTip": "Select the FortiGate image version",
                 "constraints": {
                   "required": false,
@@ -601,8 +619,20 @@
                       "value": "latest"
                     },
                     {
+                      "label": "7.6.2",
+                      "value": "7.6.2"
+                    },
+                    {
+                      "label": "7.6.1",
+                      "value": "7.6.1"
+                    },
+                    {
                       "label": "7.6.0",
                       "value": "7.6.0"
+                    },
+                    {
+                      "label": "7.4.6",
+                      "value": "7.4.6"
                     },
                     {
                       "label": "7.4.5",
@@ -1372,8 +1402,27 @@
                   "text": "The FortiGate will use the existing infrastructure and NAT capabilities of the VNET for outbound access, e.g. FortiGate"
                 },
                 "visible": "[and(equals(steps('publicip').outboundConnectivity.options,'external-nat-device-or-elb'),not(bool(steps('publicip').externalLoadBalancer.enabled)))]"
+              },
+              {
+                "name": "externalnatdevicetextnoelb",
+                "type": "Microsoft.Common.InfoBox",
+                "options": {
+                  "icon": "Info",
+                  "text": "This deployment will be a one-armed setup with only an internal NIC connected to an internal load balancer."
+                },
+                "visible": "[steps('publicip').1niccheck]"
               }
             ]
+          },
+          {
+            "name": "standardsku",
+            "type": "Microsoft.Common.InfoBox",
+            "visible": true,
+            "options": {
+              "icon": "Info",
+              "text": "This deployment requires standard SKU public IP's. On September 30, 2025, Basic SKU public IPs will be retired. Microsoft Azure offers a migration path from a basic to standard SKU public IP.",
+              "uri": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-addresses"
+            }
           }
         ]
       },
@@ -1707,7 +1756,7 @@
     "outputs": {
       "fortiGateNamePrefix": "[basics('fortiGateNamePrefix')]",
       "fortiGateCount": "[int(basics('fortiGateCount'))]",
-      "fortiGateImageSKU_x64": "[steps('instance').instancetype_x64.fortiGateImageSKU_x64]",
+      "fortiGateImageSKU_x64": "[if(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest')),concat(steps('instance').instancetype_x64.fortiGateImageSKU_x64,'_g2'),steps('instance').instancetype_x64.fortiGateImageSKU_x64)]",
       "fortiGateImageSKU_arm64": "[steps('instance').instancetype_arm64.fortiGateImageSKU_arm64]",
       "fortiGateImageVersion_x64": "[steps('instance').instancetype_x64.fortiGateImageVersion_x64]",
       "fortiGateImageVersion_arm64": "[steps('instance').instancetype_arm64.fortiGateImageVersion_arm64]",

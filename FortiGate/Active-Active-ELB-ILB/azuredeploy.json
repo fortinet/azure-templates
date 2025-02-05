@@ -65,7 +65,10 @@
       "defaultValue": "7.4.5",
       "allowedValues": [
         "latest",
+        "7.6.2",
+        "7.6.1",
         "7.6.0",
+        "7.4.6",
         "7.4.5",
         "7.4.4",
         "7.4.3",
@@ -122,10 +125,13 @@
     },
     "fortiGateImageVersion_arm64": {
       "type": "string",
-      "defaultValue": "7.4.4",
+      "defaultValue": "7.4.6",
       "allowedValues": [
         "latest",
+        "7.6.2",
+        "7.6.1",
         "7.6.0",
+        "7.4.6",
         "7.4.5",
         "7.4.4",
         "7.4.3",
@@ -670,12 +676,12 @@
       {
         "name": "fgspPeerCustomData",
         "count": 8,
-        "input": "[concat('config cluster-peer\n', ha.fgsppeers(variables('sn2IP'),parameters('fortiGateCount'),copyIndex('fgspPeerCustomData',1)), '\nend\n')]"
+        "input": "[if(lessOrEquals(parameters('fortiGateCount'),8),concat('config cluster-peer\n', ha.fgsppeers(variables('sn2IP'),parameters('fortiGateCount'),copyIndex('fgspPeerCustomData',1)), '\nend\n'),'')]"
       },
       {
         "name": "fgspCustomData",
         "count": 8,
-        "input": "[concat('config system ha\nset session-pickup enable\nset session-pickup-connectionless enable\nset session-pickup-nat enable\nset session-pickup-expectation enable\nset override disable\nend\nconfig system standalone-cluster\n', variables('fgspPeerCustomData')[copyIndex('fgspCustomData')],'\nend\n')]"
+        "input": "[if(lessOrEquals(parameters('fortiGateCount'),8),concat('config system ha\nset session-pickup enable\nset session-pickup-connectionless enable\nset session-pickup-nat enable\nset session-pickup-expectation enable\nset override disable\nend\nconfig system standalone-cluster\n', variables('fgspPeerCustomData')[copyIndex('fgspCustomData')],'\nend\n'),'')]"
       },
       {
         "name": "customDataFortiFlex",
@@ -873,7 +879,7 @@
       "condition": "[not(variables('useAZ'))]",
       "name": "[variables('availabilitySetName')]",
       "type": "Microsoft.Compute/availabilitySets",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2023-03-01",
       "location": "[parameters('location')]",
       "tags": "[ if(contains(parameters('tagsByResource'), 'Microsoft.Compute/availabilitySets'), union(parameters('fortinetTags'),parameters('tagsByResource')['Microsoft.Compute/availabilitySets']), parameters('fortinetTags')) ]",
       "properties": {
