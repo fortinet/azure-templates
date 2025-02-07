@@ -141,7 +141,7 @@
                 "name": "fortiGateImageVersion_x64",
                 "type": "Microsoft.Common.DropDown",
                 "label": "FortiGate Image Version",
-                "defaultValue": "7.4.4",
+                "defaultValue": "7.4.6",
                 "toolTip": "Only 6.x has the A/P HA feature currently",
                 "constraints": {
                   "required": false,
@@ -157,6 +157,10 @@
                     {
                       "label": "7.6.1",
                       "value": "7.6.1"
+                    },
+                    {
+                      "label": "7.6.0",
+                      "value": "7.6.0"
                     },
                     {
                       "label": "7.4.6",
@@ -1433,6 +1437,69 @@
               "Microsoft.Network/virtualNetworks",
               "Microsoft.Network/routeTables"
             ]
+          }
+        ]
+      },
+      {
+        "name": "postdeployment",
+        "label": "Post Deployment Info",
+        "subLabel": {
+          "preValidation": "Post Deployment steps to follow",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "Post Deployment Info",
+        "elements": [
+          {
+            "name": "step1",
+            "type": "Microsoft.Common.TextBlock",
+            "options": {
+              "text": "Links to best practices and steps to follow after deployment"
+            }
+          },
+          {
+            "name": "step2",
+            "type": "Microsoft.Common.InfoBox",
+            "options": {
+              "icon": "Info",
+              "text": "FortiGate-VM Azure administration guide",
+              "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.6.0/azure-administration-guide/128029/about-fortigate-vm-for-azure"
+            }
+          },
+          {
+            "name": "step3",
+            "type": "Microsoft.Common.InfoBox",
+            "options": {
+              "icon": "Info",
+              "text": "Configuration and network flows",
+              "uri": "https://github.com/fortinet/azure-templates/tree/main/FortiGate/Active-Passive-SDN#configuration"
+            }
+          },
+          {
+            "name": "step4",
+            "type": "Microsoft.Common.InfoBox",
+            "options": {
+              "icon": "Info",
+              "text": "FortiGate SDN Connector",
+              "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.6.0/azure-administration-guide/502895/configuring-an-sdn-connector-in-azure"
+            }
+          },
+          {
+            "name": "step5",
+            "type": "Microsoft.Common.InfoBox",
+            "options": {
+              "icon": "Info",
+              "text": "Backup and restore",
+              "uri": "https://docs.fortinet.com/document/fortigate/7.6.0/administration-guide/702257/configuration-backups-and-reset"
+            }
+          },
+          {
+            "name": "step6",
+            "type": "Microsoft.Common.InfoBox",
+            "options": {
+              "icon": "Info",
+              "text": "Limit access to the management interface both via HTTPs and SSH either using an Network Security Group or by configuring the trust-ip on the network interface",
+              "uri": "https://community.fortinet.com/t5/FortiGate/Technical-Tip-Limiting-management-access-to-a-dedicated/ta-p/242872"
+            }
           }
         ]
       }

@@ -25,7 +25,9 @@
       "defaultValue": "fortinet_fg-vm",
       "allowedValues": [
         "fortinet_fg-vm",
-        "fortinet_fg-vm_payg_2023"
+        "fortinet_fg-vm_payg_2023",
+        "fortinet_fg-vm_g2",
+        "fortinet_fg-vm_payg_2023_g2"
       ],
       "metadata": {
         "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)"
@@ -55,9 +57,11 @@
     },
     "fortiGateImageVersion_x64": {
       "type": "string",
-      "defaultValue": "7.4.5",
+      "defaultValue": "7.4.6",
       "allowedValues": [
         "latest",
+        "7.6.2",
+        "7.6.1",
         "7.6.0",
         "7.4.6",
         "7.4.5",
