@@ -172,6 +172,10 @@
                       "value": "7.6.1"
                     },
                     {
+                      "label": "7.6.0",
+                      "value": "7.6.0"
+                    },
+                    {
                       "label": "7.4.6",
                       "value": "7.4.6"
                     },
@@ -561,7 +565,7 @@
                 "imageReference": {
                   "publisher": "Fortinet",
                   "offer": "fortinet_fortigate-vm_v5",
-                  "sku": "[steps('instance').instancetype_x64.fortiGateImageSKU_x64]"
+                  "sku": "[if(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'), equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest')),concat(steps('instance').instancetype_x64.fortiGateImageSKU_x64,'_g2'),steps('instance').instancetype_x64.fortiGateImageSKU_x64)]"
                 },
                 "count": 2,
                 "visible": true
