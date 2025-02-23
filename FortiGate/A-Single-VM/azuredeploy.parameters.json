@@ -65,12 +65,6 @@
         "publicIP1ResourceGroup": {
             "value": ""
         },
-        "publicIP1AddressType": {
-            "value": "Static"
-        },
-        "publicIP1SKU": {
-            "value": "Standard"
-        },
         "vnetNewOrExisting": {
             "value": "new"
         },
