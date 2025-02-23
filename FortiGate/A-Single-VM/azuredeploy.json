@@ -226,8 +226,13 @@
     },
     "instanceType_arm64": {
       "type": "string",
-      "defaultValue": "Standard_D2ps_v5",
+      "defaultValue": "Standard_D2ps_v6",
       "allowedValues": [
+        "Standard_D2ps_v6",
+        "Standard_D4ps_v6",
+        "Standard_D8ps_v6",
+        "Standard_D16ps_v6",
+        "Standard_D32ps_v6",
         "Standard_D2ps_v5",
         "Standard_D4ps_v5",
         "Standard_D8ps_v5",

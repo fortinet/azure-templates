@@ -43,6 +43,7 @@ BeforeAll {
     'fortiGateAdditionalCustomData' = $config
     'publicIP2Name'                 = $publicIP2Name
     'publicIP3Name'                 = $publicIP3Name
+    'fortiGateImageVersion_x64'     = "latest"
   }
   $params_arm64 = @{ 'adminUsername' = $testsAdminUsername
     'adminPassword'                  = $testsResourceGroupName_x64
@@ -51,6 +52,7 @@ BeforeAll {
     'publicIP2Name'                  = $publicIP2Name
     'publicIP3Name'                  = $publicIP3Name
     'fortiGateInstanceArchitecture'  = 'arm64'
+    'fortiGateImageVersion_arm64'    = "latest"
   }
   $ports = @(443, 22)
 }

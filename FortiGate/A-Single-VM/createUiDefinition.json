@@ -641,6 +641,11 @@
                 "label": "Size",
                 "toolTip": "Select the instance size of your FortiGate VM solution. Minimum 4 NICs are required.",
                 "recommendedSizes": [
+                  "Standard_D2ps_v6",
+                  "Standard_D4ps_v6",
+                  "Standard_D8ps_v6",
+                  "Standard_D16ps_v6",
+                  "Standard_D32ps_v6",
                   "Standard_D2ps_v5",
                   "Standard_D4ps_v5",
                   "Standard_D8ps_v5",
@@ -674,6 +679,11 @@
                 ],
                 "constraints": {
                   "allowedSizes": [
+                    "Standard_D2ps_v6",
+                    "Standard_D4ps_v6",
+                    "Standard_D8ps_v6",
+                    "Standard_D16ps_v6",
+                    "Standard_D32ps_v6",
                     "Standard_D2ps_v5",
                     "Standard_D4ps_v5",
                     "Standard_D8ps_v5",

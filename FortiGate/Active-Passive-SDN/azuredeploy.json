@@ -194,8 +194,11 @@
     },
     "instanceType_arm64": {
       "type": "string",
-      "defaultValue": "Standard_D8ps_v5",
+      "defaultValue": "Standard_D8ps_v6",
       "allowedValues": [
+        "Standard_D8ps_v6",
+        "Standard_D16ps_v6",
+        "Standard_D32ps_v6",
         "Standard_D8ps_v5",
         "Standard_D16ps_v5",
         "Standard_D32ps_v5",
@@ -311,39 +314,6 @@
         "description": "Resource group to which the Public IP belongs."
       }
     },
-    "publicIP1AddressType": {
-      "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
-      }
-    },
-    "publicIP2AddressSku": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Standard",
-        "Basic"
-      ],
-      "metadata": {
-        "description": "SKU of public IP address"
-      }
-    },
-    "publicIP2AddressType": {
-      "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
-      }
-    },
     "publicIP2Name": {
       "type": "string",
       "defaultValue": "",
@@ -358,28 +328,6 @@
         "description": "Resource group to which the Public IP belongs."
       }
     },
-    "publicIP3AddressSku": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Standard",
-        "Basic"
-      ],
-      "metadata": {
-        "description": "SKU of public IP address"
-      }
-    },
-    "publicIP3AddressType": {
-      "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
-      }
-    },
     "publicIP3Name": {
       "type": "string",
       "defaultValue": "",
@@ -392,17 +340,6 @@
       "defaultValue": "",
       "metadata": {
         "description": "Resource group to which the Public IP belongs."
-      }
-    },
-    "publicIP1AddressSku": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Standard",
-        "Basic"
-      ],
-      "metadata": {
-        "description": "SKU of public IP address"
       }
     },
     "vnetNewOrExisting": {
