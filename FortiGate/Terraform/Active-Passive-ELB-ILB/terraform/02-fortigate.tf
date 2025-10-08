@@ -146,8 +146,8 @@ resource "azurerm_network_interface" "fgtaifcext" {
   name                          = "${var.PREFIX}-FGT-A-Nic1-EXT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding          = true
-  enable_accelerated_networking = var.FGT_ACCELERATED_NETWORKING
+  ip_forwarding_enabled          = true
+  accelerated_networking_enabled = var.FGT_ACCELERATED_NETWORKING
 
   ip_configuration {
     name                          = "interface1"
@@ -172,7 +172,7 @@ resource "azurerm_network_interface" "fgtaifcint" {
   name                 = "${var.PREFIX}-FGT-A-Nic2-INT"
   location             = azurerm_resource_group.resourcegroup.location
   resource_group_name  = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding = true
+  ip_forwarding_enabled = true
 
   ip_configuration {
     name                          = "interface1"
@@ -197,7 +197,7 @@ resource "azurerm_network_interface" "fgtaifchasync" {
   name                 = "${var.PREFIX}-FGT-A-Nic3-HASYNC"
   location             = azurerm_resource_group.resourcegroup.location
   resource_group_name  = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding = true
+  ip_forwarding_enabled = true
 
   ip_configuration {
     name                          = "interface1"
@@ -225,8 +225,8 @@ resource "azurerm_network_interface" "fgtaifcmgmt" {
   name                          = "${var.PREFIX}-FGT-A-Nic4-MGMT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding          = true
-  enable_accelerated_networking = var.FGT_ACCELERATED_NETWORKING
+  ip_forwarding_enabled          = true
+  accelerated_networking_enabled = var.FGT_ACCELERATED_NETWORKING
 
   ip_configuration {
     name                          = "interface1"
@@ -327,8 +327,8 @@ resource "azurerm_network_interface" "fgtbifcext" {
   name                          = "${var.PREFIX}-FGT-B-Nic1-EXT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding          = true
-  enable_accelerated_networking = var.FGT_ACCELERATED_NETWORKING
+  ip_forwarding_enabled          = true
+  accelerated_networking_enabled = var.FGT_ACCELERATED_NETWORKING
 
   ip_configuration {
     name                          = "interface1"
@@ -353,8 +353,8 @@ resource "azurerm_network_interface" "fgtbifcint" {
   name                          = "${var.PREFIX}-FGT-B-Nic2-INT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding          = true
-  enable_accelerated_networking = var.FGT_ACCELERATED_NETWORKING
+  ip_forwarding_enabled          = true
+  accelerated_networking_enabled = var.FGT_ACCELERATED_NETWORKING
 
   ip_configuration {
     name                          = "interface1"
@@ -379,8 +379,8 @@ resource "azurerm_network_interface" "fgtbifchasync" {
   name                          = "${var.PREFIX}-FGT-B-Nic3-HASYNC"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding          = true
-  enable_accelerated_networking = var.FGT_ACCELERATED_NETWORKING
+  ip_forwarding_enabled          = true
+  accelerated_networking_enabled = var.FGT_ACCELERATED_NETWORKING
 
   ip_configuration {
     name                          = "interface1"
@@ -408,8 +408,8 @@ resource "azurerm_network_interface" "fgtbifcmgmt" {
   name                          = "${var.PREFIX}-FGT-B-Nic4-MGMT"
   location                      = azurerm_resource_group.resourcegroup.location
   resource_group_name           = azurerm_resource_group.resourcegroup.name
-  enable_ip_forwarding          = true
-  enable_accelerated_networking = var.FGT_ACCELERATED_NETWORKING
+  ip_forwarding_enabled          = true
+  accelerated_networking_enabled = var.FGT_ACCELERATED_NETWORKING
 
   ip_configuration {
     name                          = "interface1"
