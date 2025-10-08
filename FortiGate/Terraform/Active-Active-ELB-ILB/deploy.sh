@@ -24,7 +24,7 @@ set -e
 #
 # FortiGate License type PAYG or BYOL
 # Default = PAYG
-# FGT_IMAGE_SKU PAYG/ONDEMAND = fortinet_fg-vm_payg_2022
+# FGT_IMAGE_SKU PAYG/ONDEMAND = fortinet_fg-vm_payg_2023
 # FGT_IMAGE_SKU BYOL = fortinet_fg-vm
 #
 # FortiGate version
@@ -52,7 +52,7 @@ then
 else
     location="$DEPLOY_LOCATION"
 fi
-export TF_VAR_LOCATION="$location"
+export TF_VAR_location="$location"
 echo ""
 echo "--> Deployment in $location location ..."
 echo ""
@@ -71,7 +71,7 @@ then
 else
     prefix="$DEPLOY_PREFIX"
 fi
-export TF_VAR_PREFIX="$prefix"
+export TF_VAR_prefix="$prefix"
 echo ""
 echo "--> Using prefix $prefix for all resources ..."
 echo ""
@@ -82,17 +82,17 @@ then
     # Input username
     echo -n "Enter username (default: azureuser): "
     stty_orig=`stty -g` # save original terminal setting.
-    read USERNAME         # read the prefix
+    read username         # read the prefix
     stty $stty_orig     # restore terminal setting.
     if [ -z "$USERNAME" ]
     then
-        USERNAME="azureuser"
+        username="azureuser"
     fi
 else
-    USERNAME="$DEPLOY_USERNAME"
+    username="$DEPLOY_USERNAME"
 fi
 echo ""
-echo "--> Using username '$USERNAME' ..."
+echo "--> Using username '$username' ..."
 echo ""
 
 if [ -z "$DEPLOY_PASSWORD" ]
@@ -105,11 +105,31 @@ then
     stty $stty_orig     # restore terminal setting.
     echo ""
 else
-    PASSWORD="$DEPLOY_PASSWORD"
+    password="$DEPLOY_PASSWORD"
     echo ""
     echo "--> Using password found in env variable DEPLOY_PASSWORD ..."
     echo ""
 fi
+
+if [ -z "$DEPLOY_SUBSCRIPTION_ID" ]
+then
+    detected_id=`az account show | jq ".id" -r`
+    # Input username
+    echo -n "Enter subscription ID (press enter for detected id: '$detected_id'): "
+    stty_orig=`stty -g` # save original terminal setting.
+    read subscription_id         # read the subscription id
+    stty $stty_orig     # restore terminal setting.
+    if [ -z "$subscription_id" ]
+    then
+        subscription_id="$detected_id"
+    fi
+else
+    subscription_id="$DEPLOY_SUBSCRIPTION_ID"
+fi
+export TF_VAR_subscription_id="$subscription_id"
+echo ""
+echo "--> Using subscription id '$subscription_id' ..."
+echo ""
 
 SUMMARY="summary.out"
 
@@ -127,8 +147,8 @@ echo ""
 echo "==> Terraform plan"
 echo ""
 terraform plan --out "$PLAN" \
-                -var "USERNAME=$USERNAME" \
-                -var "PASSWORD=$PASSWORD"
+                -var "username=$username" \
+                -var "password=$password"
 
 echo ""
 echo "==> Terraform apply"
