@@ -6,32 +6,33 @@
 ##############################################################################################################
 
 # Prefix for all resources created for this deployment in Microsoft Azure
-variable "PREFIX" {
+variable "prefix" {
   description = "Added name to each deployed resource"
 }
 
-variable "LOCATION" {
+variable "location" {
   description = "Azure region"
 }
 
-variable "USERNAME" {
-}
+variable "username" {}
 
-variable "PASSWORD" {
-}
+variable "password" {}
+
+variable "subscription_id" {}
 
 ##############################################################################################################
 # FortiGate license type
 ##############################################################################################################
 
 variable "FGT_IMAGE_SKU" {
-  description = "Azure Marketplace default image sku hourly (PAYG 'fortinet_fg-vm_payg_2022') or byol (Bring your own license 'fortinet_fg-vm')"
-  default     = "fortinet_fg-vm_payg_2022"
+  description = "Azure Marketplace default image sku hourly (PAYG 'fortinet_fg-vm_payg_2023') or byol (Bring your own license 'fortinet_fg-vm')"
+  #  default     = "fortinet_fg-vm_payg_2023"
+  default = "fortinet_fg-vm"
 }
 
 variable "FGT_VERSION" {
   description = "FortiGate version by default the 'latest' available version in the Azure Marketplace is selected"
-  default     = "latest"
+  default     = "7.4.0"
 }
 
 variable "FGT_BYOL_LICENSE_FILE_A" {
@@ -85,6 +86,7 @@ terraform {
 
 provider "azurerm" {
   features {}
+  subscription_id = var.subscription_id
 }
 
 ##############################################################################################################
@@ -195,8 +197,8 @@ variable "fortinet_tags" {
 ##############################################################################################################
 
 resource "azurerm_resource_group" "resourcegroup" {
-  name     = "${var.PREFIX}-RG"
-  location = var.LOCATION
+  name     = "${var.prefix}-RG"
+  location = var.location
 }
 
 ##############################################################################################################
