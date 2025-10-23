@@ -25,7 +25,16 @@
       "defaultValue": "fortinet_fg-vm",
       "allowedValues": [
         "fortinet_fg-vm",
-        "fortinet_fg-vm_payg_2023",
+        "fortinet_fg-vm_payg_2023"
+      ],
+      "metadata": {
+        "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)"
+      }
+    },
+    "fortiGateImageSKU_x64_g2": {
+      "type": "string",
+      "defaultValue": "fortinet_fg-vm_g2",
+      "allowedValues": [
         "fortinet_fg-vm_g2",
         "fortinet_fg-vm_payg_2023_g2"
       ],
@@ -49,6 +58,7 @@
       "defaultValue": "x64",
       "allowedValues": [
         "x64",
+        "x64_g2",
         "arm64"
       ],
       "metadata": {
@@ -57,12 +67,13 @@
     },
     "fortiGateImageVersion_x64": {
       "type": "string",
-      "defaultValue": "7.4.6",
+      "defaultValue": "7.4.9",
       "allowedValues": [
         "latest",
-        "7.6.2",
-        "7.6.1",
         "7.6.0",
+        "7.4.9",
+        "7.4.8",
+        "7.4.7",
         "7.4.6",
         "7.4.5",
         "7.4.4",
@@ -70,6 +81,8 @@
         "7.4.2",
         "7.4.1",
         "7.4.0",
+        "7.2.12",
+        "7.2.11",
         "7.2.10",
         "7.2.9",
         "7.2.8",
@@ -81,6 +94,7 @@
         "7.2.2",
         "7.2.1",
         "7.2.0",
+        "7.0.17",
         "7.0.15",
         "7.0.14",
         "7.0.13",
@@ -96,6 +110,7 @@
         "7.0.2",
         "7.0.1",
         "7.0.0",
+        "6.4.16",
         "6.4.15",
         "6.4.13",
         "6.4.12",
@@ -118,18 +133,39 @@
         "description": "Select the FortiGate image version"
       }
     },
-    "fortiGateImageVersion_arm64": {
+    "fortiGateImageVersion_x64_g2": {
       "type": "string",
-      "defaultValue": "7.4.6",
+      "defaultValue": "7.6.200",
       "allowedValues": [
         "latest",
+        "7.6.200",
+        "7.6.100",
+        "7.6.4",
+        "7.6.3"
+      ],
+      "metadata": {
+        "description": "Select the image version supporting Generation 2 VMs"
+      }
+    },
+    "fortiGateImageVersion_arm64": {
+      "type": "string",
+      "defaultValue": "7.6.2",
+      "allowedValues": [
+        "latest",
+        "7.6.4",
+        "7.6.3",
         "7.6.2",
         "7.6.1",
         "7.6.0",
+        "7.4.9",
+        "7.4.8",
+        "7.4.7",
         "7.4.6",
         "7.4.5",
         "7.4.4",
         "7.4.3",
+        "7.2.12",
+        "7.2.11",
         "7.2.10",
         "7.2.9",
         "7.2.8"
@@ -147,7 +183,7 @@
     },
     "instanceType_x64": {
       "type": "string",
-      "defaultValue": "Standard_F4s",
+      "defaultValue": "Standard_D8s_v3",
       "allowedValues": [
         "Standard_F4s",
         "Standard_F8s",
@@ -193,6 +229,74 @@
         "description": "Virtual Machine size selection - must be F4 or other instance that supports atleast 4 NICs"
       }
     },
+    "instanceType_x64_g2": {
+      "type": "string",
+      "defaultValue": "Standard_D8_v5",
+      "allowedValues": [
+        "Standard_D4_v4",
+        "Standard_D8_v4",
+        "Standard_D16_v4",
+        "Standard_D32_v4",
+        "Standard_D4s_v4",
+        "Standard_D8s_v4",
+        "Standard_D16s_v4",
+        "Standard_D32s_v4",
+        "Standard_D4a_v4",
+        "Standard_D8a_v4",
+        "Standard_D16a_v4",
+        "Standard_D32a_v4",
+        "Standard_D2as_v4",
+        "Standard_D4as_v4",
+        "Standard_D8as_v4",
+        "Standard_D16as_v4",
+        "Standard_D32as_v4",
+        "Standard_D4_v5",
+        "Standard_D8_v5",
+        "Standard_D16_v5",
+        "Standard_D32_v5",
+        "Standard_D2s_v5",
+        "Standard_D4s_v5",
+        "Standard_D8s_v5",
+        "Standard_D16s_v5",
+        "Standard_D32s_v5",
+        "Standard_D4as_v5",
+        "Standard_D8as_v5",
+        "Standard_D16as_v5",
+        "Standard_D32as_v5",
+        "Standard_D2ads_v5",
+        "Standard_D4ads_v5",
+        "Standard_D8ads_v5",
+        "Standard_D16ads_v5",
+        "Standard_D32ads_v5",
+        "Standard_D8s_v6",
+        "Standard_D16s_v6",
+        "Standard_D32s_v6",
+        "Standard_D8ds_v6",
+        "Standard_D16ds_v6",
+        "Standard_D32ds_v6",
+        "Standard_D8ls_v6",
+        "Standard_D16ls_v6",
+        "Standard_D32ls_v6",
+        "Standard_D8lds_v6",
+        "Standard_D16lds_v6",
+        "Standard_D32lds_v6",
+        "Standard_D8as_v6",
+        "Standard_D16as_v6",
+        "Standard_D32as_v6",
+        "Standard_D8ads_v6",
+        "Standard_D16ads_v6",
+        "Standard_D32ads_v6",
+        "Standard_D8als_v6",
+        "Standard_D16als_v6",
+        "Standard_D32als_v6",
+        "Standard_D8alds_v6",
+        "Standard_D16alds_v6",
+        "Standard_D32alds_v6"
+      ],
+      "metadata": {
+        "description": "Virtual Machine size selection - must be an instance that supports 4 NICs"
+      }
+    },
     "instanceType_arm64": {
       "type": "string",
       "defaultValue": "Standard_D8ps_v6",
@@ -200,6 +304,12 @@
         "Standard_D8ps_v6",
         "Standard_D16ps_v6",
         "Standard_D32ps_v6",
+        "Standard_D8pds_v6",
+        "Standard_D16pds_v6",
+        "Standard_D32pds_v6",
+        "Standard_D8pls_v6",
+        "Standard_D16pls_v6",
+        "Standard_D32pls_v6",
         "Standard_D8ps_v5",
         "Standard_D16ps_v5",
         "Standard_D32ps_v5",
@@ -566,9 +676,10 @@
   "variables": {
     "imagePublisher": "fortinet",
     "imageOffer": "fortinet_fortigate-vm_v5",
-    "fortiGateImageSKU": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageSKU_arm64'), parameters('fortiGateImageSKU_x64'))]",
-    "instanceType": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('instanceType_arm64'), parameters('instanceType_x64'))]",
-    "fortiGateImageVersion": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageVersion_arm64'), parameters('fortiGateImageVersion_x64'))]",
+    "fortiGateImageSKU": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageSKU_arm64'), if(equals(parameters('fortiGateInstanceArchitecture'), 'x64_g2'),parameters('fortiGateImageSKU_x64_g2'),parameters('fortiGateImageSKU_x64')))]",
+    "fortiGateImageVersion": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageVersion_arm64'), if(equals(parameters('fortiGateInstanceArchitecture'), 'x64_g2'),parameters('fortiGateImageVersion_x64_g2'),parameters('fortiGateImageVersion_x64')))]",
+    "instanceType": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('instanceType_arm64'), if(equals(parameters('fortiGateInstanceArchitecture'), 'x64_g2'),parameters('instanceType_x64_g2'),parameters('instanceType_x64')))]",
+    "diskControllerType": "[if(and(equals(parameters('fortiGateInstanceArchitecture'), 'x64_g2'),contains(parameters('instanceType_x64_g2'), '_v6'),contains(parameters('fortiGateImageSKU_x64_g2'), '_g2')),'NVMe',json('null'))]",
     "availabilitySetName": "[concat(parameters('fortiGateNamePrefix'),'-AvailabilitySet')]",
     "availabilitySetId": {
       "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
@@ -582,8 +693,8 @@
     "fgbVmName": "[concat(parameters('fortiGateNamePrefix'),'-FGT-B')]",
     "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
     "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
-    "fgaCustomDataBody": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\n edit 1\n set gateway ', variables('sn1GatewayIP'), '\n set device port1\n next\n edit 2\n set dst ', parameters('vnetAddressPrefix'), '\n set gateway ', variables('sn2GatewayIP'), '\n set device port2\n next\n edit 3\nset dst 168.63.129.16 255.255.255.255\nset device port2\n set gateway ', variables ('sn2GatewayIP'), '\n next\nedit 4\nset dst 168.63.129.16 255.255.255.255\nset device port1\n set gateway ', variables ('sn1GatewayIP'), '\n next\n end\n config system probe-response\n set http-probe-value OK\n set mode http-probe\n end\n config system interface\n edit port1\n set mode static\n set ip ', variables('sn1IPfga'), '/', variables('sn1CIDRmask'), '\n set description external\n set allowaccess probe-response\n next\n edit port2\n set mode static\n set ip ', variables('sn2IPfga'), '/', variables('sn2CIDRmask'), '\n set description internal\n set allowaccess probe-response\n next\n edit port3\n set mode static\n set ip ', variables('sn3IPfga'), '/', variables('sn3CIDRmask'), '\n set description hasyncport\n next\n edit port4\n set mode static\n set ip ', variables('sn4IPfga'), '/', variables('sn4CIDRmask'), '\n set description hammgmtport\n set allowaccess ping https ssh ftm\n next\n end\n config system ha\n set group-id 1\n set group-name AzureHA\n set mode a-p\n set hbdev port3 100\n set session-pickup enable\n set session-pickup-connectionless enable\n set ha-mgmt-status enable\n config ha-mgmt-interfaces\n edit 1\n set interface port4\n set gateway ', variables('sn4GatewayIP'),'\n next\n end\n set override disable\n set priority 255\n set unicast-hb enable\n set unicast-hb-peerip ', variables('sn3IPfgb'), '\n set password ', parameters('adminPassword'), '\n end\n', variables('fmgCustomData'), parameters('fortiGateAdditionalCustomData'), '\n')]",
-    "fgbCustomDataBody": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\n edit 1\n set gateway ', variables('sn1GatewayIP'), '\n set device port1\n next\n edit 2\n set dst ', parameters('vnetAddressPrefix'), '\n set gateway ', variables('sn2GatewayIP'), '\n set device port2\n next\n edit 3\nset dst 168.63.129.16 255.255.255.255\nset device port2\n set gateway ', variables ('sn2GatewayIP'), '\n next\nedit 4\nset dst 168.63.129.16 255.255.255.255\nset device port1\n set gateway ', variables ('sn1GatewayIP'), '\n next\n end\n config system probe-response\n set http-probe-value OK\n set mode http-probe\n end\n config system interface\n edit port1\n set mode static\n set ip ', variables('sn1IPfgb'), '/', variables('sn1CIDRmask'), '\n set description external\n set allowaccess probe-response\n next\n edit port2\n set mode static\n set ip ', variables('sn2IPfgb'), '/', variables('sn2CIDRmask'), '\n set description internal\n set allowaccess probe-response\n next\n edit port3\n set mode static\n set ip ', variables('sn3IPfgb'), '/', variables('sn3CIDRmask'), '\n set description hasyncport\n next\n edit port4\n set mode static\n set ip ', variables('sn4IPfgb'), '/', variables('sn4CIDRmask'), '\n set description hammgmtport\n set allowaccess ping https ssh ftm\n next\n end\n config system ha\n set group-id 1\n set group-name AzureHA\n set mode a-p\n set hbdev port3 100\n set session-pickup enable\n set session-pickup-connectionless enable\n set ha-mgmt-status enable\n config ha-mgmt-interfaces\n edit 1\n set interface port4\n set gateway ', variables('sn4GatewayIP'),'\n next\n end\n set override disable\n set priority 1\n set unicast-hb enable\n set unicast-hb-peerip ', variables('sn3IPfga'), '\n set password ', parameters('adminPassword'), '\n end\n', variables('fmgCustomData'), parameters('fortiGateAdditionalCustomData'), '\n')]",
+    "fgaCustomDataBody": "[concat('config system global\nset allow-traffic-redirect disable\nend\nconfig system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\n edit 1\n set gateway ', variables('sn1GatewayIP'), '\n set device port1\n next\n edit 2\n set dst ', parameters('vnetAddressPrefix'), '\n set gateway ', variables('sn2GatewayIP'), '\n set device port2\n next\n edit 3\nset dst 168.63.129.16 255.255.255.255\nset device port2\n set gateway ', variables ('sn2GatewayIP'), '\n next\nedit 4\nset dst 168.63.129.16 255.255.255.255\nset device port1\n set gateway ', variables ('sn1GatewayIP'), '\n next\n end\n config system probe-response\n set http-probe-value OK\n set mode http-probe\n end\n config system interface\n edit port1\n set mode static\n set ip ', variables('sn1IPfga'), '/', variables('sn1CIDRmask'), '\n set description external\n set allowaccess probe-response\n next\n edit port2\n set mode static\n set ip ', variables('sn2IPfga'), '/', variables('sn2CIDRmask'), '\n set description internal\n set allowaccess probe-response\n next\n edit port3\n set mode static\n set ip ', variables('sn3IPfga'), '/', variables('sn3CIDRmask'), '\n set description hasyncport\n next\n edit port4\n set mode static\n set ip ', variables('sn4IPfga'), '/', variables('sn4CIDRmask'), '\n set description hammgmtport\n set allowaccess ping https ssh ftm\n next\n end\n config system ha\n set group-id 1\n set group-name AzureHA\n set mode a-p\n set hbdev port3 100\n set session-pickup enable\n set session-pickup-connectionless enable\n set ha-mgmt-status enable\n config ha-mgmt-interfaces\n edit 1\n set interface port4\n set gateway ', variables('sn4GatewayIP'),'\n next\n end\n set override disable\n set priority 255\n set unicast-hb enable\n set unicast-hb-peerip ', variables('sn3IPfgb'), '\n set password ', parameters('adminPassword'), '\n end\n', variables('fmgCustomData'), parameters('fortiGateAdditionalCustomData'), '\n')]",
+    "fgbCustomDataBody": "[concat('config system global\nset allow-traffic-redirect disable\nend\nconfig system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig router static\n edit 1\n set gateway ', variables('sn1GatewayIP'), '\n set device port1\n next\n edit 2\n set dst ', parameters('vnetAddressPrefix'), '\n set gateway ', variables('sn2GatewayIP'), '\n set device port2\n next\n edit 3\nset dst 168.63.129.16 255.255.255.255\nset device port2\n set gateway ', variables ('sn2GatewayIP'), '\n next\nedit 4\nset dst 168.63.129.16 255.255.255.255\nset device port1\n set gateway ', variables ('sn1GatewayIP'), '\n next\n end\n config system probe-response\n set http-probe-value OK\n set mode http-probe\n end\n config system interface\n edit port1\n set mode static\n set ip ', variables('sn1IPfgb'), '/', variables('sn1CIDRmask'), '\n set description external\n set allowaccess probe-response\n next\n edit port2\n set mode static\n set ip ', variables('sn2IPfgb'), '/', variables('sn2CIDRmask'), '\n set description internal\n set allowaccess probe-response\n next\n edit port3\n set mode static\n set ip ', variables('sn3IPfgb'), '/', variables('sn3CIDRmask'), '\n set description hasyncport\n next\n edit port4\n set mode static\n set ip ', variables('sn4IPfgb'), '/', variables('sn4CIDRmask'), '\n set description hammgmtport\n set allowaccess ping https ssh ftm\n next\n end\n config system ha\n set group-id 1\n set group-name AzureHA\n set mode a-p\n set hbdev port3 100\n set session-pickup enable\n set session-pickup-connectionless enable\n set ha-mgmt-status enable\n config ha-mgmt-interfaces\n edit 1\n set interface port4\n set gateway ', variables('sn4GatewayIP'),'\n next\n end\n set override disable\n set priority 1\n set unicast-hb enable\n set unicast-hb-peerip ', variables('sn3IPfga'), '\n set password ', parameters('adminPassword'), '\n end\n', variables('fmgCustomData'), parameters('fortiGateAdditionalCustomData'), '\n')]",
     "customDataLicenseHeader": "--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"license\"\n\n",
     "customDataFooter": "\n--12345--\n",
     "fgaCustomDataFortiFlex": "[if(equals(parameters('fortiGateLicenseFortiFlexA'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFortiFlexA'), '\n'))]",
@@ -1362,6 +1473,7 @@
         },
         "storageProfile": {
           "imageReference": "[if(and(or(equals(variables('fortiGateImageSKU'),'fortinet_fg-vm'),equals(variables('fortiGateImageSKU'),'fortinet_fg-vm_arm64')),not(equals(parameters('customImageReference'),''))), variables('imageReferenceCustomImage'), variables('imageReferenceMarketplace'))]",
+          "diskControllerType": "[variables('diskControllerType')]",
           "osDisk": {
             "createOption": "FromImage"
           },
@@ -1438,6 +1550,7 @@
         },
         "storageProfile": {
           "imageReference": "[if(and(or(equals(variables('fortiGateImageSKU'),'fortinet_fg-vm'),equals(variables('fortiGateImageSKU'),'fortinet_fg-vm_arm64')),not(equals(parameters('customImageReference'),''))), variables('imageReferenceCustomImage'), variables('imageReferenceMarketplace'))]",
+          "diskControllerType": "[variables('diskControllerType')]",
           "osDisk": {
             "createOption": "FromImage"
           },

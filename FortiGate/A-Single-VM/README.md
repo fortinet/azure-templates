@@ -143,6 +143,8 @@ The drawing in the [flow](#east-west-flow) section is used in the configuration 
 
 On the FortiGate-VM, a firewall policy rule needs to be created to allow traffic from specific IP ranges going in and out of the same internal interface (port2). It is also possible to use dynamic addresses using the SDN Connector to have more dynamic firewall policies.
 
+Make sure to verify that the option allow-traffic-redirect is disabled to make sure the FortiGate handles the ingress and egress traffic on the same logical interface. More information can be found in [in this article](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Traffic-handled-by-FortiGate-for-packet-which/ta-p/196651).
+
 ### Inbound Connections
 
 #### Introduction - Inbound Connections

@@ -3,7 +3,7 @@ echo "
 ##############################################################################################################
 #
 # FortiGate Azure deployment using ARM Template
-# Fortigate Active/Passive cluster with Fabric Connector
+# FortiGate Active/Passive cluster with Fabric Connector
 #
 ##############################################################################################################
 
@@ -114,7 +114,7 @@ echo "
 ##############################################################################################################
 #
 # FortiGate Azure deployment using ARM Template
-# Fortigate Active/Passive cluster with Fabric Connector
+# FortiGate Active/Passive cluster with Fabric Connector
 #
 # The FortiGate systems is reachable via the management public IP addresses of the firewall
 # on HTTPS/443 and SSH/22.

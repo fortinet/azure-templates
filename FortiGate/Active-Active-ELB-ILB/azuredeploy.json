@@ -32,7 +32,16 @@
       "defaultValue": "fortinet_fg-vm",
       "allowedValues": [
         "fortinet_fg-vm",
-        "fortinet_fg-vm_payg_2023",
+        "fortinet_fg-vm_payg_2023"
+      ],
+      "metadata": {
+        "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately"
+      }
+    },
+    "fortiGateImageSKU_x64_g2": {
+      "type": "string",
+      "defaultValue": "fortinet_fg-vm_g2",
+      "allowedValues": [
         "fortinet_fg-vm_g2",
         "fortinet_fg-vm_payg_2023_g2"
       ],
@@ -56,6 +65,7 @@
       "defaultValue": "x64",
       "allowedValues": [
         "x64",
+        "x64_g2",
         "arm64"
       ],
       "metadata": {
@@ -64,12 +74,13 @@
     },
     "fortiGateImageVersion_x64": {
       "type": "string",
-      "defaultValue": "7.4.6",
+      "defaultValue": "7.4.9",
       "allowedValues": [
         "latest",
-        "7.6.2",
-        "7.6.1",
         "7.6.0",
+        "7.4.9",
+        "7.4.8",
+        "7.4.7",
         "7.4.6",
         "7.4.5",
         "7.4.4",
@@ -77,6 +88,8 @@
         "7.4.2",
         "7.4.1",
         "7.4.0",
+        "7.2.12",
+        "7.2.11",
         "7.2.10",
         "7.2.9",
         "7.2.8",
@@ -88,6 +101,7 @@
         "7.2.2",
         "7.2.1",
         "7.2.0",
+        "7.0.17",
         "7.0.15",
         "7.0.14",
         "7.0.13",
@@ -103,6 +117,7 @@
         "7.0.2",
         "7.0.1",
         "7.0.0",
+        "6.4.16",
         "6.4.15",
         "6.4.13",
         "6.4.12",
@@ -125,18 +140,39 @@
         "description": "Select the image version"
       }
     },
-    "fortiGateImageVersion_arm64": {
+    "fortiGateImageVersion_x64_g2": {
       "type": "string",
-      "defaultValue": "7.4.6",
+      "defaultValue": "7.6.4",
       "allowedValues": [
         "latest",
+        "7.6.200",
+        "7.6.100",
+        "7.6.4",
+        "7.6.3"
+      ],
+      "metadata": {
+        "description": "Select the image version supporting Generation 2 VMs"
+      }
+    },
+    "fortiGateImageVersion_arm64": {
+      "type": "string",
+      "defaultValue": "7.6.4",
+      "allowedValues": [
+        "latest",
+        "7.6.4",
+        "7.6.3",
         "7.6.2",
         "7.6.1",
         "7.6.0",
+        "7.4.9",
+        "7.4.8",
+        "7.4.7",
         "7.4.6",
         "7.4.5",
         "7.4.4",
         "7.4.3",
+        "7.2.12",
+        "7.2.11",
         "7.2.10",
         "7.2.9",
         "7.2.8"
@@ -168,7 +204,7 @@
     },
     "instanceType_x64": {
       "type": "string",
-      "defaultValue": "Standard_F2s",
+      "defaultValue": "Standard_D2s_v3",
       "allowedValues": [
         "Standard_F2s",
         "Standard_F4s",
@@ -235,7 +271,96 @@
         "Standard_D32ads_v5"
       ],
       "metadata": {
-        "description": "Virtual Machine size selection - must be F4 or other instance that supports 4 NICs"
+        "description": "Virtual Machine size selection"
+      }
+    },
+    "instanceType_x64_g2": {
+      "type": "string",
+      "defaultValue": "Standard_D2_v5",
+      "allowedValues": [
+        "Standard_D2_v4",
+        "Standard_D4_v4",
+        "Standard_D8_v4",
+        "Standard_D16_v4",
+        "Standard_D32_v4",
+        "Standard_D2s_v4",
+        "Standard_D4s_v4",
+        "Standard_D8s_v4",
+        "Standard_D16s_v4",
+        "Standard_D32s_v4",
+        "Standard_D2a_v4",
+        "Standard_D4a_v4",
+        "Standard_D8a_v4",
+        "Standard_D16a_v4",
+        "Standard_D32a_v4",
+        "Standard_D2as_v4",
+        "Standard_D4as_v4",
+        "Standard_D8as_v4",
+        "Standard_D16as_v4",
+        "Standard_D32as_v4",
+        "Standard_D2_v5",
+        "Standard_D4_v5",
+        "Standard_D8_v5",
+        "Standard_D16_v5",
+        "Standard_D32_v5",
+        "Standard_D2s_v5",
+        "Standard_D4s_v5",
+        "Standard_D8s_v5",
+        "Standard_D16s_v5",
+        "Standard_D32s_v5",
+        "Standard_D2as_v5",
+        "Standard_D4as_v5",
+        "Standard_D8as_v5",
+        "Standard_D16as_v5",
+        "Standard_D32as_v5",
+        "Standard_D2ads_v5",
+        "Standard_D4ads_v5",
+        "Standard_D8ads_v5",
+        "Standard_D16ads_v5",
+        "Standard_D32ads_v5",
+        "Standard_D2s_v6",
+        "Standard_D4s_v6",
+        "Standard_D8s_v6",
+        "Standard_D16s_v6",
+        "Standard_D32s_v6",
+        "Standard_D2ds_v6",
+        "Standard_D4ds_v6",
+        "Standard_D8ds_v6",
+        "Standard_D16ds_v6",
+        "Standard_D32ds_v6",
+        "Standard_D2ls_v6",
+        "Standard_D4ls_v6",
+        "Standard_D8ls_v6",
+        "Standard_D16ls_v6",
+        "Standard_D32ls_v6",
+        "Standard_D2lds_v6",
+        "Standard_D4lds_v6",
+        "Standard_D8lds_v6",
+        "Standard_D16lds_v6",
+        "Standard_D32lds_v6",
+        "Standard_D2as_v6",
+        "Standard_D4as_v6",
+        "Standard_D8as_v6",
+        "Standard_D16as_v6",
+        "Standard_D32as_v6",
+        "Standard_D2ads_v6",
+        "Standard_D4ads_v6",
+        "Standard_D8ads_v6",
+        "Standard_D16ads_v6",
+        "Standard_D32ads_v6",
+        "Standard_D2als_v6",
+        "Standard_D4als_v6",
+        "Standard_D8als_v6",
+        "Standard_D16als_v6",
+        "Standard_D32als_v6",
+        "Standard_D2alds_v6",
+        "Standard_D4alds_v6",
+        "Standard_D8alds_v6",
+        "Standard_D16alds_v6",
+        "Standard_D32alds_v6"
+      ],
+      "metadata": {
+        "description": "Virtual Machine size selection - must be an instance that supports 4 NICs"
       }
     },
     "instanceType_arm64": {
@@ -247,6 +372,16 @@
         "Standard_D8ps_v6",
         "Standard_D16ps_v6",
         "Standard_D32ps_v6",
+        "Standard_D2pds_v6",
+        "Standard_D4pds_v6",
+        "Standard_D8pds_v6",
+        "Standard_D16pds_v6",
+        "Standard_D32pds_v6",
+        "Standard_D2pls_v6",
+        "Standard_D4pls_v6",
+        "Standard_D8pls_v6",
+        "Standard_D16pls_v6",
+        "Standard_D32pls_v6",
         "Standard_D2ps_v5",
         "Standard_D4ps_v5",
         "Standard_D8ps_v5",
@@ -602,9 +737,10 @@
   "variables": {
     "imagePublisher": "fortinet",
     "imageOffer": "fortinet_fortigate-vm_v5",
-    "fortiGateImageSku": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageSKU_arm64'), parameters('fortiGateImageSKU_x64'))]",
-    "instanceType": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('instanceType_arm64'), parameters('instanceType_x64'))]",
-    "fortiGateImageVersion": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageVersion_arm64'), parameters('fortiGateImageVersion_x64'))]",
+    "fortiGateImageSKU": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageSKU_arm64'), if(equals(parameters('fortiGateInstanceArchitecture'), 'x64_g2'),parameters('fortiGateImageSKU_x64_g2'),parameters('fortiGateImageSKU_x64')))]",
+    "fortiGateImageVersion": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('fortiGateImageVersion_arm64'), if(equals(parameters('fortiGateInstanceArchitecture'), 'x64_g2'),parameters('fortiGateImageVersion_x64_g2'),parameters('fortiGateImageVersion_x64')))]",
+    "instanceType": "[if(equals(parameters('fortiGateInstanceArchitecture'), 'arm64'), parameters('instanceType_arm64'), if(equals(parameters('fortiGateInstanceArchitecture'), 'x64_g2'),parameters('instanceType_x64_g2'),parameters('instanceType_x64')))]",
+    "diskControllerType": "[if(and(equals(parameters('fortiGateInstanceArchitecture'), 'x64_g2'),contains(parameters('instanceType_x64_g2'), '_v6'),contains(parameters('fortiGateImageSKU_x64_g2'), '_g2')),'NVMe',json('null'))]",
     "availabilitySetName": "[concat(parameters('fortiGateNamePrefix'),'-availabilityset')]",
     "availabilitySetId": {
       "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
@@ -615,7 +751,7 @@
     "fgVmName": "[concat(parameters('fortiGateNamePrefix'),'-fgt')]",
     "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\nset fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\nconfig system interface\nedit port1\nappend allowaccess fgfm\nend\nconfig system interface\nedit port2\nappend allowaccess fgfm\nend\n'),'')]",
     "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
-    "customDataBodyShared": "[concat('config system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig system probe-response\nset mode http-probe\nend\n', parameters('fortiGateAdditionalCustomData'), '\n')]",
+    "customDataBodyShared": "[concat('config system global\nset allow-traffic-redirect disable\nend\nconfig system sdn-connector\nedit AzureSDN\nset type azure\nnext\nend\nconfig system probe-response\nset mode http-probe\nend\n', parameters('fortiGateAdditionalCustomData'), '\n')]",
     "customDataLicenseHeader": "--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"license\"\n\n",
     "customDataFooter": "\n--12345--\n",
     "routeTable3Name": "[concat(parameters('fortiGateNamePrefix'),'-routetable')]",
@@ -1394,6 +1530,7 @@
         },
         "storageProfile": {
           "imageReference": "[if(and(equals(variables('fortiGateImageSku'),'fortinet_fg-vm'),not(equals(parameters('customImageReference'),''))), variables('imageReferenceCustomImage'), variables('imageReferenceMarketplace'))]",
+          "diskControllerType": "[variables('diskControllerType')]",
           "osDisk": {
             "createOption": "FromImage"
           },

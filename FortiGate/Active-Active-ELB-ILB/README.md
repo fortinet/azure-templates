@@ -194,6 +194,8 @@ The drawing in the [flow](#east-west-flow) section is used in the configuration 
 
 On the FortiGate VM, a firewall policy rule needs to be created to allow traffic from specific IP ranges going in and out of the same internal interface (port2).
 
+Make sure to verify that the option allow-traffic-redirect is disabled to make sure the FortiGate handles the ingress and egress traffic on the same logical interface. More information can be found in [in this article](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Traffic-handled-by-FortiGate-for-packet-which/ta-p/196651).
+
 ### Inbound connections
 
 #### Introduction
@@ -284,8 +286,6 @@ Secondly, a firewall policy rule needs to be created to allow the packets to tra
 </p>
 
 ### Outbound connections
-
-#### Introduction
 
 Outbound connections are considered the connections coming from the internal subnets within the VNET or peered VNETs via the FortiGate towards the internet.
 

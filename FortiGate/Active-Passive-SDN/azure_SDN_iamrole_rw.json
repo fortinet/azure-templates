@@ -1,7 +1,7 @@
 {
     "Name": "Fortinet FortiGate SDN Fabric Connector RW",
     "IsCustom": true,
-    "Description": "Role to update the public ip addres and user defined routes",
+    "Description": "Role to update the public ip address and user defined routes",
     "Actions": [
         "*/read",
         "Microsoft.Network/routeTables/write",

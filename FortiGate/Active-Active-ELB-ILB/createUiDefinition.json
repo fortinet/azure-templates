@@ -37,7 +37,11 @@
               "value": "x64"
             },
             {
-              "label": "ARM64 - Ampere Altra based processors",
+              "label": "X64 - Intel / AMD based processors - Generation 2 VM (> 7.6.1)",
+              "value": "x64_g2"
+            },
+            {
+              "label": "ARM64 - ARM based processors (Azure Cobalt or Ampere Altra) - Generation 2 VM (> 7.2.8)",
               "value": "arm64"
             }
           ],
@@ -154,7 +158,7 @@
                 "name": "fortiGateImageVersion_x64",
                 "type": "Microsoft.Common.DropDown",
                 "label": "FortiGate Image Version",
-                "defaultValue": "7.4.6",
+                "defaultValue": "7.4.9",
                 "toolTip": "Select the FortiGate image version",
                 "constraints": {
                   "required": false,
@@ -164,16 +168,20 @@
                       "value": "latest"
                     },
                     {
-                      "label": "7.6.2",
-                      "value": "7.6.2"
-                    },
-                    {
-                      "label": "7.6.1",
-                      "value": "7.6.1"
-                    },
-                    {
                       "label": "7.6.0",
                       "value": "7.6.0"
+                    },
+                    {
+                      "label": "7.4.9",
+                      "value": "7.4.9"
+                    },
+                    {
+                      "label": "7.4.8",
+                      "value": "7.4.8"
+                    },
+                    {
+                      "label": "7.4.7",
+                      "value": "7.4.7"
                     },
                     {
                       "label": "7.4.6",
@@ -202,6 +210,14 @@
                     {
                       "label": "7.4.0",
                       "value": "7.4.0"
+                    },
+                    {
+                      "label": "7.2.12",
+                      "value": "7.2.12"
+                    },
+                    {
+                      "label": "7.2.11",
+                      "value": "7.2.11"
                     },
                     {
                       "label": "7.2.10",
@@ -246,6 +262,10 @@
                     {
                       "label": "7.2.0",
                       "value": "7.2.0"
+                    },
+                    {
+                      "label": "7.0.17",
+                      "value": "7.0.17"
                     },
                     {
                       "label": "7.0.15",
@@ -306,6 +326,10 @@
                     {
                       "label": "7.0.0",
                       "value": "7.0.0"
+                    },
+                    {
+                      "label": "6.4.16",
+                      "value": "6.4.16"
                     },
                     {
                       "label": "6.4.15",
@@ -397,6 +421,7 @@
                 "label": "Size",
                 "toolTip": "Select the instance size of your FortiGate VM solution. Minimum 2 NICs are required.",
                 "recommendedSizes": [
+                  "Standard_D2s_v3",
                   "Standard_F2s",
                   "Standard_F4s",
                   "Standard_F8s",
@@ -415,7 +440,6 @@
                   "Standard_DS3_v2",
                   "Standard_DS4_v2",
                   "Standard_DS5_v2",
-                  "Standard_D2s_v3",
                   "Standard_D4s_v3",
                   "Standard_D8s_v3",
                   "Standard_D16s_v3",
@@ -459,7 +483,13 @@
                   "Standard_D4ads_v5",
                   "Standard_D8ads_v5",
                   "Standard_D16ads_v5",
-                  "Standard_D32ads_v5"
+                  "Standard_D32ads_v5",
+                  "Standard_D8s_v6",
+                  "Standard_D16s_v6",
+                  "Standard_D32s_v6",
+                  "Standard_E8s_v6",
+                  "Standard_E16s_v6",
+                  "Standard_E32s_v6"
                 ],
                 "constraints": {
                   "allowedSizes": [
@@ -575,13 +605,285 @@
                 "type": "Microsoft.Common.InfoBox",
                 "visible": "[and(contains(steps('instance').instancetype_x64.selection_x64, '_v6'),not(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest'))))]",
                 "options": {
-                  "icon" : "Error",
+                  "icon": "Error",
                   "text": "Dsv6 and Esv6 Instance families require a Gen2 VM Image, support for MANA network drivers and are incompatible with the selected FortiGate version, please select version 7.6.1 or higher",
                   "uri": "https://azure.microsoft.com/en-ca/updates/public-preview-internet-inbound-for-network-virtual-appliances-in-virtual-wan-hubs/"
-                }  
+                }
               }
             ],
             "visible": "[equals(basics('fortiGateInstanceArchitecture'),'x64')]"
+          },
+          {
+            "name": "instancetype_x64_g2",
+            "type": "Microsoft.Common.Section",
+            "label": "Instance Type x64_g2",
+            "elements": [
+              {
+                "name": "fortiGateImageSKU_x64_g2",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Fortigate-VM License Type",
+                "defaultValue": "Bring Your Own License or FortiFlex",
+                "toolTip": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)",
+                "constraints": {
+                  "required": false,
+                  "allowedValues": [
+                    {
+                      "label": "Bring Your Own License or FortiFlex",
+                      "value": "fortinet_fg-vm_g2"
+                    },
+                    {
+                      "label": "Pay As You Go",
+                      "value": "fortinet_fg-vm_payg_2023_g2"
+                    }
+                  ]
+                },
+                "visible": true
+              },
+              {
+                "name": "fortiGateImageVersion_x64_g2",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Fortigate Image Version",
+                "defaultValue": "7.6.4",
+                "toolTip": "Only 6.x has the A/P HA feature currently",
+                "constraints": {
+                  "required": false,
+                  "allowedValues": [
+                    {
+                      "label": "latest",
+                      "value": "latest"
+                    },
+                    {
+                      "label": "7.6.2",
+                      "value": "7.6.200"
+                    },
+                    {
+                      "label": "7.6.1",
+                      "value": "7.6.100"
+                    },
+                    {
+                      "label": "7.6.4",
+                      "value": "7.6.4"
+                    },
+                    {
+                      "label": "7.6.3",
+                      "value": "7.6.3"
+                    }
+                  ]
+                },
+                "visible": true
+              },
+              {
+                "name": "info",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "For this FortiGate deployment, it is recommended to use the general purpose or compute optimized virtual machines. A selection of supported instances sizes is listed in our documentation.",
+                  "link": {
+                    "label": "Learn more",
+                    "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/azure-administration-guide/562841/instance-type-support"
+                  }
+                }
+              },
+              {
+                "name": "selection_x64_g2",
+                "type": "Microsoft.Compute.SizeSelector",
+                "label": "Size",
+                "toolTip": "Select the instance size of your FortiGate VM solution. Minimum 4 NICs are required.",
+                "recommendedSizes": [
+                  "Standard_D2_v4",
+                  "Standard_D4_v4",
+                  "Standard_D8_v4",
+                  "Standard_D16_v4",
+                  "Standard_D32_v4",
+                  "Standard_D2s_v4",
+                  "Standard_D4s_v4",
+                  "Standard_D8s_v4",
+                  "Standard_D16s_v4",
+                  "Standard_D32s_v4",
+                  "Standard_D2a_v4",
+                  "Standard_D4a_v4",
+                  "Standard_D8a_v4",
+                  "Standard_D16a_v4",
+                  "Standard_D32a_v4",
+                  "Standard_D2as_v4",
+                  "Standard_D4as_v4",
+                  "Standard_D8as_v4",
+                  "Standard_D16as_v4",
+                  "Standard_D32as_v4",
+                  "Standard_D2_v5",
+                  "Standard_D4_v5",
+                  "Standard_D8_v5",
+                  "Standard_D16_v5",
+                  "Standard_D32_v5",
+                  "Standard_D2s_v5",
+                  "Standard_D4s_v5",
+                  "Standard_D8s_v5",
+                  "Standard_D16s_v5",
+                  "Standard_D32s_v5",
+                  "Standard_D2as_v5",
+                  "Standard_D4as_v5",
+                  "Standard_D8as_v5",
+                  "Standard_D16as_v5",
+                  "Standard_D32as_v5",
+                  "Standard_D2ads_v5",
+                  "Standard_D4ads_v5",
+                  "Standard_D8ads_v5",
+                  "Standard_D16ads_v5",
+                  "Standard_D32ads_v5",
+                  "Standard_D2s_v6",
+                  "Standard_D4s_v6",
+                  "Standard_D8s_v6",
+                  "Standard_D16s_v6",
+                  "Standard_D32s_v6",
+                  "Standard_D2ds_v6",
+                  "Standard_D4ds_v6",
+                  "Standard_D8ds_v6",
+                  "Standard_D16ds_v6",
+                  "Standard_D32ds_v6",
+                  "Standard_D2ls_v6",
+                  "Standard_D4ls_v6",
+                  "Standard_D8ls_v6",
+                  "Standard_D16ls_v6",
+                  "Standard_D32ls_v6",
+                  "Standard_D2lds_v6",
+                  "Standard_D4lds_v6",
+                  "Standard_D8lds_v6",
+                  "Standard_D16lds_v6",
+                  "Standard_D32lds_v6",
+                  "Standard_D2as_v6",
+                  "Standard_D4as_v6",
+                  "Standard_D8as_v6",
+                  "Standard_D16as_v6",
+                  "Standard_D32as_v6",
+                  "Standard_D2ads_v6",
+                  "Standard_D4ads_v6",
+                  "Standard_D8ads_v6",
+                  "Standard_D16ads_v6",
+                  "Standard_D32ads_v6",
+                  "Standard_D2als_v6",
+                  "Standard_D4als_v6",
+                  "Standard_D8als_v6",
+                  "Standard_D16als_v6",
+                  "Standard_D32als_v6",
+                  "Standard_D2alds_v6",
+                  "Standard_D4alds_v6",
+                  "Standard_D8alds_v6",
+                  "Standard_D16alds_v6",
+                  "Standard_D32alds_v6"
+                ],
+                "constraints": {
+                  "allowedSizes": [
+                    "Standard_D2s_v3",
+                    "Standard_D4s_v3",
+                    "Standard_D8s_v3",
+                    "Standard_D16s_v3",
+                    "Standard_D32s_v3",
+                    "Standard_D2_v4",
+                    "Standard_D4_v4",
+                    "Standard_D8_v4",
+                    "Standard_D16_v4",
+                    "Standard_D32_v4",
+                    "Standard_D2s_v4",
+                    "Standard_D4s_v4",
+                    "Standard_D8s_v4",
+                    "Standard_D16s_v4",
+                    "Standard_D32s_v4",
+                    "Standard_D2a_v4",
+                    "Standard_D4a_v4",
+                    "Standard_D8a_v4",
+                    "Standard_D16a_v4",
+                    "Standard_D32a_v4",
+                    "Standard_D2as_v4",
+                    "Standard_D4as_v4",
+                    "Standard_D8as_v4",
+                    "Standard_D16as_v4",
+                    "Standard_D32as_v4",
+                    "Standard_D2_v5",
+                    "Standard_D4_v5",
+                    "Standard_D8_v5",
+                    "Standard_D16_v5",
+                    "Standard_D32_v5",
+                    "Standard_D2s_v5",
+                    "Standard_D4s_v5",
+                    "Standard_D8s_v5",
+                    "Standard_D16s_v5",
+                    "Standard_D32s_v5",
+                    "Standard_D2as_v5",
+                    "Standard_D4as_v5",
+                    "Standard_D8as_v5",
+                    "Standard_D16as_v5",
+                    "Standard_D32as_v5",
+                    "Standard_D2ads_v5",
+                    "Standard_D4ads_v5",
+                    "Standard_D8ads_v5",
+                    "Standard_D16ads_v5",
+                    "Standard_D32ads_v5",
+                    "Standard_D2s_v6",
+                    "Standard_D4s_v6",
+                    "Standard_D8s_v6",
+                    "Standard_D16s_v6",
+                    "Standard_D32s_v6",
+                    "Standard_D2ds_v6",
+                    "Standard_D4ds_v6",
+                    "Standard_D8ds_v6",
+                    "Standard_D16ds_v6",
+                    "Standard_D32ds_v6",
+                    "Standard_D2ls_v6",
+                    "Standard_D4ls_v6",
+                    "Standard_D8ls_v6",
+                    "Standard_D16ls_v6",
+                    "Standard_D32ls_v6",
+                    "Standard_D2lds_v6",
+                    "Standard_D4lds_v6",
+                    "Standard_D8lds_v6",
+                    "Standard_D16lds_v6",
+                    "Standard_D32lds_v6",
+                    "Standard_D2as_v6",
+                    "Standard_D4as_v6",
+                    "Standard_D8as_v6",
+                    "Standard_D16as_v6",
+                    "Standard_D32as_v6",
+                    "Standard_D2ads_v6",
+                    "Standard_D4ads_v6",
+                    "Standard_D8ads_v6",
+                    "Standard_D16ads_v6",
+                    "Standard_D32ads_v6",
+                    "Standard_D2als_v6",
+                    "Standard_D4als_v6",
+                    "Standard_D8als_v6",
+                    "Standard_D16als_v6",
+                    "Standard_D32als_v6",
+                    "Standard_D2alds_v6",
+                    "Standard_D4alds_v6",
+                    "Standard_D8alds_v6",
+                    "Standard_D16alds_v6",
+                    "Standard_D32alds_v6"
+                  ]
+                },
+                "options": {
+                  "hideDiskTypeFilter": false
+                },
+                "osPlatform": "Linux",
+                "imageReference": {
+                  "publisher": "Fortinet",
+                  "offer": "fortinet_fortigate-vm_v5",
+                  "sku": "[steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2]"
+                },
+                "count": 1,
+                "visible": true
+              },
+              {
+                "name": "versionInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": "[and(contains(steps('instance').instancetype_x64_g2.selection_x64_g2, '_v6'),not(or(equals(steps('instance').instancetype_x64_g2.fortiGateImageVersion_x64_g2,'7.6.100'),equals(steps('instance').instancetype_x64_g2.fortiGateImageVersion_x64_g2,'7.6.200'),equals(steps('instance').instancetype_x64_g2.fortiGateImageVersion_x64_g2,'latest'))))]",
+                "options": {
+                  "icon": "Error",
+                  "text": "Dsv6 and Esv6 Instance families require a Gen2 VM Image, support for MANA network drivers and are incompatible with the selected FortiGate version, please select version 7.6.1 or higher",
+                  "uri": "https://azure.microsoft.com/en-ca/updates/public-preview-internet-inbound-for-network-virtual-appliances-in-virtual-wan-hubs/"
+                }
+              }
+            ],
+            "visible": "[equals(basics('fortiGateInstanceArchitecture'),'x64_g2')]"
           },
           {
             "name": "instancetype_arm64",
@@ -613,7 +915,7 @@
                 "name": "fortiGateImageVersion_arm64",
                 "type": "Microsoft.Common.DropDown",
                 "label": "FortiGate Image Version",
-                "defaultValue": "7.4.6",
+                "defaultValue": "7.6.4",
                 "toolTip": "Select the FortiGate image version",
                 "constraints": {
                   "required": false,
@@ -621,6 +923,14 @@
                     {
                       "label": "latest",
                       "value": "latest"
+                    },
+                    {
+                      "label": "7.6.4",
+                      "value": "7.6.4"
+                    },
+                    {
+                      "label": "7.6.3",
+                      "value": "7.6.3"
                     },
                     {
                       "label": "7.6.2",
@@ -633,6 +943,18 @@
                     {
                       "label": "7.6.0",
                       "value": "7.6.0"
+                    },
+                    {
+                      "label": "7.4.9",
+                      "value": "7.4.9"
+                    },
+                    {
+                      "label": "7.4.8",
+                      "value": "7.4.8"
+                    },
+                    {
+                      "label": "7.4.7",
+                      "value": "7.4.7"
                     },
                     {
                       "label": "7.4.6",
@@ -649,6 +971,14 @@
                     {
                       "label": "7.4.3",
                       "value": "7.4.3"
+                    },
+                    {
+                      "label": "7.2.12",
+                      "value": "7.2.12"
+                    },
+                    {
+                      "label": "7.2.11",
+                      "value": "7.2.11"
                     },
                     {
                       "label": "7.2.10",
@@ -689,6 +1019,16 @@
                   "Standard_D8ps_v6",
                   "Standard_D16ps_v6",
                   "Standard_D32ps_v6",
+                  "Standard_D2pds_v6",
+                  "Standard_D4pds_v6",
+                  "Standard_D8pds_v6",
+                  "Standard_D16pds_v6",
+                  "Standard_D32pds_v6",
+                  "Standard_D2pls_v6",
+                  "Standard_D4pls_v6",
+                  "Standard_D8pls_v6",
+                  "Standard_D16pls_v6",
+                  "Standard_D32pls_v6",
                   "Standard_D2ps_v5",
                   "Standard_D4ps_v5",
                   "Standard_D8ps_v5",
@@ -718,7 +1058,13 @@
                   "Standard_E4pds_v5",
                   "Standard_E8pds_v5",
                   "Standard_E16pds_v5",
-                  "Standard_E32pds_v5"
+                  "Standard_E32pds_v5",
+                  "Standard_D8s_v6",
+                  "Standard_D16s_v6",
+                  "Standard_D32s_v6",
+                  "Standard_E8s_v6",
+                  "Standard_E16s_v6",
+                  "Standard_E32s_v6"
                 ],
                 "constraints": {
                   "allowedSizes": [
@@ -727,6 +1073,16 @@
                     "Standard_D8ps_v6",
                     "Standard_D16ps_v6",
                     "Standard_D32ps_v6",
+                    "Standard_D2pds_v6",
+                    "Standard_D4pds_v6",
+                    "Standard_D8pds_v6",
+                    "Standard_D16pds_v6",
+                    "Standard_D32pds_v6",
+                    "Standard_D2pls_v6",
+                    "Standard_D4pls_v6",
+                    "Standard_D8pls_v6",
+                    "Standard_D16pls_v6",
+                    "Standard_D32pls_v6",
                     "Standard_D2ps_v5",
                     "Standard_D4ps_v5",
                     "Standard_D8ps_v5",
@@ -795,7 +1151,7 @@
                 "name": "availabilityOptions",
                 "type": "Microsoft.Common.DropDown",
                 "label": "Availability Option",
-                "defaultValue": "Availability Zones",
+                "defaultValue": "[if(and(equals(basics('fortiGateInstanceArchitecture'),'x64_g2'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'), contains(steps('instance').instancetype_x64_g2.selection_x64_g2, 'v6')), 'Availability Set', 'Availability Zones')]",
                 "toolTip": "Deploy FortiGate VMs in an Availability Set or Availability Zones.",
                 "constraints": {
                   "required": false,
@@ -835,14 +1191,14 @@
                 "options": {
                   "text": "Bring Your Own License was selected in the basics blade. The license file(s) retrieved from support.fortinet.com can be uploaded here or uploaded after deployment. License files or FortiFlex license for the first three FortiGate VM systems can be provided via this deployment. Additional licenses need to be uplaoded localy on these systems after deployment or a custom template need to created."
                 },
-                "visible": "[or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64'))]"
+                "visible": "[or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64'))]"
               },
               {
                 "name": "fgtLicenseFortiFlexCheck",
                 "type": "Microsoft.Common.CheckBox",
                 "label": "My organisation is using the FortiFlex subscription service.",
                 "toolTip": "My organisation is using the FortiFlex subscription service.",
-                "visible": "[or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64'))]"
+                "visible": "[or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64'))]"
               },
               {
                 "name": "fgt1content",
@@ -859,7 +1215,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),1),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),1),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgt2content",
@@ -876,7 +1232,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),2),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),2),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgt3content",
@@ -893,7 +1249,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),3),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),3),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgt4content",
@@ -910,7 +1266,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),4),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),4),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgt5content",
@@ -927,7 +1283,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),5),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),5),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgt6content",
@@ -944,7 +1300,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),6),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),6),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgt7content",
@@ -961,7 +1317,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),7),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),7),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgt8content",
@@ -978,7 +1334,7 @@
                   "openMode": "text",
                   "encoding": "UTF-8"
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),8),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),8),not(steps('instance').fgtLicense.fgtLicenseFortiFlexCheck))]"
               },
               {
                 "name": "fgt1fortiflex",
@@ -991,7 +1347,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),1),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),1),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgt2fortiflex",
@@ -1004,7 +1360,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),2),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),2),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgt3fortiflex",
@@ -1017,7 +1373,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),3),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),3),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgt4fortiflex",
@@ -1030,7 +1386,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),4),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),4),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgt5fortiflex",
@@ -1043,7 +1399,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),5),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),5),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgt6fortiflex",
@@ -1056,7 +1412,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),6),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),6),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgt7fortiflex",
@@ -1069,7 +1425,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),7),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),7),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgt8fortiflex",
@@ -1082,7 +1438,7 @@
                   "regex": "^[A-Za-z0-9-]{1,64}$",
                   "validationMessage": "Only alphanumeric characters and a dash are allowed, and the value must be 1 to 64 characters."
                 },
-                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),8),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
+                "visible": "[and(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')),greaterOrEquals(int(basics('fortiGateCount')),8),steps('instance').fgtLicense.fgtLicenseFortiFlexCheck)]"
               },
               {
                 "name": "fgtLicensePAYGInfo",
@@ -1092,7 +1448,7 @@
                   "text": "Pay As You Go licenses was selected in the basics blade and provisioned automatically durig deployment. Registration of the PAYG license is required to receive support.",
                   "uri": "https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/azure-administration-guide/533394/creating-a-support-account"
                 },
-                "visible": "[not(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')))]"
+                "visible": "[not(or(equals(steps('instance').instancetype_x64.fortiGateImageSKU_x64, 'fortinet_fg-vm'),equals(steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2, 'fortinet_fg-vm_g2'),equals(steps('instance').instancetype_arm64.fortiGateImageSKU_arm64, 'fortinet_fg-vm_arm64')))]"
               },
               {
                 "name": "fgtLicenseMigrateInfo",
@@ -1770,15 +2126,18 @@
     "outputs": {
       "fortiGateNamePrefix": "[basics('fortiGateNamePrefix')]",
       "fortiGateCount": "[int(basics('fortiGateCount'))]",
-      "fortiGateImageSKU_x64": "[if(or(equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.1'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'7.6.2'),equals(steps('instance').instancetype_x64.fortiGateImageVersion_x64,'latest')),concat(steps('instance').instancetype_x64.fortiGateImageSKU_x64,'_g2'),steps('instance').instancetype_x64.fortiGateImageSKU_x64)]",
+      "fortiGateImageSKU_x64": "[steps('instance').instancetype_x64.fortiGateImageSKU_x64]",
+      "fortiGateImageSKU_x64_g2": "[steps('instance').instancetype_x64_g2.fortiGateImageSKU_x64_g2]",
       "fortiGateImageSKU_arm64": "[steps('instance').instancetype_arm64.fortiGateImageSKU_arm64]",
       "fortiGateImageVersion_x64": "[steps('instance').instancetype_x64.fortiGateImageVersion_x64]",
+      "fortiGateImageVersion_x64_g2": "[steps('instance').instancetype_x64_g2.fortiGateImageVersion_x64_g2]",
       "fortiGateImageVersion_arm64": "[steps('instance').instancetype_arm64.fortiGateImageVersion_arm64]",
       "fortiGateInstanceArchitecture": "[basics('fortiGateInstanceArchitecture')]",
       "adminUsername": "[basics('adminUsername')]",
       "adminPassword": "[basics('adminPassword')]",
       "location": "[location()]",
       "instanceType_x64": "[steps('instance').instancetype_x64.selection_x64]",
+      "instanceType_x64_g2": "[steps('instance').instancetype_x64_g2.selection_x64_g2]",
       "instanceType_arm64": "[steps('instance').instancetype_arm64.selection_arm64]",
       "availabilityOptions": "[steps('instance').availabilityOptions.availabilityOptions]",
       "fortiGateLicenseBYOL1": "[steps('instance').fgtLicense.fgt1content]",

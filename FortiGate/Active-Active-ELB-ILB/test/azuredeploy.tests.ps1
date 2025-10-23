@@ -26,10 +26,12 @@ BeforeAll {
   $testsRandom = Get-Random 10001
   $testsPrefix = "FORTIQA"
   $testsResourceGroupName_x64 = "FORTIQA-$testsRandom-$templateName-x64"
+  $testsResourceGroupName_x64_g2 = "FORTIQA-$testsRandom-$templateName-x64_g2"
   $testsResourceGroupName_arm64 = "FORTIQA-$testsRandom-$templateName-arm64"
   $testsAdminUsername = "azureuser"
   $testsResourceGroupLocation_x64 = "westeurope"
-  $testsResourceGroupLocation_arm64 = "northeurope"
+  $testsResourceGroupLocation_x64_g2 = "francecentral"
+  $testsResourceGroupLocation_arm64 = "francecentral"
 
   # ARM Template Variables
   $config = "config system console `n set output standard `n end `n config system global `n set gui-theme mariner `n end `n config system admin `n edit devops `n set accprofile super_admin `n set ssh-public-key1 `""
@@ -42,6 +44,13 @@ BeforeAll {
     'fortiGateNamePrefix'           = $testsPrefix
     'fortiGateAdditionalCustomData' = $config
     'fortiGateCount'                = $fortiGateCount
+  }
+  $params_x64_g2 = @{ 'adminUsername'  = $testsAdminUsername
+    'adminPassword'                 = $testsResourceGroupName_x64_g2
+    'fortiGateNamePrefix'           = $testsPrefix
+    'fortiGateAdditionalCustomData' = $config
+    'fortiGateCount'                = $fortiGateCount
+    'fortiGateInstanceArchitecture' = 'x64_g2'
   }
   $params_arm64 = @{ 'adminUsername' = $testsAdminUsername
     'adminPassword'                  = $testsResourceGroupName_arm64
@@ -115,8 +124,10 @@ Describe 'FGT A/A' {
       'fortiGateCount',
       'fortiGateImageSKU_arm64',
       'fortiGateImageSKU_x64',
+      'fortiGateImageSKU_x64_g2',
       'fortiGateImageVersion_arm64',
       'fortiGateImageVersion_x64',
+      'fortiGateImageVersion_x64_g2',
       'fortiGateInstanceArchitecture',
       'fortiGateLicenseBYOL1',
       'fortiGateLicenseBYOL2',
@@ -143,6 +154,7 @@ Describe 'FGT A/A' {
       'fortinetTags',
       'instanceType_arm64',
       'instanceType_x64',
+      'instanceType_x64_g2',
       'location',
       'outboundConnectivity',
       'serialConsole',
@@ -169,7 +181,9 @@ Describe 'FGT A/A' {
 
     It "Test deployment" {
       New-AzResourceGroup -Name $testsResourceGroupName_x64 -Location "$testsResourceGroupLocation_x64"
-            (Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName_x64" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params_x64).Count | Should -Not -BeGreaterThan 0
+      $result = Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName_x64" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params_x64
+      Write-Host ($result | Format-Table -Wrap -Autosize | Out-String)
+      $result.Count | Should -Not -BeGreaterThan 0
     }
     It "Deployment" {
       $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName_x64" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params_x64
@@ -219,9 +233,131 @@ Describe 'FGT A/A' {
     }
   }
 
-  Context 'Cleanup x86' {
+  Context 'Cleanup x64' {
     It "Cleanup of deployment" {
       Remove-AzResourceGroup -Name $testsResourceGroupName_x64 -Force
+    }
+  }
+Context 'Deployment x64_g2' {
+
+    It "Test deployment" {
+      New-AzResourceGroup -Name $testsResourceGroupName_x64_g2 -Location "$testsResourceGroupLocation_x64_g2"
+      $result = Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName_x64_g2" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params_x64_g2
+      Write-Host ($result | Format-Table -Wrap -Autosize | Out-String)
+      $result.Count | Should -Not -BeGreaterThan 0
+    }
+    It "Deployment" {
+      $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName_x64_g2" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params_x64_g2
+      Write-Host ($resultDeployment | Format-Table | Out-String)
+      Write-Host ("Deployment state: " + $resultDeployment.ProvisioningState | Out-String)
+      $resultDeployment.ProvisioningState | Should -Be "Succeeded"
+    }
+    It "Search deployment" {
+      $result = Get-AzVM | Where-Object { $_.Name -like "$testsPrefix*" }
+      Write-Host ($result | Format-Table | Out-String)
+      $result | Should -Not -Be $null
+    }
+  }
+
+  Context 'Deployment test x64_g2' {
+
+    BeforeAll {
+      $fgt = (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName_x64_g2).IpAddress
+      Write-Host ("FortiGate public IP: " + $fgt)
+      $verify_commands = @'
+            get system status
+            show system interface
+            show router static
+            diag debug cloudinit show
+            exit
+'@
+      $OFS = "`n"
+    }
+    It "FGT: Ports listening" {
+      ForEach ( $port in $ports ) {
+        Write-Host ("Check port: $port" )
+        $portListening = (Test-Connection -TargetName $fgt -TCPPort $port -TimeoutSeconds 100)
+        $portListening | Should -Be $true
+      }
+    }
+    It "FGT A: Verify configuration" {
+      $result = $verify_commands | ssh -p 50030 -v -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
+      $LASTEXITCODE | Should -Be "0"
+      Write-Host ("FGT CLI info: " + $result) -Separator `n
+      $result | Should -Not -BeLike "*Command fail*"
+    }
+    It "FGT B: Verify configuration" {
+      $result = $verify_commands | ssh -p 50031 -v -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
+      $LASTEXITCODE | Should -Be "0"
+      Write-Host ("FGT CLI info: " + $result) -Separator `n
+      $result | Should -Not -BeLike "*Command fail*"
+    }
+  }
+
+  Context 'Cleanup x64_g2' {
+    It "Cleanup of deployment" {
+      Remove-AzResourceGroup -Name $testsResourceGroupName_x64_g2 -Force
+    }
+  }
+Context 'Deployment arm64' {
+
+    It "Test deployment" {
+      New-AzResourceGroup -Name $testsResourceGroupName_arm64 -Location "$testsResourceGroupLocation_arm64"
+      $result = Test-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName_arm64" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params_arm64
+      Write-Host ($result | Format-Table -Wrap -Autosize | Out-String)
+      $result.Count | Should -Not -BeGreaterThan 0
+    }
+    It "Deployment" {
+      $resultDeployment = New-AzResourceGroupDeployment -ResourceGroupName "$testsResourceGroupName_arm64" -TemplateFile "$templateFileLocation" -TemplateParameterObject $params_arm64
+      Write-Host ($resultDeployment | Format-Table | Out-String)
+      Write-Host ("Deployment state: " + $resultDeployment.ProvisioningState | Out-String)
+      $resultDeployment.ProvisioningState | Should -Be "Succeeded"
+    }
+    It "Search deployment" {
+      $result = Get-AzVM | Where-Object { $_.Name -like "$testsPrefix*" }
+      Write-Host ($result | Format-Table | Out-String)
+      $result | Should -Not -Be $null
+    }
+  }
+
+  Context 'Deployment test arm64' {
+
+    BeforeAll {
+      $fgt = (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName_arm64).IpAddress
+      Write-Host ("FortiGate public IP: " + $fgt)
+      $verify_commands = @'
+            get system status
+            show system interface
+            show router static
+            diag debug cloudinit show
+            exit
+'@
+      $OFS = "`n"
+    }
+    It "FGT: Ports listening" {
+      ForEach ( $port in $ports ) {
+        Write-Host ("Check port: $port" )
+        $portListening = (Test-Connection -TargetName $fgt -TCPPort $port -TimeoutSeconds 100)
+        $portListening | Should -Be $true
+      }
+    }
+    It "FGT A: Verify configuration" {
+      $result = $verify_commands | ssh -p 50030 -v -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
+      $LASTEXITCODE | Should -Be "0"
+      Write-Host ("FGT CLI info: " + $result) -Separator `n
+      $result | Should -Not -BeLike "*Command fail*"
+    }
+    It "FGT B: Verify configuration" {
+      $result = $verify_commands | ssh -p 50031 -v -tt -i $sshkey -o StrictHostKeyChecking=no devops@$fgt
+      $LASTEXITCODE | Should -Be "0"
+      Write-Host ("FGT CLI info: " + $result) -Separator `n
+      $result | Should -Not -BeLike "*Command fail*"
+    }
+  }
+
+  Context 'Cleanup arm64' {
+    It "Cleanup of deployment" {
+      Remove-AzResourceGroup -Name $testsResourceGroupName_arm64 -Force
     }
   }
 }
