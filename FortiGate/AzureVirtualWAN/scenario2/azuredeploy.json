@@ -1,0 +1,752 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Naming prefix for all deployed resources"
+      }
+    },
+    "vpnsitePrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Naming prefix for all on-premise resources"
+      }
+    },
+    "vWanName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Virtual Wan."
+      }
+    },
+    "hubName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Virtual Hub. A virtual hub is created inside a virtual wan."
+      }
+    },
+    "hubAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.160.0/24",
+      "metadata": {
+        "description": "The hub address prefix. This address prefix will be used as the address prefix for the hub vnet"
+      }
+    },
+    "vpnGatewayName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Vpn Gateway. A vpn gateway is created inside a virtual hub."
+      }
+    },
+    "vpnGwBgpAsn": {
+      "type": "int",
+      "defaultValue": 65515,
+      "metadata": {
+        "description": "The bgp asn number of the hub."
+      }
+    },
+    "vpnsiteName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the vpnsite. A vpnsite represents the on-premise vpn device. A public ip address is mandatory for a vpn site creation."
+      }
+    },
+    "connectionName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the vpnconnection. A vpn connection is established between a vpnsite and a vpn gateway."
+      }
+    },
+    "vpnsiteAddressspaceList": {
+      "type": "array",
+      "defaultValue": [
+      ],
+      "metadata": {
+        "description": "A list of static routes corresponding to the vpn site. These are configured on the vpn gateway."
+      }
+    },
+    "vpnsitePublicIPAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The public IP address of a vpn site."
+      }
+    },
+    "vpnsiteBgpAsn": {
+      "type": "int",
+      "defaultValue": 65010,
+      "metadata": {
+        "description": "The bgp asn number of a vpnsite."
+      }
+    },
+    "vpnsiteBgpPeeringAddress": {
+      "type": "string",
+      "defaultValue": "169.254.111.1",
+      "metadata": {
+        "description": "The bgp peer IP address of a vpnsite."
+      }
+    },
+    "enableBgp": {
+      "type": "string",
+      "defaultValue": "true",
+      "metadata": {
+        "description": "This needs to be set to true if BGP needs to enabled on the vpn connection."
+      },
+      "allowedValues": [
+        "true",
+        "false"
+      ]
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machine."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
+    },
+    "fortiGateImageSKU": {
+      "type": "string",
+      "defaultValue": "fortinet_fg-vm",
+      "allowedValues": [
+        "fortinet_fg-vm",
+        "fortinet_fg-vm_payg_2023"
+      ],
+      "metadata": {
+        "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)"
+      }
+    },
+    "fortiGateImageVersion": {
+      "type": "string",
+      "defaultValue": "latest",
+      "allowedValues": [
+        "6.2.0",
+        "6.2.2",
+        "6.2.4",
+        "6.2.5",
+        "6.4.0",
+        "6.4.2",
+        "6.4.3",
+        "6.4.5",
+        "6.4.6",
+        "6.4.7",
+        "6.4.8",
+        "7.0.0",
+        "7.0.1",
+        "7.0.2",
+        "7.0.3",
+        "latest"
+      ],
+      "metadata": {
+        "description": "Only 6.x has the A/P HA feature currently"
+      }
+    },
+    "instanceType": {
+      "type": "string",
+      "defaultValue": "Standard_F4s",
+      "allowedValues": [
+        "Standard_F4s",
+        "Standard_F8s",
+        "Standard_F4",
+        "Standard_F8",
+        "Standard_F8s_v2",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS8_v3"
+      ],
+      "metadata": {
+        "description": "Virtual Machine size selection - must be F4 or other instance that supports 4 NICs"
+      }
+    },
+    "acceleratedNetworking": {
+      "type": "string",
+      "defaultValue": "true",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Accelerated Networking enables direct connection between the VM and network card. Only available on 2 CPU D/DSv2 and F/Fs and 4 CPU D/Dsv3, E/Esv3, Fsv2, Lsv2, Ms/Mms and Ms/Mmsv2"
+      }
+    },
+    "publicIPNewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify if to use a public IP, and if so whether it's new"
+      }
+    },
+    "publicIP2NewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Whether to use a public IP and if so whether it is new"
+      }
+    },
+    "publicIP3NewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Whether to use a public IP and if so whether it is new"
+      }
+    },
+    "publicIPName": {
+      "type": "string",
+      "defaultValue": "FGTAPClusterPublicIP",
+      "metadata": {
+        "description": "Name of Public IP address element."
+      }
+    },
+    "publicIPResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource group to which the Public IP belongs."
+      }
+    },
+    "publicIP2Name": {
+      "type": "string",
+      "defaultValue": "FGTAMgmtPublicIP",
+      "metadata": {
+        "description": "Name of Public IP address element."
+      }
+    },
+    "publicIP2ResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource group to which the Public IP belongs."
+      }
+    },
+    "publicIP3Name": {
+      "type": "string",
+      "defaultValue": "FGTBMgmtPublicIP",
+      "metadata": {
+        "description": "Name of Public IP address element."
+      }
+    },
+    "publicIP3ResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource group to which the Public IP belongs."
+      }
+    },
+    "publicIPAddressType": {
+      "type": "string",
+      "defaultValue": "Static",
+      "allowedValues": [
+        "Dynamic",
+        "Static"
+      ],
+      "metadata": {
+        "description": "Type of public IP address"
+      }
+    },
+    "vnetNewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing vnet"
+      }
+    },
+    "vnetName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure virtual network."
+      }
+    },
+    "vnetResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource Group containing the virtual network - or new resource group from above (if new vnet)"
+      }
+    },
+    "vnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.0/22",
+      "metadata": {
+        "description": "Virtual Network Address prefix"
+      }
+    },
+    "subnet1Name": {
+      "type": "string",
+      "defaultValue": "ExternalSubnet",
+      "metadata": {
+        "description": "Subnet 1 Name"
+      }
+    },
+    "subnet1Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.0/26",
+      "metadata": {
+        "description": "Subnet 1 Prefix"
+      }
+    },
+    "subnet2Name": {
+      "type": "string",
+      "defaultValue": "InternalSubnet",
+      "metadata": {
+        "description": "Subnet 2 Name"
+      }
+    },
+    "subnet2Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.64/26",
+      "metadata": {
+        "description": "Subnet 2 Prefix"
+      }
+    },
+    "subnet3Name": {
+      "type": "string",
+      "defaultValue": "HASyncSubnet",
+      "metadata": {
+        "description": "Subnet 3 Name"
+      }
+    },
+    "subnet3Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.128/26",
+      "metadata": {
+        "description": "Subnet 3 Prefix"
+      }
+    },
+    "subnet4Name": {
+      "type": "string",
+      "defaultValue": "ManagementSubnet",
+      "metadata": {
+        "description": "Subnet 4 Name"
+      }
+    },
+    "subnet4Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.136.192/26",
+      "metadata": {
+        "description": "Subnet 4 Prefix"
+      }
+    },
+    "subnet5Name": {
+      "type": "string",
+      "defaultValue": "ProtectedASubnet",
+      "metadata": {
+        "description": "Protected A Subnet 5 Name"
+      }
+    },
+    "subnet5Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.137.0/24",
+      "metadata": {
+        "description": "Protected A Subnet 5 Prefix"
+      }
+    },
+    "subnet6Name": {
+      "type": "string",
+      "defaultValue": "ProtectedBSubnet",
+      "metadata": {
+        "description": "Protected B Subnet 6 Name"
+      }
+    },
+    "subnet6Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.138.0/24",
+      "metadata": {
+        "description": "Protected B Subnet 6 Prefix"
+      }
+    },
+    "vnetNewOrExistingSpoke1": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing vnet"
+      }
+    },
+    "vnetNameSpoke1": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure virtual network for Spoke1"
+      }
+    },
+    "vnetAddressPrefixSpoke1": {
+      "type": "string",
+      "defaultValue": "172.16.140.0/24",
+      "metadata": {
+        "description": "Virtual Network Address prefix for Spoke 1"
+      }
+    },
+    "vnetResourceGroupSpoke1": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource Group containing the existing virtual network Spoke 1 (with new vnet the current resourcegroup is used)"
+      }
+    },
+    "subnet1Spoke1Name": {
+      "type": "string",
+      "defaultValue": "SPOKE1Subnet",
+      "metadata": {
+        "description": "Subnet 1 Spoke 1"
+      }
+    },
+    "subnet1Spoke1Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.140.0/26",
+      "metadata": {
+        "description": "Subnet 1 Spoke 1"
+      }
+    },
+    "vnetNewOrExistingSpoke2": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing vnet"
+      }
+    },
+    "vnetNameSpoke2": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure virtual network for Spoke1"
+      }
+    },
+    "vnetAddressPrefixSpoke2": {
+      "type": "string",
+      "defaultValue": "172.16.142.0/24",
+      "metadata": {
+        "description": "Virtual Network Address prefix for Spoke 2"
+      }
+    },
+    "vnetResourceGroupSpoke2": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource Group containing the existing virtual network Spoke 1 (with new vnet the current resourcegroup is used)"
+      }
+    },
+    "subnet1Spoke2Name": {
+      "type": "string",
+      "defaultValue": "SPOKE2Subnet",
+      "metadata": {
+        "description": "Subnet 1 Spoke 2"
+      }
+    },
+    "subnet1Spoke2Prefix": {
+      "type": "string",
+      "defaultValue": "172.16.142.0/26",
+      "metadata": {
+        "description": "Subnet 1 Spoke 2"
+      }
+    },
+    "FortinetTags": {
+      "type": "object",
+      "defaultValue": {
+        "provider": "6EB3B02F-50E5-4A3E-8CB8-2E129258317D"
+      }
+    }
+  },
+  "variables": {
+    "apiVersion": "2018-08-01",
+
+    "vWanName": "[if(equals(parameters('vWanName'),''),concat(parameters('prefix'),'-VWAN-',resourceGroup().location),parameters('vWanName'))]",
+    "hubName": "[if(equals(parameters('hubName'),''),concat(parameters('prefix'),'-HUB-',resourceGroup().location),parameters('hubName'))]",
+    "vpnGatewayName": "[if(equals(parameters('vpnGatewayName'),''),concat(parameters('prefix'),'-VPNGW'),parameters('hubName'))]",
+    "vpnsiteName": "[if(equals(parameters('vpnsiteName'),''),concat(parameters('prefix'), '-', parameters('vpnsitePrefix'),'-VPN'),parameters('vpnsiteName'))]",
+    "connectionName": "[if(equals(parameters('connectionName'),''),concat(parameters('prefix'), '-', parameters('vpnsitePrefix'),'-VPN-CONNECTION'),parameters('connectionName'))]",
+
+    "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('prefix'),'-VNET'),parameters('vnetName'))]",
+    "vnetID": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks', variables('vnetName')))]",
+    "vnetNameSpoke1": "[if(equals(parameters('vnetNameSpoke1'),''),concat(parameters('prefix'),'-VNET-SPOKE1'),parameters('vnetName'))]",
+    "vnetIDSpoke1": "[if(equals(parameters('vnetNewOrExistingSpoke1'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('vnetNameSpoke1')),resourceId(parameters('vnetResourceGroupSpoke1'),'Microsoft.Network/virtualNetworks', variables('vnetNameSpoke1')))]",
+    "vnetNameSpoke2": "[if(equals(parameters('vnetNameSpoke2'),''),concat(parameters('prefix'),'-VNET-SPOKE2'),parameters('vnetName'))]",
+    "vnetIDSpoke2": "[if(equals(parameters('vnetNewOrExistingSpoke2'),'new'),resourceId('Microsoft.Network/virtualNetworks', variables('vnetNameSpoke2')),resourceId(parameters('vnetResourceGroupSpoke2'),'Microsoft.Network/virtualNetworks', variables('vnetNameSpoke2')))]",
+
+    "sn2IPArray": "[split(parameters('subnet2Prefix'),'.')]",
+    "sn2IPArray2ndString": "[string(variables('sn2IPArray')[3])]",
+    "sn2IPArray2nd": "[split(variables('sn2IPArray2ndString'),'/')]",
+    "sn2IPArray3": "[string(add(int(variables('sn2IPArray2nd')[0]),1))]",
+    "sn2IPArray2": "[string(int(variables('sn2IPArray')[2]))]",
+    "sn2IPArray1": "[string(int(variables('sn2IPArray')[1]))]",
+    "sn2IPArray0": "[string(int(variables('sn2IPArray')[0]))]",
+    "sn2IPlb": "[concat(variables('sn2IPArray0'),'.',variables('sn2IPArray1'),'.',variables('sn2IPArray2'),'.',add(int(variables('sn2IPArray2nd')[0]),4))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualWans",
+      "name": "[variables('vWanName')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualHubs",
+      "name": "[variables('hubName')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualWans/', variables('vWanName'))]",
+        "[resourceId('Microsoft.Resources/deployments/', 'FGT-Active-Passive-ELB-ILB')]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('hubAddressPrefix')]",
+        "virtualNetworkConnections": [
+          {
+            "name": "[variables('vnetName')]",
+            "properties": {
+              "remoteVirtualNetwork": {
+                "id": "[variables('vnetID')]"
+              },
+              "allowHubToRemoteVnetTransit": true,
+              "allowRemoteVnetToUseHubVnetGateways": true,
+              "enableInternetSecurity": false
+            },
+            "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections"
+          }
+        ],
+        "virtualWan": {
+          "id": "[resourceId('Microsoft.Network/virtualWans',variables('vWanName'))]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/vpnSites",
+      "name": "[variables('vpnsiteName')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualWans/', variables('vWanName'))]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": "[parameters('vpnsiteAddressspaceList')]"
+        },
+        "bgpProperties": {
+          "asn": "[parameters('vpnsiteBgpAsn')]",
+          "bgpPeeringAddress": "[parameters('vpnsiteBgpPeeringAddress')]",
+          "peerWeight": 0
+        },
+        "deviceProperties": {
+          "linkSpeedInMbps": 0
+        },
+        "ipAddress": "[parameters('vpnsitePublicIPAddress')]",
+        "virtualWan": {
+          "id": "[resourceId('Microsoft.Network/virtualWans',variables('vWanName'))]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/vpnGateways",
+      "name": "[variables('vpnGatewayName')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualHubs/', variables('hubName'))]",
+        "[concat('Microsoft.Network/vpnSites/', variables('vpnsitename'))]"
+      ],
+      "properties": {
+        "connections": [
+          {
+            "name": "[variables('connectionName')]",
+            "properties": {
+              "connectionBandwidth": 10,
+              "enableBgp": "[parameters('enableBgp')]",
+              "remoteVpnSite": {
+                "id": "[resourceId('Microsoft.Network/vpnSites', variables('vpnsitename'))]"
+              }
+            }
+          }
+        ],
+        "virtualHub": {
+          "id": "[resourceId('Microsoft.Network/virtualHubs',variables('hubName'))]"
+        },
+        "bgpSettings": {
+          "asn": "[parameters('vpnGwBgpAsn')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "FGT-Active-Passive-ELB-ILB",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/jvhoof/fortinet-azure-solutions/master/FortiGate/VNET-Peering/azuredeploy.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "fortiGateNamePrefix": {
+            "value": "[parameters('prefix')]"
+          },
+          "fortiGateImageSKU": {
+            "value": "[parameters('fortiGateImageSKU')]"
+          },
+          "fortiGateImageVersion": {
+            "value": "[parameters('fortiGateImageVersion')]"
+          },
+          "instanceType": {
+            "value": "[parameters('instanceType')]"
+          },
+          "publicIPNewOrExisting": {
+            "value": "[parameters('publicIPNewOrExisting')]"
+          },
+          "publicIP2NewOrExisting": {
+            "value": "[parameters('publicIP2NewOrExisting')]"
+          },
+          "publicIP3NewOrExisting": {
+            "value": "[parameters('publicIP3NewOrExisting')]"
+          },
+          "publicIPName": {
+            "value": "[parameters('publicIPName')]"
+          },
+          "publicIPResourceGroup": {
+            "value": "[parameters('publicIPResourceGroup')]"
+          },
+          "publicIP2Name": {
+            "value": "[parameters('publicIP2Name')]"
+          },
+          "publicIP2ResourceGroup": {
+            "value": "[parameters('publicIP2ResourceGroup')]"
+          },
+          "publicIP3Name": {
+            "value": "[parameters('publicIP3Name')]"
+          },
+          "publicIP3ResourceGroup": {
+            "value": "[parameters('publicIP3ResourceGroup')]"
+          },
+          "publicIPAddressType": {
+            "value": "[parameters('publicIPAddressType')]"
+          },
+          "vnetNewOrExisting": {
+            "value": "[parameters('vnetNewOrExisting')]"
+          },
+          "vnetName": {
+            "value": "[parameters('vnetName')]"
+          },
+          "vnetResourceGroup": {
+            "value": "[parameters('vnetResourceGroup')]"
+          },
+          "vnetAddressPrefix": {
+            "value": "[parameters('vnetAddressPrefix')]"
+          },
+          "subnet1Name": {
+            "value": "[parameters('subnet1Name')]"
+          },
+          "subnet1Prefix": {
+            "value": "[parameters('subnet1Prefix')]"
+          },
+          "subnet2Name": {
+            "value": "[parameters('subnet2Name')]"
+          },
+          "subnet2Prefix": {
+            "value": "[parameters('subnet2Prefix')]"
+          },
+          "subnet3Name": {
+            "value": "[parameters('subnet3Name')]"
+          },
+          "subnet3Prefix": {
+            "value": "[parameters('subnet3Prefix')]"
+          },
+          "subnet4Name": {
+            "value": "[parameters('subnet4Name')]"
+          },
+          "subnet4Prefix": {
+            "value": "[parameters('subnet4Prefix')]"
+          },
+          "subnet5Name": {
+            "value": "[parameters('subnet5Name')]"
+          },
+          "subnet5Prefix": {
+            "value": "[parameters('subnet5Prefix')]"
+          },
+          "subnet6Name": {
+            "value": "[parameters('subnet6Name')]"
+          },
+          "subnet6Prefix": {
+            "value": "[parameters('subnet6Prefix')]"
+          },
+          "vnetNewOrExistingSpoke1": {
+            "value": "[parameters('vnetNewOrExistingSpoke1')]"
+          },
+          "vnetNameSpoke1": {
+            "value": "[parameters('vnetNameSpoke1')]"
+          },
+          "vnetAddressPrefixSpoke1": {
+            "value": "[parameters('vnetAddressPrefixSpoke1')]"
+          },
+          "vnetResourceGroupSpoke1": {
+            "value": "[parameters('vnetResourceGroupSpoke1')]"
+          },
+          "subnet1Spoke1Name": {
+            "value": "[parameters('subnet1Spoke1Name')]"
+          },
+          "subnet1Spoke1Prefix": {
+            "value": "[parameters('subnet1Spoke1Prefix')]"
+          },
+          "vnetNewOrExistingSpoke2": {
+            "value": "[parameters('vnetNewOrExistingSpoke2')]"
+          },
+          "vnetNameSpoke2": {
+            "value": "[parameters('vnetNameSpoke2')]"
+          },
+          "vnetAddressPrefixSpoke2": {
+            "value": "[parameters('vnetAddressPrefixSpoke2')]"
+          },
+          "vnetResourceGroupSpoke2": {
+            "value": "[parameters('vnetResourceGroupSpoke2')]"
+          },
+          "subnet1Spoke2Name": {
+            "value": "[parameters('subnet1Spoke2Name')]"
+          },
+          "subnet1Spoke2Prefix": {
+            "value": "[parameters('subnet1Spoke2Prefix')]"
+          },
+          "FortinetTags": {
+            "value": "[parameters('FortinetTags')]"
+          }
+        }
+      }
+    }
+  ]
+}

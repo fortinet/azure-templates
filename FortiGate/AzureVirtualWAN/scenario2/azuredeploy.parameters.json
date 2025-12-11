@@ -1,0 +1,185 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "prefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "vpnsitePrefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "vWanName": {
+            "value": ""
+        },
+        "hubName": {
+            "value": ""
+        },
+        "hubAddressPrefix": {
+            "value": "172.16.160.0/24"
+        },
+        "vpnGatewayName": {
+            "value": ""
+        },
+        "vpnGwBgpAsn": {
+            "value": 65515
+        },
+        "vpnsiteName": {
+            "value": ""
+        },
+        "connectionName": {
+            "value": ""
+        },
+        "vpnsiteAddressspaceList": {
+            "value": []
+        },
+        "vpnsitePublicIPAddress": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "vpnsiteBgpAsn": {
+            "value": 65010
+        },
+        "vpnsiteBgpPeeringAddress": {
+            "value": "169.254.111.1"
+        },
+        "enableBgp": {
+            "value": "true"
+        },
+        "adminUsername": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "adminPassword": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "FortiGateImageSKU": {
+            "value": "fortinet_fg-vm"
+        },
+        "FortiGateImageVersion": {
+            "value": "latest"
+        },
+        "instanceType": {
+            "value": "Standard_F4s"
+        },
+        "acceleratedNetworking": {
+            "value": "true"
+        },
+        "publicIPNewOrExisting": {
+            "value": "new"
+        },
+        "publicIP2NewOrExisting": {
+            "value": "new"
+        },
+        "publicIP3NewOrExisting": {
+            "value": "new"
+        },
+        "publicIPName": {
+            "value": "FGTAPClusterPublicIP"
+        },
+        "publicIPResourceGroup": {
+            "value": ""
+        },
+        "publicIP2Name": {
+            "value": "FGTAMgmtPublicIP"
+        },
+        "publicIP2ResourceGroup": {
+            "value": ""
+        },
+        "publicIP3Name": {
+            "value": "FGTBMgmtPublicIP"
+        },
+        "publicIP3ResourceGroup": {
+            "value": ""
+        },
+        "publicIPAddressType": {
+            "value": "Static"
+        },
+        "vnetNewOrExisting": {
+            "value": "new"
+        },
+        "vnetName": {
+            "value": ""
+        },
+        "vnetResourceGroup": {
+            "value": ""
+        },
+        "vnetAddressPrefix": {
+            "value": "172.16.136.0/22"
+        },
+        "subnet1Name": {
+            "value": "ExternalSubnet"
+        },
+        "subnet1Prefix": {
+            "value": "172.16.136.0/26"
+        },
+        "subnet2Name": {
+            "value": "InternalSubnet"
+        },
+        "subnet2Prefix": {
+            "value": "172.16.136.64/26"
+        },
+        "subnet3Name": {
+            "value": "HASyncSubnet"
+        },
+        "subnet3Prefix": {
+            "value": "172.16.136.128/26"
+        },
+        "subnet4Name": {
+            "value": "ManagementSubnet"
+        },
+        "subnet4Prefix": {
+            "value": "172.16.136.192/26"
+        },
+        "subnet5Name": {
+            "value": "ProtectedASubnet"
+        },
+        "subnet5Prefix": {
+            "value": "172.16.137.0/24"
+        },
+        "subnet6Name": {
+            "value": "ProtectedBSubnet"
+        },
+        "subnet6Prefix": {
+            "value": "172.16.138.0/24"
+        },
+        "vnetNewOrExistingSpoke1": {
+            "value": "new"
+        },
+        "vnetNameSpoke1": {
+            "value": ""
+        },
+        "vnetAddressPrefixSpoke1": {
+            "value": "172.16.140.0/24"
+        },
+        "vnetResourceGroupSpoke1": {
+            "value": ""
+        },
+        "subnet1Spoke1Name": {
+            "value": "SPOKE1Subnet"
+        },
+        "subnet1Spoke1Prefix": {
+            "value": "172.16.140.0/26"
+        },
+        "vnetNewOrExistingSpoke2": {
+            "value": "new"
+        },
+        "vnetNameSpoke2": {
+            "value": ""
+        },
+        "vnetAddressPrefixSpoke2": {
+            "value": "172.16.142.0/24"
+        },
+        "vnetResourceGroupSpoke2": {
+            "value": ""
+        },
+        "subnet1Spoke2Name": {
+            "value": "SPOKE2Subnet"
+        },
+        "subnet1Spoke2Prefix": {
+            "value": "172.16.142.0/26"
+        },
+        "FortinetTags": {
+            "value": {
+                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E129258317D"
+            }
+        }
+    }
+}

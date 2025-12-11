@@ -1,0 +1,81 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "prefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "vWanName": {
+            "value": ""
+        },
+        "hub1Name": {
+            "value": ""
+        },
+        "hub1AddressPrefix": {
+            "value": "172.16.160.0/24"
+        },
+        "vpnGateway1Name": {
+            "value": ""
+        },
+        "vpnsite1Name": {
+            "value": ""
+        },
+        "vpnsite1Prefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "connectionName": {
+            "value": ""
+        },
+        "vpnsite1AddressspaceList": {
+            "value": []
+        },
+        "vpnsite1PublicIPAddress": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "vpnsite1BgpAsn": {
+            "value": 65010
+        },
+        "vpnsite1BgpPeeringAddress": {
+            "value": "169.254.111.1"
+        },
+        "hub2Location": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "hub2Name": {
+            "value": ""
+        },
+        "hub2AddressPrefix": {
+            "value": "172.16.161.0/24"
+        },
+        "vpnGateway2Name": {
+            "value": ""
+        },
+        "vpnsite2Name": {
+            "value": ""
+        },
+        "vpnsite2Prefix": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "connection2Name": {
+            "value": ""
+        },
+        "vpnsite2AddressspaceList": {
+            "value": []
+        },
+        "vpnsite2PublicIPAddress": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "vpnsite2BgpAsn": {
+            "value": 65011
+        },
+        "vpnsite2BgpPeeringAddress": {
+            "value": "169.254.121.1"
+        },
+        "vpnGwBgpAsn": {
+            "value": 65515
+        },
+        "enableBgp": {
+            "value": "true"
+        }
+    }
+}
