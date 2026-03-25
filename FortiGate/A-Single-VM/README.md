@@ -40,6 +40,13 @@ Custom Deployment:
 [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffortinet%2Fazure-templates%2Fmain%2FFortiGate%2FA-Single-VM%2Fazuredeploy.json)
 [![Visualize](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffortinet%2Fazure-templates$2Fmain%2FFortiGate%2FA-Single-VM%2Fazuredeploy.json)
 
+As of March 2026, new FortiGate SKUs were introduced in the Azure Marketplace that provide access to the latest marketplace features. In specific regions (e.g. GovCloud, private offers, ...) and deployment scenarios, legacy SKUs are still required; [those templates can be found in the legacy directory](legacy/).
+
+- Marketplace information:
+  - Publisher: fortinet
+  - Offer: fortinet_fortigate-vm
+  - SKU / plan: fortinet_fg-vm_byol_70, fortinet_fg-vm_payg_70, fortinet_fg-vm_byol_72, fortinet_fg-vm_payg_72, fortinet_fg-vm_byol_74, fortinet_fg-vm_payg_74, fortinet_fg-vm_byol_76, fortinet_fg-vm_payg_76
+
 ### Azure CLI
 
 To fast track the deployment, use the Azure Cloud Shell. The Azure Cloud Shell is an in-browser CLI that contains Terraform and other tools for deployment into Microsoft Azure. It is accessible via the Azure Portal or directly at [https://shell.azure.com/](https://shell.azure.com). You can copy and paste the below one-liner to get started with your deployment.
@@ -67,9 +74,9 @@ The ARM template deploys several resources and it is required to have the access
   - It needs to contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters excluding '\' or '-'
 - The terms for the FortiGate-VM PAYG or BYOL image in the Azure Marketplace needs to be accepted once before usage. This is done automatically during deployment via the Azure Portal. For the Azure CLI the commands below need to be run before the first deployment in a subscription.
   - BYOL/FLEX
-`az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm`
+`az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm --plan fortinet_fg-vm-byol-76`
   - PAYG
-`az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm_payg_2023`
+`az vm image terms accept --publisher fortinet --offer fortinet_fortigate-vm --plan fortinet_fg-vm_payg-76`
 
 ## Configuration
 
