@@ -1,12 +1,14 @@
 #Requires -Modules Pester
 <#
 .SYNOPSIS
-    Pester v5 tests for the Active-Active-ELB-ILB ARM template
+    Pester v5 tests for the Active-Passive-SDN Legacy ARM template
 .DESCRIPTION
     Validates the template structure, deploys to Azure, and verifies both FortiGates are
-    reachable via the external load balancer NAT rules. Run one scenario per invocation
+    reachable on their individual management public IPs. Run one scenario per invocation
     (x64, x64_g2, arm64) so that matrix jobs in GitHub Actions can execute all three
     in parallel.
+    The legacy template uses the fortinet_fortigate-vm_v5 image offer and separate
+    per-architecture SKU parameters instead of the combined fortiGateLicenseType.
 .EXAMPLE
     Invoke-Pester
     ./test/Invoke-Tests.ps1 -Scenario x64_g2
@@ -20,45 +22,41 @@ param (
 )
 
 BeforeAll {
-    $templateName = "Active-Active-ELB-ILB"
+    $templateName = "Active-Passive-SDN"
 
     # Resolve source path — works both in GitHub Actions and locally
     $sourcePath = if ($env:GITHUB_WORKSPACE) {
-        "$env:GITHUB_WORKSPACE/FortiGate/$templateName"
+        "$env:GITHUB_WORKSPACE/FortiGate/$templateName/legacy"
     } else {
         (Resolve-Path "$PSScriptRoot/..").Path
     }
 
-    $templateFileLocation          = "$sourcePath/azuredeploy.json"
-    $templateParameterFileLocation = "$sourcePath/azuredeploy.parameters.json"
+    $templateFileLocation = "$sourcePath/azuredeploy.json"
 
     # Unique prefix per run to avoid resource name collisions
     $testsRandom        = Get-Random 10001
     $testsPrefix        = "FORTIQA"
     $testsAdminUsername = "azureuser"
-    $fortiGateCount     = 2
 
-    # Resource names derived from template variables
-    $publicIPName = "$testsPrefix-externalloadbalancer-pip"
-    $fgtVmName1   = "$testsPrefix-fgt-1"
-    $fgtVmName2   = "$testsPrefix-fgt-2"
-
-    # NAT ports defined by the load balancer inbound NAT rules
-    $ports = @(40030, 50030, 40031, 50031)
+    # Resource names derived from template variable defaults
+    $fgtaVmName    = "$testsPrefix-fgt-a"
+    $fgtbVmName    = "$testsPrefix-fgt-b"
+    $publicIP2Name = "$testsPrefix-fgt-a-mgmt-pip"
+    $publicIP3Name = "$testsPrefix-fgt-b-mgmt-pip"
 
     # Scenario-specific location and resource group
     switch ($scenario) {
         'x64' {
             $testsResourceGroupLocation = "westeurope"
-            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-x64"
+            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-legacy-x64"
         }
         'x64_g2' {
             $testsResourceGroupLocation = "francecentral"
-            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-x64_g2"
+            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-legacy-x64_g2"
         }
         'arm64' {
             $testsResourceGroupLocation = "francecentral"
-            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-arm64"
+            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-legacy-arm64"
         }
     }
 
@@ -74,16 +72,16 @@ BeforeAll {
     }
 
     $params = @{
-        adminUsername               = $testsAdminUsername
-        adminPassword               = $testsResourceGroupName
-        fortiGateNamePrefix         = $testsPrefix
+        adminUsername                 = $testsAdminUsername
+        adminPassword                 = $testsResourceGroupName
+        fortiGateNamePrefix           = $testsPrefix
         fortiGateAdditionalCustomData = $config
-        fortiGateCount              = $fortiGateCount
     }
 
+    # Legacy template uses 'x64', 'x64_g2', 'arm64' for fortiGateInstanceArchitecture
     switch ($scenario) {
-        'x64_g2' { $params['fortiGateInstanceArchitecture'] = '_g2'    }
-        'arm64'  { $params['fortiGateInstanceArchitecture'] = '_arm64' }
+        'x64_g2' { $params['fortiGateInstanceArchitecture'] = 'x64_g2' }
+        'arm64'  { $params['fortiGateInstanceArchitecture'] = 'arm64'  }
     }
 }
 
@@ -95,7 +93,7 @@ AfterAll {
     }
 }
 
-Describe "FGT Active-Active ELB-ILB - $scenario" {
+Describe "FGT Active-Passive SDN Legacy - $scenario" {
 
     Context 'Validation' {
 
@@ -103,12 +101,8 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
             $templateFileLocation | Should -Exist
         }
 
-        It 'Has a parameters file' {
-            $templateParameterFileLocation | Should -Exist
-        }
-
         It 'Converts from JSON and has the expected top-level properties' {
-            $expectedProperties = '$schema', 'contentVersion', 'functions', 'outputs', 'parameters', 'resources', 'variables'
+            $expectedProperties = '$schema', 'contentVersion', 'outputs', 'parameters', 'resources', 'variables'
             $templateProperties = (Get-Content $templateFileLocation |
                 ConvertFrom-Json -ErrorAction SilentlyContinue) |
                 Get-Member -MemberType NoteProperty | ForEach-Object Name
@@ -123,19 +117,20 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
                 'Microsoft.Resources/deployments',
                 'Microsoft.Compute/availabilitySets',
                 'Microsoft.Network/virtualNetworks',
-                'Microsoft.Network/virtualNetworks/subnets',
-                'Microsoft.Network/natGateways',
                 'Microsoft.Network/routeTables',
                 'Microsoft.Network/networkSecurityGroups',
                 'Microsoft.Network/publicIPAddresses',
                 'Microsoft.Network/publicIPAddresses',
                 'Microsoft.Network/publicIPAddresses',
-                'Microsoft.Network/loadBalancers',
-                'Microsoft.Network/loadBalancers/inboundNatRules',
-                'Microsoft.Network/loadBalancers/inboundNatRules',
-                'Microsoft.Network/loadBalancers',
                 'Microsoft.Network/networkInterfaces',
                 'Microsoft.Network/networkInterfaces',
+                'Microsoft.Network/networkInterfaces',
+                'Microsoft.Network/networkInterfaces',
+                'Microsoft.Network/networkInterfaces',
+                'Microsoft.Network/networkInterfaces',
+                'Microsoft.Network/networkInterfaces',
+                'Microsoft.Network/networkInterfaces',
+                'Microsoft.Compute/virtualMachines',
                 'Microsoft.Compute/virtualMachines'
             )
             $templateResources = (Get-Content $templateFileLocation |
@@ -148,7 +143,6 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
 
         It 'Contains the expected parameters' {
             $expectedTemplateParameters = @(
-                '1nicDeployment',
                 'acceleratedConnections',
                 'acceleratedConnectionsSku',
                 'acceleratedNetworking',
@@ -156,33 +150,19 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
                 'adminUsername',
                 'availabilityOptions',
                 'customImageReference',
-                'externalLoadBalancer',
                 'fortiGateAdditionalCustomData',
-                'fortiGateCount',
+                'fortiGateImageSKU_arm64',
+                'fortiGateImageSKU_x64',
+                'fortiGateImageSKU_x64_g2',
                 'fortiGateImageVersion_arm64',
                 'fortiGateImageVersion_x64',
                 'fortiGateImageVersion_x64_g2',
                 'fortiGateInstanceArchitecture',
-                'fortiGateLicenseBYOL1',
-                'fortiGateLicenseBYOL2',
-                'fortiGateLicenseBYOL3',
-                'fortiGateLicenseBYOL4',
-                'fortiGateLicenseBYOL5',
-                'fortiGateLicenseBYOL6',
-                'fortiGateLicenseBYOL7',
-                'fortiGateLicenseBYOL8',
-                'fortiGateLicenseFortiFlex1',
-                'fortiGateLicenseFortiFlex2',
-                'fortiGateLicenseFortiFlex3',
-                'fortiGateLicenseFortiFlex4',
-                'fortiGateLicenseFortiFlex5',
-                'fortiGateLicenseFortiFlex6',
-                'fortiGateLicenseFortiFlex7',
-                'fortiGateLicenseFortiFlex8',
-                'fortiGateLicenseType',
+                'fortiGateLicenseBYOLA',
+                'fortiGateLicenseBYOLB',
+                'fortiGateLicenseFortiFlexA',
+                'fortiGateLicenseFortiFlexB',
                 'fortiGateNamePrefix',
-                'fortiGateProbeResponse',
-                'fortiGateSessionSync',
                 'fortiManager',
                 'fortiManagerIP',
                 'fortiManagerSerial',
@@ -191,7 +171,15 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
                 'instanceType_x64',
                 'instanceType_x64_g2',
                 'location',
-                'outboundConnectivity',
+                'publicIP1Name',
+                'publicIP1NewOrExisting',
+                'publicIP1ResourceGroup',
+                'publicIP2Name',
+                'publicIP2NewOrExisting',
+                'publicIP2ResourceGroup',
+                'publicIP3Name',
+                'publicIP3NewOrExisting',
+                'publicIP3ResourceGroup',
                 'serialConsole',
                 'subnet1Name',
                 'subnet1Prefix',
@@ -199,6 +187,14 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
                 'subnet2Name',
                 'subnet2Prefix',
                 'subnet2StartAddress',
+                'subnet3Name',
+                'subnet3Prefix',
+                'subnet3StartAddress',
+                'subnet4Name',
+                'subnet4Prefix',
+                'subnet4StartAddress',
+                'subnet5Name',
+                'subnet5Prefix',
                 'tagsByResource',
                 'vnetAddressPrefix',
                 'vnetName',
@@ -236,14 +232,14 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
             $script:deployment.ProvisioningState | Should -Be "Succeeded"
         }
 
-        It 'FortiGate VM 1 exists in the resource group' {
-            $vm = Get-AzVM -ResourceGroupName $testsResourceGroupName -Name $fgtVmName1
+        It 'FortiGate-A VM exists in the resource group' {
+            $vm = Get-AzVM -ResourceGroupName $testsResourceGroupName -Name $fgtaVmName
             Write-Host ($vm | Format-Table | Out-String)
             $vm | Should -Not -Be $null
         }
 
-        It 'FortiGate VM 2 exists in the resource group' {
-            $vm = Get-AzVM -ResourceGroupName $testsResourceGroupName -Name $fgtVmName2
+        It 'FortiGate-B VM exists in the resource group' {
+            $vm = Get-AzVM -ResourceGroupName $testsResourceGroupName -Name $fgtbVmName
             Write-Host ($vm | Format-Table | Out-String)
             $vm | Should -Not -Be $null
         }
@@ -252,13 +248,19 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
     Context "Connectivity - $scenario" {
 
         BeforeAll {
-            # Prefer the deployment output; fall back to a direct lookup
-            $script:fgtPublicIP = if ($script:deployment -and $script:deployment.Outputs['fortiGatePublicIP']) {
-                $script:deployment.Outputs['fortiGatePublicIP'].Value
+            # Use deployment outputs for management public IPs
+            $script:fgta = if ($script:deployment -and $script:deployment.Outputs['fortiGateAManagementPublicIP']) {
+                $script:deployment.Outputs['fortiGateAManagementPublicIP'].Value
             } else {
-                (Get-AzPublicIpAddress -Name $publicIPName -ResourceGroupName $testsResourceGroupName).IpAddress
+                (Get-AzPublicIpAddress -Name $publicIP2Name -ResourceGroupName $testsResourceGroupName).IpAddress
             }
-            Write-Host "FortiGate ELB public IP: $($script:fgtPublicIP)"
+            $script:fgtb = if ($script:deployment -and $script:deployment.Outputs['fortiGateBManagementPublicIP']) {
+                $script:deployment.Outputs['fortiGateBManagementPublicIP'].Value
+            } else {
+                (Get-AzPublicIpAddress -Name $publicIP3Name -ResourceGroupName $testsResourceGroupName).IpAddress
+            }
+            Write-Host "FortiGate-A management IP: $($script:fgta)"
+            Write-Host "FortiGate-B management IP: $($script:fgtb)"
 
             $script:verify_commands = @'
 get system status
@@ -269,28 +271,33 @@ exit
 '@
         }
 
-        It 'ELB NAT ports are reachable (<port>)' -ForEach @(
-            @{ port = 40030 },
-            @{ port = 50030 },
-            @{ port = 40031 },
-            @{ port = 50031 }
+        It 'FGT-A: port <port> is reachable' -ForEach @(
+            @{ port = 443 },
+            @{ port = 22  }
         ) {
-            Write-Host "Checking port $port ..."
-            $listening = Test-Connection -TargetName $script:fgtPublicIP -TCPPort $port -TimeoutSeconds 100
+            $listening = Test-Connection -TargetName $script:fgta -TCPPort $port -TimeoutSeconds 100
             $listening | Should -Be $true
         }
 
-        It 'SSH: FGT-1 configuration applied correctly' {
-            $result = $script:verify_commands | ssh -p 50030 -tt -i $sshkey -o StrictHostKeyChecking=no devops@$($script:fgtPublicIP)
+        It 'FGT-B: port <port> is reachable' -ForEach @(
+            @{ port = 443 },
+            @{ port = 22  }
+        ) {
+            $listening = Test-Connection -TargetName $script:fgtb -TCPPort $port -TimeoutSeconds 100
+            $listening | Should -Be $true
+        }
+
+        It 'SSH: FGT-A configuration applied correctly' {
+            $result = $script:verify_commands | ssh -tt -i $sshkey -o StrictHostKeyChecking=no devops@$($script:fgta)
             $LASTEXITCODE | Should -Be 0
-            Write-Host ("FGT-1 CLI output:`n" + ($result -join "`n"))
+            Write-Host ("FGT-A CLI output:`n" + ($result -join "`n"))
             $result | Should -Not -BeLike "*Command fail*"
         }
 
-        It 'SSH: FGT-2 configuration applied correctly' {
-            $result = $script:verify_commands | ssh -p 50031 -tt -i $sshkey -o StrictHostKeyChecking=no devops@$($script:fgtPublicIP)
+        It 'SSH: FGT-B configuration applied correctly' {
+            $result = $script:verify_commands | ssh -tt -i $sshkey -o StrictHostKeyChecking=no devops@$($script:fgtb)
             $LASTEXITCODE | Should -Be 0
-            Write-Host ("FGT-2 CLI output:`n" + ($result -join "`n"))
+            Write-Host ("FGT-B CLI output:`n" + ($result -join "`n"))
             $result | Should -Not -BeLike "*Command fail*"
         }
     }

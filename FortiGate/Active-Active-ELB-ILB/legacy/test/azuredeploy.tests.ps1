@@ -1,12 +1,14 @@
 #Requires -Modules Pester
 <#
 .SYNOPSIS
-    Pester v5 tests for the Active-Active-ELB-ILB ARM template
+    Pester v5 tests for the Active-Active-ELB-ILB Legacy ARM template
 .DESCRIPTION
     Validates the template structure, deploys to Azure, and verifies both FortiGates are
     reachable via the external load balancer NAT rules. Run one scenario per invocation
     (x64, x64_g2, arm64) so that matrix jobs in GitHub Actions can execute all three
     in parallel.
+    The legacy template uses the fortinet_fortigate-vm_v5 image offer and separate
+    per-architecture SKU parameters instead of the combined fortiGateLicenseType.
 .EXAMPLE
     Invoke-Pester
     ./test/Invoke-Tests.ps1 -Scenario x64_g2
@@ -24,13 +26,12 @@ BeforeAll {
 
     # Resolve source path — works both in GitHub Actions and locally
     $sourcePath = if ($env:GITHUB_WORKSPACE) {
-        "$env:GITHUB_WORKSPACE/FortiGate/$templateName"
+        "$env:GITHUB_WORKSPACE/FortiGate/$templateName/legacy"
     } else {
         (Resolve-Path "$PSScriptRoot/..").Path
     }
 
-    $templateFileLocation          = "$sourcePath/azuredeploy.json"
-    $templateParameterFileLocation = "$sourcePath/azuredeploy.parameters.json"
+    $templateFileLocation = "$sourcePath/azuredeploy.json"
 
     # Unique prefix per run to avoid resource name collisions
     $testsRandom        = Get-Random 10001
@@ -43,22 +44,19 @@ BeforeAll {
     $fgtVmName1   = "$testsPrefix-fgt-1"
     $fgtVmName2   = "$testsPrefix-fgt-2"
 
-    # NAT ports defined by the load balancer inbound NAT rules
-    $ports = @(40030, 50030, 40031, 50031)
-
     # Scenario-specific location and resource group
     switch ($scenario) {
         'x64' {
             $testsResourceGroupLocation = "westeurope"
-            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-x64"
+            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-legacy-x64"
         }
         'x64_g2' {
             $testsResourceGroupLocation = "francecentral"
-            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-x64_g2"
+            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-legacy-x64_g2"
         }
         'arm64' {
             $testsResourceGroupLocation = "francecentral"
-            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-arm64"
+            $testsResourceGroupName     = "FORTIQA-$testsRandom-$templateName-legacy-arm64"
         }
     }
 
@@ -74,16 +72,17 @@ BeforeAll {
     }
 
     $params = @{
-        adminUsername               = $testsAdminUsername
-        adminPassword               = $testsResourceGroupName
-        fortiGateNamePrefix         = $testsPrefix
+        adminUsername                 = $testsAdminUsername
+        adminPassword                 = $testsResourceGroupName
+        fortiGateNamePrefix           = $testsPrefix
         fortiGateAdditionalCustomData = $config
-        fortiGateCount              = $fortiGateCount
+        fortiGateCount                = $fortiGateCount
     }
 
+    # Legacy template uses 'x64', 'x64_g2', 'arm64' for fortiGateInstanceArchitecture
     switch ($scenario) {
-        'x64_g2' { $params['fortiGateInstanceArchitecture'] = '_g2'    }
-        'arm64'  { $params['fortiGateInstanceArchitecture'] = '_arm64' }
+        'x64_g2' { $params['fortiGateInstanceArchitecture'] = 'x64_g2' }
+        'arm64'  { $params['fortiGateInstanceArchitecture'] = 'arm64'  }
     }
 }
 
@@ -95,16 +94,12 @@ AfterAll {
     }
 }
 
-Describe "FGT Active-Active ELB-ILB - $scenario" {
+Describe "FGT Active-Active ELB-ILB Legacy - $scenario" {
 
     Context 'Validation' {
 
         It 'Has a JSON template' {
             $templateFileLocation | Should -Exist
-        }
-
-        It 'Has a parameters file' {
-            $templateParameterFileLocation | Should -Exist
         }
 
         It 'Converts from JSON and has the expected top-level properties' {
@@ -159,6 +154,9 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
                 'externalLoadBalancer',
                 'fortiGateAdditionalCustomData',
                 'fortiGateCount',
+                'fortiGateImageSKU_arm64',
+                'fortiGateImageSKU_x64',
+                'fortiGateImageSKU_x64_g2',
                 'fortiGateImageVersion_arm64',
                 'fortiGateImageVersion_x64',
                 'fortiGateImageVersion_x64_g2',
@@ -179,7 +177,6 @@ Describe "FGT Active-Active ELB-ILB - $scenario" {
                 'fortiGateLicenseFortiFlex6',
                 'fortiGateLicenseFortiFlex7',
                 'fortiGateLicenseFortiFlex8',
-                'fortiGateLicenseType',
                 'fortiGateNamePrefix',
                 'fortiGateProbeResponse',
                 'fortiGateSessionSync',
