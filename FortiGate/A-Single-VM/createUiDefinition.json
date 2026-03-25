@@ -350,7 +350,6 @@
                   "uri": "https://azure.microsoft.com/en-ca/updates/public-preview-internet-inbound-for-network-virtual-appliances-in-virtual-wan-hubs/"
                 }
               }
-              }
             ],
             "visible": "[equals(basics('fortiGateInstanceArchitecture'),'x64')]"
           },
