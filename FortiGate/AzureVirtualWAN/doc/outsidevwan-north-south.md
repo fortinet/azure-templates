@@ -7,7 +7,7 @@
 
 ## Design
 
-This scenario can use an [active/active](https://github.com/fortinet/azure-templates/tree/main/FortiGate/Active-Active-ELB-ILB) or [active/passive](https://github.com/fortinet/azure-templates/tree/main/FortiGate/Active-Passive-ELB-ILB) deployment or even an [autoscale deployment](https://github.com/40net-cloud/fortinet-azure-solutions/tree/main/FortiGate/Autoscale). The selection is based on your requirements and explained in our documentation [here](https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/983245). Deployment of these setup can be done either via the Azure Marketplace or via the above GitHub links.
+This scenario can use an [active/active](https://github.com/fortinet/azure-templates/tree/main/FortiGate/Active-Active-ELB-ILB) or [active/passive](https://github.com/fortinet/azure-templates/tree/main/FortiGate/Active-Passive-ELB-ILB) deployment or even an [autoscale deployment](https://github.com/40net-cloud/fortinet-azure-solutions/tree/main/FortiGate/Autoscale). The selection is based on your requirements and explained in our documentation [here](https://docs.fortinet.com/document/fortigate-public-cloud/7.2.0/azure-administration-guide/983245). Deployment of this setup can be done either via the Azure Marketplace or via the above GitHub links.
 
 <p align="center">
   <a href="https://github.com/fortinet/azure-templates/tree/main/FortiGate/Active-Passive-ELB-ILB"><img width="30%" src="../../Active-Passive-ELB-ILB/images/fgt-ap-small.png"/></a>
@@ -15,7 +15,7 @@ This scenario can use an [active/active](https://github.com/fortinet/azure-templ
   <a href="https://github.com/fortinet/fortigate-autoscale-azure"><img width="30%" src="https://github.com/fortinet/fortigate-autoscale-azure/raw/main/docs/diagrams/autoscale_3.0_hybrid_licensing.png"/></a>
 </p>
 
-The FortiGate inside of the Virtual WAN Hub offers the connectivity to the on-premises using Secure SD-WAN. Additionally, it can also act as a control point between the ingress setup and the workloads in the different spokes. The FortiGate inside of Virtual WAN is not required for this ingresss scenario to work but is possible as shown below. 
+The FortiGate inside of the Virtual WAN Hub offers the connectivity to the on-premises using Secure SD-WAN. Additionally, it can also act as a control point between the ingress setup and the workloads in the different spokes. The FortiGate inside of Virtual WAN is not required for this ingress scenario to work but is possible as shown below. 
 
 <p align="center">
   <img src="../images/outsidevwan-ingress.png" alt="network drawing for FortiGate SD-WAN inside Virtual Hub"/>
@@ -29,17 +29,17 @@ A full demo of the BGP peering between Azure Virtual WAN and the FortiGate-VM ca
 
 ## Requirements and limitations
 
-* Routing: The routing can be handled statically or dynamically both on the FortiGate and Azure level. To make the setup dynamically, BGP peering, needs to be enabled on the Virtual WAN Hub and comunnication needs to be established between the FortiGate-VM units and the Azure Routing Service.
+* Routing: The routing can be handled statically or dynamically both on the FortiGate and Azure level. To make the setup dynamically, BGP peering, needs to be enabled on the Virtual WAN Hub and communication needs to be established between the FortiGate-VM units and the Azure Routing Service.
 * NAT: Routing directly from the workload in a spoke to the FortiGate in a different spoke across the Virtual WAN Hub is not possible. The inbound traffic should use SNAT behind the FortiGate devices.
 * Licenses for FortiGate
-  - BYOL: VM, VM Subscription or FortiFlex licenses can be used on these units. A demo license can be made available via your Fortinet partner or on our website. Licenses need to be registered on the [Fortinet support site](http://support.fortinet.com). Download the .lic file after registration. Note, these files may not work until 60 minutes after it's initial creation.
+  - BYOL: VM, VM Subscription or FortiFlex licenses can be used on these units. A demo license can be made available via your Fortinet partner or on our website. Licenses need to be registered on the [Fortinet support site](http://support.fortinet.com). Download the .lic file after registration. Note, these files may not work until 60 minutes after its initial creation.
   - PAYG or OnDemand: These licenses are automatically generated during the deployment of the FortiGate systems.
 
 ## Flows
 
 ![Flows_north-south](../images/outsidevwan-ingress-flow.png)
 
-1. Connection from client to the public IP of that is attached to the load balancing rule. - s: a.b.c.d - d: w.x.y.z
+1. Connection from client to the public IP that is attached to the load balancing rule. - s: a.b.c.d - d: w.x.y.z
 2. Azure External Load Balancer sends the packet to the active FortiGate-VM. - s: a.b.c.d - d: w.x.y.z
 3. FGT inspects the packet and when allowed sends the packet to the server both source and destination are translated - s: 10.21.1.5 - d: 10.20.0.4
 4. Server responds to the request - s: 10.20.0.4 - d: 10.21.1.5
@@ -79,7 +79,7 @@ config router bgp
 end
 ```
 
-Make sure that that Virtual WAN Hub network is reachable via port2 of the FortiGate-VM by adding a static route:
+Make sure that the Virtual WAN Hub network is reachable via port2 of the FortiGate-VM by adding a static route:
 
 ```
 config router static
