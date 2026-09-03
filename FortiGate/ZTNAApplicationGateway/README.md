@@ -4,7 +4,7 @@
 
 The Zero-trust network access (ZTNA) solution builds on top of FortiGate and FortiClient technologies to grant access on a per-session basis to individual applications only after devices and users are verified. This ZTNA policy is also applied when users are on the network, which provides the same zero-trust model no matter the user's location. 
 
-This setup provides a easy to deploy, pre-configured FortiGate-VM setup for users to connect to. The solutions connects with FortiClient Cloud or FortiClient EMS server for the endpoint protection policies.
+This setup provides an easy to deploy, pre-configured FortiGate-VM setup for users to connect to. The solution connects with FortiClient Cloud or FortiClient EMS server for the endpoint protection policies.
 
 ## Design
 

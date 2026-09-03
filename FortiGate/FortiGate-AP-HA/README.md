@@ -88,7 +88,7 @@ The following is a sample config, based on the defaults in this template set. If
       set unicast-hb-peerip 10.0.3.5
     end
 
-Once complete with this config on FortiGate A, you may need to reestablish the SSH session. You can do so to the cluster IP address again, or connect the the public IP address for management set to port4. From that SSH session, connect to FortiGate B port1 via SSH:
+Once complete with this config on FortiGate A, you may need to reestablish the SSH session. You can do so to the cluster IP address again, or connect to the public IP address for management set to port4. From that SSH session, connect to FortiGate B port1 via SSH:
 
      execute ssh 10.0.1.5
 
@@ -151,7 +151,7 @@ Complete a similar configuration on FortiGate B with different IP addresses and 
       set unicast-hb-peerip 10.0.3.4
     end
 
-Unless you are using PAYG licensing, you will now you will need to apply the license. To apply BYOL licenses, first register the licenses at [http://support.fortinet.com](http://support.fortinet.com) and download the `.lic` files.  Note, these files may not work until 30 minutes after they're initially created.
+Unless you are using PAYG licensing, you will now need to apply the license. To apply BYOL licenses, first register the licenses at [http://support.fortinet.com](http://support.fortinet.com) and download the `.lic` files.  Note, these files may not work until 30 minutes after they're initially created.
 
 Next, connect via HTTPS to both FortiGates via their management addresses and upload a unique license file to each.
 
